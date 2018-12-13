@@ -13,8 +13,15 @@ fc = 1090;%发射频率1090MHz
 %设置飞机的参数
 N = 1;%飞机数量
 
-%设置飞机初始参数
+%整个运行过程中飞机参数：经纬度、高度
+plane_lon = zeros(N,simu_time/simu_step);
+plane_lat = zeros(N,simu_time/simu_step);
+plane_high = zeros(N,simu_time/simu_step);
+plane_power = zeros(1,N);
+velocity = zeros(N,simu_time/simu_step);
+acc_v = zeros(1,N);%飞机加速度
 
+time_rec_all = [];
 
 
 
