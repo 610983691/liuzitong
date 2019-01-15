@@ -13,17 +13,18 @@ fc = 1090;%发射频率1090MHz
 %设置飞机的参数
 N = 1;%飞机数量
 
-%整个运行过程中飞机参数：经纬度、高度
+%整个运行过程中飞机参数：经纬度、高度、功率、速度、加速度
 plane_lon = zeros(N,simu_time/simu_step);
 plane_lat = zeros(N,simu_time/simu_step);
 plane_high = zeros(N,simu_time/simu_step);
 plane_power = zeros(1,N);
 velocity = zeros(N,simu_time/simu_step);
 acc_v = zeros(1,N);%飞机加速度
+elevation = zeros(1,N);%飞机仰角
+pathangle = zeros(1,N);%飞机航向角
 
-time_rec_all = [];
 
-
-
-plane = AIRCRAFT(10,20,0,100,0.8,30*pi/180,60*pi/180,...
-                 simu_time,simu_step);%hangxiang角，yangjiao角
+%飞机类
+plane = AIRCRAFT(simu_time,simu_step,10,40,10,800,0,45*pi/180,0 );
+                %仿真时长，仿真步进，经度，纬度，高度，速度，加速度，航向角，仰角
+                
