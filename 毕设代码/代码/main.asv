@@ -35,6 +35,8 @@ while(clock<(simu_time/simu_step))
     
     plane_lon(1,clock) = plane.longitude;
     plane_lat(1,clock) = plane.latitude;
+    
+    
 end
 plot3(plane_lat,plane_lon,plane_high),xlabel('纬度'),ylabel('经度'),zlabel('高度');
 grid on;                
