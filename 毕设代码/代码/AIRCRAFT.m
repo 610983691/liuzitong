@@ -9,15 +9,17 @@ classdef AIRCRAFT
         acce_v;%加速度
         path_angle;%航向角
         ele_angle;%仰角
+        ID;
         broad_times;
         last_broadtime;
         last_AP=1;
         last_AV=2;
         last_ID=3;
+        cpr_f;
     end
     
     methods
-        function obj = AIRCRAFT(simu_t,step_t,lo,la,high,vel,a_v,p_a,e_a,first_time)
+        function obj = AIRCRAFT(simu_t,step_t,lo,la,high,vel,a_v,p_a,e_a,first_time,id)
             obj.simu_time = simu_t;
             obj.time_step = step_t;
             obj.longitude = lo;
@@ -30,6 +32,8 @@ classdef AIRCRAFT
             obj.broad_times = zeros(1, simu_t/step_t);
             obj.last_broadtime = first_time;
             obj.broad_times(first_time) = 1;
+            obj.cpr_f = randi(2);%1表示奇编码 2 表示偶编码
+            obj.ID = id;
         end
         
         %位置变化  这里的经纬度其实就是角度，最后如果需要显示出来再按照对应规则显示

@@ -23,6 +23,14 @@ acc_v = zeros(1,N);%飞机加速度
 elevation = zeros(1,N);%飞机仰角
 pathangle = zeros(1,N);%飞机航向角
 
+%用一个矩阵来表示飞机不同信息的接收时间以及携带的信息内容
+mess = [];
+time_rec = [];
+
+
+%信息的不同主要体现在ME字段的不同所以ME字段前面的编码可以在程序前就直接写好
+code_heading = [1 0 0 0 1,zeros(1,26)]; %DF CA AA
+
 
 %飞机类
 plane = AIRCRAFT(simu_time,simu_step,10,40,10,800,0,45*pi/180,0,ceil(rand(1)*10) );
@@ -35,8 +43,16 @@ while(clock<(simu_time/simu_step))
     
     plane_lon(1,clock) = plane.longitude;
     plane_lat(1,clock) = plane.latitude;
+    plane_high(1,clock) = plane.hight;
+    %通过对broadtimes矩阵的元素大小来判断此刻发送的是AV AP还是ID信息%
     
-    
+    %AP
+    if plane.broad_times(1,clock) == 1
+       mess = [mess;clock;plane.longitude;plane.latitude; plane.hight;0;0;0];
+       
+       %开始进行位置信息编码，最重要的是经纬度编码和高度编码
+       
+        
 end
 plot3(plane_lat,plane_lon,plane_high),xlabel('纬度'),ylabel('经度'),zlabel('高度');
 grid on;                
