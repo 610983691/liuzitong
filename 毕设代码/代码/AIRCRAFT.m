@@ -16,6 +16,9 @@ classdef AIRCRAFT
         last_AV=2;
         last_ID=3;
         cpr_f;
+        r;
+        v;
+        
     end
     
     methods
@@ -42,6 +45,22 @@ classdef AIRCRAFT
             obj.hight = obj.hight + (obj.velocity*obj.time_step+1/2*obj.acce_v*obj.time_step^2)*sin(obj.ele_angle);
             obj.latitude = obj.latitude + obj.velocity*cos(obj.ele_angle)*cos(obj.path_angle)*obj.time_step/(ratio+obj.hight);
             obj.longitude = obj.longitude + obj.velocity*cos(obj.ele_angle)*sin(obj.path_angle)*obj.time_step/(ratio+obj.hight)/cos(obj.latitude*pi/180);
+             %飞机在直角坐标系中位置表示
+            %得出直角坐标系中的向量表达方式可以方便用于下面的计算中
+            obj.r = [(ratio+obj.hight)*sin(obj.latitude*pi/180)*cos(obj.longitude*pi/180);...
+                (ratio+obj.hight)*sin(obj.latitude*pi/180)*sin(obj.longitude*pi/180);...
+                (ratio+obj.hight)*cos(obj.latitude*pi/180)]; 
+            
+             %飞机在直角坐标系中速度表示
+            %obj.v =[v,90-仰角，航向角];
+            ns_v = obj.velocity*cos(obj.ele_angle*pi/180)*cos(obj.path_angle*pi/180);
+            ew_v = obj.velocity*cos(obj.ele_angle*pi/180)*sin(obj.path_angle*pi/180);%西东速度
+            vertical_v = obj.velocity*sin(obj.ele_angle*pi/180);
+            obj.v =[vertical_v*sin(obj.latitude*pi/180)*cos(obj.longitude*pi/180)+...
+                    ns_v*cos(obj.latitude*pi/180)*cos(obj.longitude*pi/180)-ew_v*sin(obj.longitude*pi/180);...
+                    vertical_v*sin(obj.latitude*pi/180)*sin(obj.longitude*pi/180)+...
+                    ns_v*cos(obj.latitude*pi/180)*sin(obj.longitude*pi/180)+ew_v*cos(obj.longitude*pi/180);...
+                    vertical_v*cos(obj.latitude*pi/180)- ns_v*sin(obj.longitude*pi/180)]; 
         end
         
         

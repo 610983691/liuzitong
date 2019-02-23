@@ -42,8 +42,15 @@ code_heading = [1 0 0 0 1,zeros(1,26)]; %DF CA AA
 mecode = zeros(1,88);
 
 %计算路径损耗、多普勒频移、天线增益等
+LOSS = [];
+shift_f = [];
+ant_gain = [];
 
-
+%天线增益
+theta = [0:pi/180:pi/2];
+value = xlsread('天线增益实测值.xls','M:M')';
+X =0:pi/10000:pi/2;
+measured_value = spline(theta,value,X);
 
 %飞机类
 plane = AIRCRAFT(simu_time,simu_step,10,40,10,800,0,45*pi/180,0,ceil(rand(1)*10),{'A','B','1','4','7','2','3','9'} );
@@ -67,12 +74,16 @@ while(clock<(simu_time/simu_step))
     
     %编码过程
     if plane.broad_times(1,clock) ~= 0
+    %编码过程
     [mecode,mess] = messcode(clock,plane.broad_times,plane.longitude,plane.latitude,plane.hight,plane.cpr_f,...
     plane.velocity,plane.ele_angle,plane.path_angle,type_code,v_rate,plane.ID);
+    
+    %加上损耗增益等
+    [loss,gain,fd] = parameter(plane.r,plane.v,satellite.r,satellite.v,fc,c,measured_value);%c 参数计算函数
+
+    %信息放在同一个矩阵
     mess_all = [mess_all;mess];
-    mecode_all = [mecode_all;mecode];
-    
-    
+    mecode_all = [mecode_all;mecode];  
     end
     
    
