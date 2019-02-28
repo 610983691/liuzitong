@@ -23,6 +23,8 @@ acc_v = zeros(1,N);%飞机加速度
 elevation = zeros(1,N);%飞机仰角
 pathangle = zeros(1,N);%飞机航向角
 
+plane_power(1,1) = 500;%500W
+
 %卫星的参数设置
 satellite_lon = zeros(1,simu_time/simu_step);
 satellite_lat = zeros(1,simu_time/simu_step);
@@ -38,7 +40,7 @@ type_code(1,:) = bitget(type,5:-1:1);
 v_rate = randi(2)-1;
 
 %信息的不同主要体现在ME字段的不同所以ME字段前面的编码可以在程序前就直接写好
-code_heading = [1 0 0 0 1,zeros(1,26)]; %DF CA AA
+code_heading = [1 0 0 0 1,zeros(1,27)]; %DF CA AA
 mecode = zeros(1,88);
 
 %计算路径损耗、多普勒频移、天线增益等
@@ -51,6 +53,8 @@ theta = [0:pi/180:pi/2];
 value = xlsread('天线增益实测值.xls','M:M')';
 X =0:pi/10000:pi/2;
 measured_value = spline(theta,value,X);
+
+ppmseq = [];
 
 %飞机类
 plane = AIRCRAFT(simu_time,simu_step,10,40,10,800,0,45*pi/180,0,ceil(rand(1)*10),{'A','B','1','4','7','2','3','9'} );
@@ -80,10 +84,23 @@ while(clock<(simu_time/simu_step))
     
     %加上损耗增益等
     [loss,gain,fd] = parameter(plane.r,plane.v,satellite.r,satellite.v,fc,c,measured_value);%c 参数计算函数
+    LOSS = [LOSS,loss];
+    shift_f = [shift_f,fd];
+    ant_gain = [ant_gain,gain];
+    rec_power = 10*log10(plane_power(1,1)*1000)+gain-loss; 
+    
 
     %信息放在同一个矩阵
     mess_all = [mess_all;mess];
     mecode_all = [mecode_all;mecode];  
+    
+    mess112 = [[code_heading,mecode],zeros(1,24)];
+    %ppm调制
+    ppm = ppmencode(mess112,rs,fs,fc_mid,fd);
+    Amp = round(10^((rec_power+115)/20)*128);
+    ppmseq = [ppmseq;Amp*ppm];
+    
+    
     end
     
    
@@ -91,5 +108,10 @@ while(clock<(simu_time/simu_step))
        
         
 end
-plot3(plane_lat,plane_lon,plane_high),xlabel('纬度'),ylabel('经度'),zlabel('高度');
-grid on;                
+
+
+t = 0:59999
+y = Amp*ppm;
+plot(t,y)
+%plot3(plane_lat,plane_lon,plane_high),xlabel('纬度'),ylabel('经度'),zlabel('高度');
+%grid on;   

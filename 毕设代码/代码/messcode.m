@@ -1,6 +1,6 @@
 function [code,mess] = messcode(clock,broad_times,longitude,latitude,hight,cpr_f,...
     velocity,ele_angle,path_angle,type_code,v_rate,ID)
-    code=zeros(1,88);
+    code=zeros(1,56);
     mess = zeros(1,9);
    if broad_times(1,clock) == 1
       mess = [clock,longitude,latitude, hight,0,0,0,0,0];
