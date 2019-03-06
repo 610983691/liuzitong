@@ -11,19 +11,43 @@ fc_mid = 40*10^6; %中频载波频率40MHz
 fc = 1090;%发射频率1090MHz  
 
 %设置飞机的参数
-N = 1;%飞机数量
+N = 10;%飞机数量
 
 %整个运行过程中飞机参数：经纬度、高度、功率、速度、加速度
 plane_lon = zeros(N,simu_time/simu_step);
 plane_lat = zeros(N,simu_time/simu_step);
 plane_high = zeros(N,simu_time/simu_step);
-plane_power = zeros(1,N);
 velocity = zeros(N,simu_time/simu_step);
-acc_v = zeros(1,N);%飞机加速度
-elevation = zeros(1,N);%飞机仰角
-pathangle = zeros(1,N);%飞机航向角
 
-plane_power(1,1) = 500;%500W
+tran_power = [250,500,1000];  %飞机的发射功率可能是250,500,1000W 
+
+%初始数据赋值,经纬高、速度、航向角、仰角、加速度、和ID、功率
+high = zeros(1,N);       % 高度
+lon = zeros(1,N);        % 经度
+lat = zeros(1,N);        % 纬度
+plane_power = zeros(1,N);%功率
+plane_v = zeros(1,N);    %飞机初始速度
+acc_v = zeros(1,N);      %飞机加速度
+elevation = zeros(1,N);  %飞机仰角
+pathangle = zeros(1,N);  %飞机航向角
+
+for i = 1:N
+    high(i) = 8400;
+    lon(i) = randi([0,40]);
+    lat(i) = randi([0,40]);
+    sele_power = randi(3);
+    plane_power(i) = tran_power(sele_power) ;
+    plane_v(i) = 800 + randi([-10,10])*20;
+    acc_v(i) = randi([-5,5]);
+    if acc_v(i) == 0
+        elevation(i) = 0;
+    else
+       elevation(i) = randi([1,90])*pi/180;
+    end
+    pathangle(i) = randi([0,360])*pi/180; 
+end
+
+
 
 %卫星的参数设置
 satellite_lon = zeros(1,simu_time/simu_step);
@@ -41,7 +65,7 @@ v_rate = randi(2)-1;
 
 %信息的不同主要体现在ME字段的不同所以ME字段前面的编码可以在程序前就直接写好
 code_heading = [1 0 0 0 1,zeros(1,27)]; %DF CA AA
-mecode = zeros(1,88);
+mecode = zeros(1,56);
 
 %计算路径损耗、多普勒频移、天线增益等
 LOSS = [];
@@ -57,7 +81,8 @@ measured_value = spline(theta,value,X);
 ppmseq = [];
 
 %飞机类
-plane = AIRCRAFT(simu_time,simu_step,10,40,10,800,0,45*pi/180,0,ceil(rand(1)*10),{'A','B','1','4','7','2','3','9'} );
+for i = 1:N
+plane{i} = AIRCRAFT(simu_time,simu_step,lon(i),lat(i),high(i),plane_v(i),acc_v(i),pathangle(i),elevation(i),ceil(rand(1)*10),{'A','B','1','4','7','2','3','9'} );
 %仿真时长，仿真步进，经度，纬度，高度，速度，加速度，航向角，仰角
 %卫星类
 satellite = PLANET(simu_time,simu_step,20,25,700,0,40);%卫星的经纬高、速度、航向角。
