@@ -31,8 +31,8 @@ classdef PLANET
             
              %卫星在直角坐标系中速度表示，卫星和飞机不同，卫星没有垂直速度。仰角为0
             %obj.v =[v,90-仰角，航向角];
-           ns_v = obj.velocity*cos(obj.path_angle*pi/180);
-           ew_v = obj.velocity*sin(obj.path_angle*pi/180);%西东速度
+           ns_v = obj.velocity*cos(obj.path_angle);
+           ew_v = obj.velocity*sin(obj.path_angle);%西东速度
            obj.v =[ns_v*cos(obj.latitude*pi/180)*cos(obj.longitude*pi/180)-ew_v*sin(obj.longitude*pi/180);...
                     ns_v*cos(obj.latitude*pi/180)*sin(obj.longitude*pi/180)+ew_v*cos(obj.longitude*pi/180);...
                     - ns_v*sin(obj.longitude*pi/180)]; 

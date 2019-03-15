@@ -10,7 +10,7 @@ function [code,mess] = messcode(clock,broad_times,longitude,latitude,hight,cpr_f
        if broad_times(1,clock) == 2
           ns_v = velocity*cos(ele_angle*pi/180)*cos(path_angle*pi/180);
           ew_v = velocity*cos(ele_angle*pi/180)*sin(path_angle*pi/180);
-          vertical_v = velocity*sin(ele_angle*pi/180);
+          vertical_v = abs(velocity*sin(ele_angle*pi/180));
           mess = [clock,0,0,0,ns_v,ew_v,vertical_v,velocity,0];
           [bin_v,bin_a,subtype,bin_vertical] = vel_code(velocity,path_angle,vertical_v);
           code = [bitget(19,5:-1:1),subtype,0,0,0,0,1,1,bin_a,1,bin_v,0,v_rate,bin_vertical,zeros(1,10)];
