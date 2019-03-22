@@ -1,5 +1,5 @@
 function [code,mess] = messcode(clock,broad_times,longitude,latitude,hight,cpr_f,...
-    velocity,ele_angle,path_angle,type_code,v_rate,ID)
+    velocity,ele_angle,path_angle,type_code,v_rate,ID,i)
     code=zeros(1,56);
     mess = zeros(1,9);
    if broad_times(1,clock) == 1
@@ -16,7 +16,7 @@ function [code,mess] = messcode(clock,broad_times,longitude,latitude,hight,cpr_f
           code = [bitget(19,5:-1:1),subtype,0,0,0,0,1,1,bin_a,1,bin_v,0,v_rate,bin_vertical,zeros(1,10)];
        else
            if broad_times(1,clock) == 3
-              mess = [clock,0,0, 0,0,0,0,0,1];
+              mess = [clock,0,0, 0,0,0,0,0,i];
               ID_bin = idcode(ID);
               code = [type_code,0,0,0,ID_bin];
            end

@@ -1,4 +1,4 @@
-function [loss,gain,fd] = parameter1(r,v,r_s,v_s,fc,c,Y,unit_num)
+function [loss,gain,fd,dely_time] = parameter1(r,v,r_s,v_s,fc,c,Y,unit_num)
 %单天线情形
 %多普勒频移fd=f/c×v×cosθ
 r_r = r_s-r;
@@ -28,4 +28,5 @@ theta2 = acos(r_s'*r_r/(norm(r_r)*norm(r_s')));
 b = round(theta2*10000/pi+10001);
 satellite_gain = 10*log10(K1(1,b));
 gain = plane_gain+satellite_gain;
+dely_time = norm(r_r)/c;
 end

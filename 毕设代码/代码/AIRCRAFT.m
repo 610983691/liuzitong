@@ -28,6 +28,8 @@ classdef AIRCRAFT
        rec_time;
        seq_mid;
        power;
+       seq_mid1;
+       seq_mid2;
     end
     
     methods
@@ -56,6 +58,8 @@ classdef AIRCRAFT
             obj.rec_time = [];
             obj.seq_mid = [];
             obj.power = [];
+            obj.seq_mid1 = [];
+            obj.seq_mid2 = [];
         end
         
         %位置变化  这里的经纬度其实就是角度，最后如果需要显示出来再按照对应规则显示
