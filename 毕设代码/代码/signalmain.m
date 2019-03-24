@@ -2,7 +2,7 @@ clear all;
 clc;
 
 simu_time =10;% 单位s
-simu_step =1e-3;%s
+simu_step =1e-2;%s
 ratio = 6371;%KM
 c = 3e+5;%km/s
 rs = 1*10^6;
@@ -25,27 +25,20 @@ satellite_lat = zeros(1,simu_time/simu_step);
 satellite_high = zeros(1,simu_time/simu_step);
 
 
-%设置飞机的参数
-N = 5;%飞机数量
+plane_para = PlaneDistribute(lon_s,lat_s,high_s);
 
-%整个运行过程中飞机参数：经纬度、高度、功率、速度、加速度
+N= size(plane_para,2);
 plane_lon = zeros(N,simu_time/simu_step);
 plane_lat = zeros(N,simu_time/simu_step);
 plane_high = zeros(N,simu_time/simu_step);
 velocity = zeros(N,simu_time/simu_step);
+for i = 1:N
+plane_lon(i,1) = plane_para(1,i);
+plane_lat(i,1) = plane_para(2,i);
+plane_high(i,1) = plane_para(3,i);
+velocity(i,1) = plane_para(4,i);
+end
 
-tran_power = [250,500,1000];  %飞机的发射功率可能是250,500,1000W 
-high_sle = [8.4,8.7,9,9.3,9.6,9.9];
-
-%初始数据赋值,经纬高、速度、航向角、仰角、加速度、和ID、功率
-high = zeros(1,N);       % 高度
-lon = zeros(1,N);        % 经度
-lat = zeros(1,N);        % 纬度
-plane_power = zeros(1,N);%功率
-plane_v = zeros(1,N);    %飞机初始速度
-acc_v = zeros(1,N);      %飞机加速度
-elevation = zeros(1,N);  %飞机仰角
-pathangle = zeros(1,N);  %飞机航向角
 
 character_select = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N',...
                     'O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1',...
@@ -77,22 +70,6 @@ for i = 1:N
         plane_ICAO1(i,j) = cell2mat(plane_ICAO{i,j});
     end
 end
-
-
-for i = 1:N
-    lon(i) =  randi([0,40]);
-    lat(i) = randi([10,50]);
-    sele_high = randi(6);
-    high(i) = high_sle(sele_high);
-    sele_power = randi(3);
-    plane_power(i) = tran_power(sele_power) ;
-    plane_v(i) = 2.5;%km/s
-    acc_v(i) = 0;% randi([-5,5]);
-    elevation(i) = 0;    
-    pathangle(i) = randi([0,360])*pi/180; %130*pi/180;% 
-end
-
-
 ICAO = zeros(N,24);
 code_heading = zeros(N,32);
 for i = 1:N
@@ -122,7 +99,7 @@ measured_value = spline(theta,value,X);
 
 %飞机类
 for i = 1:N
-plane{i} = AIRCRAFT(simu_time,simu_step,lon(i),lat(i),high(i),plane_v(i),acc_v(i),pathangle(i),elevation(i),ceil(rand(1)*10),plane_ID1(i,:) );
+plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10) );
 %仿真时长，仿真步进，经度，纬度，高度，速度，加速度，航向角，仰角
 end
 %卫星类
@@ -132,7 +109,6 @@ satellite = PLANET(simu_time,simu_step,lon_s,lat_s,high_s,velocity_s,path_s,ann_
 for i = 1:N
     clock = 0;
     flag = 0;%记录报文个数
-    v_rate = randi(2)-1;
     type = randi(4);
     type_code(1,:) = bitget(type,5:-1:1); 
 while(clock<(simu_time/simu_step))  
@@ -158,7 +134,7 @@ while(clock<(simu_time/simu_step))
     
     %编码过程
     [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,plane{i}.cpr_f,...
-    plane{i}.velocity,plane{i}.ele_angle,plane{i}.path_angle,type_code,v_rate,plane{i}.ID,i);
+    plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID1(i,:),i);
     mess112 = crcencode(code_heading(i,:),mecode);
     
     %加上损耗增益等
@@ -166,7 +142,7 @@ while(clock<(simu_time/simu_step))
     %单天线场景
     if ann_num==1
     [loss,gain,fd,dely_time] = parameter1(plane{i}.r,plane{i}.v,satellite.r,satellite.v,fc,c,measured_value,unit_num);%c 参数计算函数;
-    rec_power = 10*log10(plane_power(1,1)*1000)+gain-loss;%接收功率
+    rec_power = plane_para(6,i)+gain-loss;%接收功率
     plane{i}.power = [plane{i}.power,rec_power];%w
     peakU = 10^6*sqrt(2* 10^(rec_power/10)/10^3);
     rec_time = clock*simu_step+dely_time;
@@ -174,7 +150,7 @@ while(clock<(simu_time/simu_step))
     plane{i}.LOSS = [plane{i}.LOSS,loss];
     plane{i}.shift_f = [plane{i}.shift_f,fd];
     plane{i}.ant_gain = [plane{i}.ant_gain,gain];
-    plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_power(i),loss,gain,rec_power,fd,mess(1,2:9)];
+    plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_para(6,i),loss,gain,rec_power,fd,mess(1,2:8)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
     plane{i}.rec_time = [plane{i}.rec_time,[clock*simu_step;rec_time;i;flag]];
     %ppm调制
@@ -187,8 +163,8 @@ while(clock<(simu_time/simu_step))
     %双天线场景
     if ann_num==2
     [loss,gain1,gain2,fd,dely_time] = parameter2(plane{i}.r,plane{i}.v,satellite.r,satellite.v,fc,c,measured_value,unit_num,satellite.ann1,satellite.ann2);%c 参数计算函数;   
-    rec_power1 = 10*log10(plane_power(1,1)*1000)+gain1-loss;%接收功率
-    rec_power2 = 10*log10(plane_power(1,1)*1000)+gain2-loss;%接收功率
+    rec_power1 = plane_para(6,i)+gain1-loss;%接收功率
+    rec_power2 = plane_para(6,i)+gain2-loss;%接收功率
     plane{i}.power = [plane{i}.power,[rec_power1;rec_power2]];
     peakU1 = 10^6*sqrt(2* 10^(rec_power1/10)/10^3);
     peakU2 = 10^6*sqrt(2* 10^(rec_power2/10)/10^3);
@@ -198,7 +174,7 @@ while(clock<(simu_time/simu_step))
     plane{i}.LOSS = [plane{i}.LOSS,loss];
     plane{i}.shift_f = [plane{i}.shift_f,fd];    
     plane{i}.ant_gain = [plane{i}.ant_gain,[gain1;gain2]];
-    plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_power(i),loss,gain1,gain2,rec_power1,rec_power2,fd,mess(1,2:9)];
+    plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_para(6,i),loss,gain1,gain2,rec_power1,rec_power2,fd,mess(1,2:8)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
     plane{i}.rec_time = [plane{i}.rec_time,[clock*simu_step;rec_time;i;flag]];
 
@@ -227,9 +203,8 @@ end
 
 % t = 0:1/fs*rs:120-1/fs*rs;
 % plot(t,plane{1}.ppmseq(1,:),'r');
-% xlabel('采样点');
+% xlabel('采样点');30
 % ylabel('amplitude');
-% 
 time_asix = zeros(4,length(time_rec_all));
 [time_asix(2,:),index] = sort(time_rec_all(2,:)); 
 
@@ -321,13 +296,6 @@ if ann_num==2
 % hold on
 % plot(t,b,'g')
 
-% filter_ppm = filter(HHd,1,a);
-% t = 0:1/fs*rs:120-1/fs*rs;
-% plot(t,a,'r');
-% hold on
-% plot(t,filter_ppm);
-% hold on
-% plot(t,b,'g')
 
 % 
 %  a = plane{1}.mecode_all(1,:);

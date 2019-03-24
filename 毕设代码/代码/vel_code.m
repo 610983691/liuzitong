@@ -1,4 +1,4 @@
-function [vel_bin,bin_a,subtype,bin_vertical]  = vel_code(v,theta,vertical_v)
+function [vel_bin,bin_a,subtype,bin_vertical]  = vel_code(v,theta)
        if ( v >= 21.3)
           subtype = bitget(3,3:-1:1);
           v =round( v/1.852);%变成单位节
@@ -17,11 +17,9 @@ function [vel_bin,bin_a,subtype,bin_vertical]  = vel_code(v,theta,vertical_v)
         
         %垂直速度编码,垂直率可以在main函数设置
         %垂直速度本代码中设置的单位是KM/S，但是编码规则中单位是feet/分钟
-        vertical_v = vertical_v*3280.839895*60;
-        if vertical_v>32608
-            bin_vertical = ones(1,9);
-        else
-            bin_vertical = bitget(round(vertical_v/64)+1,9:-1:1);
-        end        
+
+
+            bin_vertical = zeros(1,9);
+  
 end
                  

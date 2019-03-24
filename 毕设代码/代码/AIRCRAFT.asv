@@ -74,8 +74,8 @@ classdef AIRCRAFT
             ns_v = obj.velocity*sin(obj.path_angle);
             ew_v = obj.velocity*cos(obj.path_angle);%西东速度
             r1 = [ ew_v; ns_v;0];%er,etheta,rphy
-            obj.v = [-sin(obj.longitude*pi/180),cos(obj.longitude*pi/180),0;cos(obj.latitude*pi/180)*cos(obj.longitude*pi/180),cos(obj.latitude*pi/180)*sin(obj.longitude*pi/180),-sin(obj.latitude*pi/180);...
-                  sin(obj.latitude*pi/180)*cos(obj.longitude*pi/180),sin(obj.latitude*pi/180)*sin(obj.longitude*pi/180),cos(obj.latitude*pi/180)]^-1*r1+obj.r;
+            obj.v = [-sin(obj.longitude*pi/180),cos(lons*pi/180),0;cos(lats*pi/180)*cos(lons*pi/180),cos(lats*pi/180)*sin(lons*pi/180),-sin(lats*pi/180);...
+                  sin(lats*pi/180)*cos(lons*pi/180),sin(lats*pi/180)*sin(lons*pi/180),cos(lats*pi/180)]^-1*r1+rs';
         end
         
         

@@ -1,8 +1,8 @@
- function [plane] = PlaneDistribute(~,~,~)
+ function [plane] = PlaneDistribute(lons,lats,highs)
 clear all;
 clc;
-N1 = 10;
-N2 = 2;
+N1 =100;
+N2 = 10;
 lons = 20;
 lats = 30;
 highs = 700;
@@ -23,12 +23,12 @@ for i = 1:N1
    end
 
 %转换成卫星站心坐标系
-r1 = [ R*sin(pi-theta1)*cos(phy); -R*sin(pi-theta1)*sin(phy);R*cos(pi-theta1)];%ephy,etheta,er
+r1 = [ R*sin(pi-theta1)*cos(phy); -R*sin(pi-theta1)*sin(phy);R*cos(pi-theta1)];%er,etheta,rphy
  %转换成直角坐标系
  r2 = [-sin(lons*pi/180),cos(lons*pi/180),0;cos(lats*pi/180)*cos(lons*pi/180),cos(lats*pi/180)*sin(lons*pi/180),-sin(lats*pi/180);...
        sin(lats*pi/180)*cos(lons*pi/180),sin(lats*pi/180)*sin(lons*pi/180),cos(lats*pi/180)]^-1*r1+rs';
-  plane(2,i) = acos(r2(3)/6371)*180/pi;%纬度
-  plane(1,i) = atan(r2(2)/r2(1))*180/pi;
+  plane(1,i) = acos(r2(3)/6371)*180/pi;
+  plane(2,i) = atan(r2(2)/r2(1))*180/pi;
   plane(3,i) = (randi(13)-1)*0.3+8.4+(rand()*2-1)*0.02;
 end
 
@@ -45,8 +45,7 @@ end
 for i = 1:N1+N2
     plane(4,i) = (rand()*2+800)/3600;
     plane(5,i) = rand()*360*pi/180;
-    plane(6,i) = rand()*4+50;%dnm
-end
+    plane(6,i) = 
  end
 
 
