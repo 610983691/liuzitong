@@ -12,14 +12,7 @@ fc = 1090;%发射频率1090MHz
 
 
 %卫星的参数设置
-lon_s = 20;
-lat_s = 30;
-high_s = 700;
-velocity_s = 7.4;
-path_s = pi*45/180;
-ann_num = 2;%选择天线的个数
-unit_num = 10;%选择天线的波束宽带
-satellite_power = 10;%(db)
+[lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width] =  satellite_setting();
 satellite_lon = zeros(1,simu_time/simu_step);
 satellite_lat = zeros(1,simu_time/simu_step);
 satellite_high = zeros(1,simu_time/simu_step);
@@ -126,7 +119,7 @@ while(clock<(simu_time/simu_step))
     satellite_high(1,clock) = satellite.hight;
 
     %编码过程
-    if norm(plane{i}.r-satellite.r)<=3074 
+    if norm(plane{i}.r_h-satellite.r)<=3074 
     if plane{i}.broad_times(1,clock) ~= 0
     
 
@@ -141,7 +134,7 @@ while(clock<(simu_time/simu_step))
     
     %单天线场景
     if ann_num==1
-    [loss,gain,fd,dely_time] = parameter1(plane{i}.r,plane{i}.v,satellite.r,satellite.v,fc,c,measured_value,unit_num);%c 参数计算函数;
+    [loss,gain,fd,dely_time] = parameter1(plane{i}.r,plane{i}.v,satellite.r,satellite.v,fc,c,measured_value,ann_width);%c 参数计算函数;
     rec_power = plane_para(6,i)+gain-loss;%接收功率
     plane{i}.power = [plane{i}.power,rec_power];%w
     peakU = 10^6*sqrt(2* 10^(rec_power/10)/10^3);
@@ -162,7 +155,7 @@ while(clock<(simu_time/simu_step))
     
     %双天线场景
     if ann_num==2
-    [loss,gain1,gain2,fd,dely_time] = parameter2(plane{i}.r,plane{i}.v,satellite.r,satellite.v,fc,c,measured_value,unit_num,satellite.ann1,satellite.ann2);%c 参数计算函数;   
+    [loss,gain1,gain2,fd,dely_time] = parameter2(plane{i}.r,plane{i}.v,satellite.r,satellite.v,fc,c,measured_value,ann_width,satellite.ann1,satellite.ann2);%c 参数计算函数;   
     rec_power1 = plane_para(6,i)+gain1-loss;%接收功率
     rec_power2 = plane_para(6,i)+gain2-loss;%接收功率
     plane{i}.power = [plane{i}.power,[rec_power1;rec_power2]];

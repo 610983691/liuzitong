@@ -28,6 +28,7 @@ classdef AIRCRAFT
        power;
        seq_mid1;
        seq_mid2;
+       r_h;
     end
     
     methods
@@ -68,6 +69,9 @@ classdef AIRCRAFT
             obj.r = [(ratio+obj.hight)*sin(obj.latitude*pi/180)*cos(obj.longitude*pi/180);...
                 (ratio+obj.hight)*sin(obj.latitude*pi/180)*sin(obj.longitude*pi/180);...
                 (ratio+obj.hight)*cos(obj.latitude*pi/180)]; 
+            obj.r_h = [ratio*sin(obj.latitude*pi/180)*cos(obj.longitude*pi/180);...
+                ratio*sin(obj.latitude*pi/180)*sin(obj.longitude*pi/180);...
+                ratio*cos(obj.latitude*pi/180)]; 
             
              %飞机在直角坐标系中速度表示
             %obj.v =[v,90-仰角，航向角];

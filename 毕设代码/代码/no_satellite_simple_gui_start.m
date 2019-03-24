@@ -452,7 +452,7 @@ classdef no_satellite_simple_gui_start < handle
             planes= PlaneDistribute1(fnum);
             
 
-            
+            set(obj.edt_echo, 'string', '正在进行仿真...');
             % 接下来调用紫童的方法传递参数，进行仿真
             [result_lon,result_lat,result_high] =no_satellite_simple_main(planes,ftime);
              obj.plane_lon_result=result_lon;
@@ -675,6 +675,7 @@ classdef no_satellite_simple_gui_start < handle
             s=1;
         end
         
+        %创建随机的飞机位置
         function plane = createPlane(obj,lon,lat,high,speed,hxj,power)
                 plane = zeros(6,1);
  
