@@ -1,5 +1,5 @@
-% clear all;
-% clc;
+clear all;
+clc;
 
 simu_time =10;% 单位s
 simu_step =1e-3;%s
@@ -26,7 +26,7 @@ satellite_high = zeros(1,simu_time/simu_step);
 
 
 %设置飞机的参数
-N = 10;%飞机数量
+N = 5;%飞机数量
 
 %整个运行过程中飞机参数：经纬度、高度、功率、速度、加速度
 plane_lon = zeros(N,simu_time/simu_step);
@@ -47,6 +47,37 @@ acc_v = zeros(1,N);      %飞机加速度
 elevation = zeros(1,N);  %飞机仰角
 pathangle = zeros(1,N);  %飞机航向角
 
+character_select = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N',...
+                    'O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1',...
+                    '2','3','4','5','6','7','8','9',' '};
+plane_ID =cell(N,8);
+select1 = unidrnd(37,N,8);
+for i = 1:N
+    for j = 1:8
+       plane_ID{i,j} = character_select(select1(i,j));
+    end
+end
+plane_ID1 = zeros(N,8);
+for i = 1:N
+    for j = 1:8
+        plane_ID1(i,j) = cell2mat(plane_ID{i,j});
+    end
+end
+
+plane_ICAO = cell(N,4);
+select2 = unidrnd(26,N,4);
+for i = 1:N
+    for j = 1:4
+       plane_ICAO{i,j} = character_select(select2(i,j));
+    end
+end
+plane_ICAO1 = zeros(N,4);
+for i = 1:N
+    for j = 1:4
+        plane_ICAO1(i,j) = cell2mat(plane_ICAO{i,j});
+    end
+end
+
 
 for i = 1:N
     lon(i) =  randi([0,40]);
@@ -62,15 +93,24 @@ for i = 1:N
 end
 
 
+ICAO = zeros(N,24);
+code_heading = zeros(N,32);
+for i = 1:N
+    icaobin = zeros(1,24);
+    for j = 1:4 
+            icaobin(1,(j*6-5):(j*6)) = bitand(bitget(plane_ICAO1(i,j),6:-1:1),[1,1,1,1,1,1]);  
+     end
+    code_heading(i,:) = [1 ,0 ,0 ,0, 1,0,1,0,icaobin]; %DF CA AA
+end
 
-
-time_rec_all = [];
 
 
 %信息的不同主要体现在ME字段的不同所以ME字段前面的编码可以在程序前就直接写好
-code_heading = [1 0 0 0 1,zeros(1,27)]; %DF CA AA
+
 mecode = zeros(1,56);
 
+
+time_rec_all = [];
 
 %天线增益
 theta = 0:pi/180:pi/2;
@@ -82,7 +122,7 @@ measured_value = spline(theta,value,X);
 
 %飞机类
 for i = 1:N
-plane{i} = AIRCRAFT(simu_time,simu_step,lon(i),lat(i),high(i),plane_v(i),acc_v(i),pathangle(i),elevation(i),ceil(rand(1)*10),{'A','B','1','4','7','2','3','9'} );
+plane{i} = AIRCRAFT(simu_time,simu_step,lon(i),lat(i),high(i),plane_v(i),acc_v(i),pathangle(i),elevation(i),ceil(rand(1)*10),plane_ID1(i,:) );
 %仿真时长，仿真步进，经度，纬度，高度，速度，加速度，航向角，仰角
 end
 %卫星类
@@ -119,6 +159,7 @@ while(clock<(simu_time/simu_step))
     %编码过程
     [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,plane{i}.cpr_f,...
     plane{i}.velocity,plane{i}.ele_angle,plane{i}.path_angle,type_code,v_rate,plane{i}.ID,i);
+    mess112 = crcencode(code_heading(i,:),mecode);
     
     %加上损耗增益等
     
@@ -136,9 +177,8 @@ while(clock<(simu_time/simu_step))
     plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_power(i),loss,gain,rec_power,fd,mess(1,2:9)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
     plane{i}.rec_time = [plane{i}.rec_time,[clock*simu_step;rec_time;i;flag]];
-    mess112 = [[code_heading,mecode],zeros(1,24)];
     %ppm调制
-    ppm = ppmencode(mess112,rs,fs,fd,fc_mid,L1,D1);%z中频信号
+    ppm = ppmencode(mess112,rs,fs,fd,fc_mid);%z中频信号
     ppm_value = ppm*peakU;
     plane{i}.ppmseq = [plane{i}.ppmseq;ppm];
     plane{i}.seq_mid = [plane{i}.seq_mid;ppm_value]; 
@@ -161,11 +201,11 @@ while(clock<(simu_time/simu_step))
     plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_power(i),loss,gain1,gain2,rec_power1,rec_power2,fd,mess(1,2:9)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
     plane{i}.rec_time = [plane{i}.rec_time,[clock*simu_step;rec_time;i;flag]];
-    mess112 = crcencode(code_heading,mecode);
+
   
     
     %ppm调制
-    ppm = ppmencode(mess112,rs,fs,fd,fc_mid,L1,D1);%z中频信号
+    ppm = ppmencode(mess112,rs,fs,fd,fc_mid);%z中频信号
     ppm_value1 = ppm*peakU1;
     ppm_value2 = ppm*peakU2;
     plane{i}.ppmseq = [plane{i}.ppmseq;ppm];
