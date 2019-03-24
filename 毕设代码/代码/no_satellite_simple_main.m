@@ -1,7 +1,6 @@
-clear all;
-clc;
+function [plane_lon,plane_lat,plane_high] =no_satellite_simple_main(plane_para,simu_time)
 
-simu_time =10;% 单位s
+
 simu_step =1e-2;%s
 ratio = 6371;%KM
 c = 3e+5;%km/s
@@ -11,9 +10,9 @@ fc_mid = 40*10^6; %中频载波频率40MHz
 fc = 1090;%发射频率1090MHz  
 
 
-plane_para = PlaneDistribute1();
 
 N= size(plane_para,2);
+
 plane_lon = zeros(N,simu_time/simu_step);
 plane_lat = zeros(N,simu_time/simu_step);
 plane_high = zeros(N,simu_time/simu_step);
@@ -128,4 +127,4 @@ while(clock<(simu_time/simu_step))
     end
 end
 end
-
+end
