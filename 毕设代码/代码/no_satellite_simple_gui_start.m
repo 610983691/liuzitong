@@ -442,6 +442,8 @@ classdef no_satellite_simple_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
+            write_lat_data_2_file(obj.plane_lat_path);
+            write_lon_data_2_file(obj.plane_lon_path);
             set(obj.edt_echo, 'string', '仿真结束');
         end
         
@@ -544,6 +546,8 @@ classdef no_satellite_simple_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
+            write_lat_data_2_file(obj.plane_lat_path);
+            write_lon_data_2_file(obj.plane_lon_path);
             set(obj.edt_echo, 'string', '“多架飞机ADS-B信号模拟程序”运行完毕！');
         end
         
