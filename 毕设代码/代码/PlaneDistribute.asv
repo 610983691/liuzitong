@@ -1,4 +1,4 @@
- function [plane] = PlaneDistribute(lons,lats,highs,N1,goss_plane_num_arr,goss_center_info)% 卫星的经度维度高度,均匀分布个数,每个高斯分布区域飞机个数，高斯分布中心点信息 
+ function [plane_para] = PlaneDistribute(lons,lats,highs,N1,goss_plane_num_arr,goss_center_info)% 卫星的经度维度高度,均匀分布个数,每个高斯分布区域飞机个数，高斯分布中心点信息 
 %N1 = 10;%均匀分布飞机个数
 goss_num = size(goss_center_info,1);%高斯分布区域个数
 goss_plane_num = goss_plane_num_arr;%每个高斯分布的飞机个数，这是个数组
@@ -8,7 +8,7 @@ N = N1;
 for i = 1:goss_num
     N = N+goss_plane_num(i);
 end
-plane = zeros(6,N);
+plane_para = zeros(6,N);
 for i = 1:N1
    phy = rand()*360*pi/180;
    theta1= rand()*theta;
@@ -28,22 +28,22 @@ r1 = [ R*sin(pi-theta1)*cos(phy); -R*sin(pi-theta1)*sin(phy);R*cos(pi-theta1)];%
  r2 = [-sin(lons*pi/180),cos(lons*pi/180),0;cos(lats*pi/180)*cos(lons*pi/180),cos(lats*pi/180)*sin(lons*pi/180),-sin(lats*pi/180);...
        sin(lats*pi/180)*cos(lons*pi/180),sin(lats*pi/180)*sin(lons*pi/180),cos(lats*pi/180)]^-1*r1+rs';
    if (r2(3)/r2(1)>=0)&&(r1(1)>=0)
-      plane(1,i) = atan(r2(2)/r2(1))*180/pi;
+      plane_para(1,i) = atan(r2(2)/r2(1))*180/pi;
    else
        if(r2(3)/r2(1)>=0)&&(r1(1)<=0)
-           plane(1,i) = atan(r2(2)/r2(1))*180/pi+180;  
+           plane_para(1,i) = atan(r2(2)/r2(1))*180/pi+180;  
        else
            if(r2(3)/r2(1)<=0)&&(r1(1)<=0)
-           plane(1,i) = atan(r2(2)/r2(1))*180/pi+180;  
+           plane_para(1,i) = atan(r2(2)/r2(1))*180/pi+180;  
            else
                if(r2(3)/r2(1)<=0)&&(r1(1)>=0)
-                  plane(1,i) = atan(r2(2)/r2(1))*180/pi+360;
+                  plane_para(1,i) = atan(r2(2)/r2(1))*180/pi+360;
                end
            end
        end
    end
-  plane(2,i) = mod(acos(r2(3)/6371)*180/pi,180);%纬度
-  plane(3,i) = (randi(13)-1)*0.3+8.4+(rand()*2-1)*0.02;
+  plane_para(2,i) = mod(acos(r2(3)/6371)*180/pi,180);%纬度
+  plane_para(3,i) = (randi(13)-1)*0.3+8.4+(rand()*2-1)*0.02;
   
 end
 
@@ -52,9 +52,9 @@ end
 if goss_num~=0
     for i = 1:goss_num
         for j = 1:goss_plane_num(i)
-            plane(1,N1+j) = mod(goss_center_info(i,1)+randn(),2*pi);
-            plane(2,N1+j) = mod(goss_center_info(i,2)+randn(),pi);
-            plane(3,N1+j) = (randi(13)-1)*0.3+8.4+(rand()*2-1)*0.02;
+            plane_para(1,N1+j) = mod(goss_center_info(i,1)+randn(),2*pi);
+            plane_para(2,N1+j) = mod(goss_center_info(i,2)+randn(),pi);
+            plane_para(3,N1+j) = (randi(13)-1)*0.3+8.4+(rand()*2-1)*0.02;
 
         end
         N1 = N1+goss_plane_num(i);
@@ -63,9 +63,9 @@ end
 
 %随机分配速度、航向角、功率
 for i = 1:N
-    plane(4,i) = (rand()*2+800)/3600;
-    plane(5,i) = rand()*360*pi/180;
-    plane(6,i) = rand()*4+50;%dnm
+    plane_para(4,i) = (rand()*2+800)/3600;
+    plane_para(5,i) = rand()*360*pi/180;
+    plane_para(6,i) = rand()*4+50;%dnm
 end
  end
 

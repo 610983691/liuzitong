@@ -1,4 +1,4 @@
-function [loss,gain1,gain2,fd,dely_time] = parameter2(r,v,r_s,v_s,fc,c,Y,unit_num,ann1,ann2)
+function [loss,gain1,gain2,fd,dely_time] = parameter2(r,v,r_s,v_s,fc,c,Y,unit_num,ann1,ann2,ann_power)
 %单天线情形
 %多普勒频移fd=f/c×v×cosθ
 r_r = r_s-r;
@@ -26,10 +26,16 @@ F1 = sin(z1)./(n.*sin(z2));
 K1 = abs(F1);
 theta2 = acos(-r_r'*ann1'/(norm(ann1')*norm(r_r')));
 theta3 = acos(-r_r'*ann2'/(norm(ann2')*norm(r_r')));
+if theta2>pi
+    theta2 = 2*pi-theta2;
+end
+if theta3>pi
+    theta3 = 2*pi-theta3;
+end
 b = round(theta2*10000/pi+10001);
 c = round(theta3*10000/pi+10001);
-satellite_gain1 = 10*log10(K1(1,b));
-satellite_gain2 = 10*log10(K1(1,c));
+satellite_gain1 = 10*log10(K1(1,b))+ann_power;
+satellite_gain2 = 10*log10(K1(1,c))+ann_power;
 gain1 = plane_gain+satellite_gain1;
 gain2 = plane_gain+satellite_gain2;
 dely_time = norm(r_r)/c;
