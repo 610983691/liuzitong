@@ -434,13 +434,10 @@ classdef no_satellite_simple_gui_start < handle
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
-            obj.plane_lat_path = 90-obj.plane_lat_result;
-            for i = 1:size(obj.plane_lon_result,1)
-               if obj.plane_lon_result(i,1)>180
-                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:)-360;
-               else
-                 obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
-               end
+            if obj.plane_lon_result>180
+                obj.plane_lon_path = obj.plane_lon_result-360;
+            else
+               obj.plane_lon_path = obj.plane_lon_result; 
             end
             set(obj.edt_echo, 'string', '仿真结束');
         end
@@ -536,13 +533,11 @@ classdef no_satellite_simple_gui_start < handle
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
-             obj.plane_lat_path = 90-obj.plane_lat_result;
-            for i = 1:size(obj.plane_lon_result,1)
-               if obj.plane_lon_result(i,1)>180
-                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:)-360;
-               else
-                 obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
-               end
+             obj.plane
+            if obj.plane_lon_result>180
+                obj.plane_lon_path = obj.plane_lon_result-360;
+            else
+               obj.plane_lon_path = obj.plane_lon_result; 
             end
             set(obj.edt_echo, 'string', '“多架飞机ADS-B信号模拟程序”运行完毕！');
         end
