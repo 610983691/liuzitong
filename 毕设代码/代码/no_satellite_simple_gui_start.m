@@ -85,6 +85,7 @@ classdef no_satellite_simple_gui_start < handle
         plane_high_result;
         plane_lon_path;
         plane_lat_path;
+        mess_rec_all;
         
         % Callback function flag.
         cb_auto_config = 0;
@@ -430,7 +431,7 @@ classdef no_satellite_simple_gui_start < handle
             planes= PlaneDistribute1(fnum);
             set(obj.edt_echo, 'string', '正在进行仿真...');
             % 接下来调用紫童的方法传递参数，进行仿真
-            [result_lon,result_lat,result_high] =no_satellite_simple_main(planes,ftime);
+            [obj.mess_rec_all,result_lon,result_lat,result_high] =no_satellite_simple_main(planes,ftime);
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
@@ -534,7 +535,7 @@ classdef no_satellite_simple_gui_start < handle
             
             set(obj.edt_echo, 'string', '正在运行“多架飞机ADS-B信号模拟程序”...');
             pause(0.3);
-           [result_lon,result_lat,result_high] =no_satellite_simple_main(planes,ftime);
+           [obj.mess_rec_all,result_lon,result_lat,result_high] =no_satellite_simple_main(planes,ftime);
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;

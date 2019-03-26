@@ -1,4 +1,4 @@
-function [plane_lon,plane_lat,plane_high] =no_satellite_simple_main(plane_para,simu_time)
+function [mess_rec_all,plane_lon,plane_lat,plane_high] =no_satellite_simple_main(plane_para,simu_time)
 
 
 simu_step =1e-2;%s
@@ -12,7 +12,7 @@ fc = 1090;%发射频率1090MHz
 
 
 N= size(plane_para,2);
-
+plane_para1 = plane_para;
 plane_lon = zeros(N,simu_time/simu_step);
 plane_lat = zeros(N,simu_time/simu_step);
 plane_high = zeros(N,simu_time/simu_step);
@@ -126,5 +126,18 @@ while(clock<(simu_time/simu_step))
     plane{i}.seq_mid = [plane{i}.seq_mid;ppm_value]; 
     end
 end
+time_rec_all = [time_rec_all , plane{i}.rec_time];
 end
+time_asix = zeros(3,length(time_rec_all));%没有接收时间
+[time_asix(1,:),index] = sort(time_rec_all(1,:));%根据发送时间排序 
+
+for i = 1:length(time_rec_all)
+    time_asix(2,i) = time_rec_all(2,index(i));
+    time_asix(3,i) = time_rec_all(3,index(i));
+end
+  mess_rec_all = [];
+  for i = 1:length(time_rec_all)
+          A = [time_asix(:,i);plane_para(6,time_asix(2,i));plane{time_asix(2,i)}.seq_mid(time_asix(3,i),:)'];
+          mess_rec_all = [mess_rec_all,A];
+     end
 end
