@@ -440,12 +440,6 @@ classdef satellite_goss_gui_start < handle
                 wx_lon=wx_lon+360;%转为0-360
             end
             high = str2double(get(obj.wx_high_edit, 'string'));
-            power1 = str2double(get(obj.wx_tx_power_edit, 'string'));
-            hxj1 = str2double(get(obj.wx_hxj_edit, 'string'));
-            hxj1=hxj1*pi/180;% 改为pi的形式
-            speed1 = str2double(get(obj.wx_speed_edit, 'string'));
-            tx_num_edit = str2double(get(obj.wx_tx_num_edit, 'string'));
-            txbs_width_edit = str2double(get(obj.wx_txbs_width_edit, 'string'));
 
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取高斯分布经纬度范围...');
@@ -594,7 +588,7 @@ classdef satellite_goss_gui_start < handle
         
         % Callback function for button start.
         function result =button_start_callback(obj, source, eventdata)
-              set(obj.edt_echo, 'string', '准备运行自动配置仿真数据...');
+              set(obj.edt_echo, 'string', '正在校验参数...');
             if (obj.goss_range(1,1)==-1000||obj.goss_range(1,2)==-1000||obj.goss_range(1,3)==-1000||obj.goss_range(1,4)==-1000)
                 set(obj.edt_echo, 'string', '请先设置卫星参数获取高斯分布范围！');
                 return;

@@ -217,7 +217,7 @@ classdef no_satellite_random_plane_gui_start < handle
         
         % Callback function for button start.
         function result =button_start_callback(obj, source, eventdata)
-              set(obj.edt_echo, 'string', '准备进行仿真...');
+           set(obj.edt_echo, 'string', '准备进行仿真...');
            if check_plane_param(obj)==0
                 return ;
            end
@@ -226,7 +226,6 @@ classdef no_satellite_random_plane_gui_start < handle
             plane_power = str2double(get(obj.plane_edt_auto_power, 'string'));%报文功率
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取飞机参数...');
-  
             planes= PlaneDistribute1(fnum);
             planes_id = ID_creat(fnum);
             set(obj.edt_echo, 'string', '正在进行仿真...');
