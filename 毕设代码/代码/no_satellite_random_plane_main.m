@@ -1,4 +1,4 @@
-function [mess_rec_all,plane_lon,plane_lat,plane_high,plane_ICAO_double,plane_ID_double] =no_satellite_random_plane_main(plane_para,simu_time,planes_id)
+function [mess_rec_all,plane_lon,plane_lat,plane_high,planes_id] =no_satellite_random_plane_main(plane_para,simu_time,planes_id)
 
 
 simu_step =1e-2;%s
@@ -53,7 +53,7 @@ time_rec_all = [];
 
 %飞机类
 for i = 1:N
-plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10) );
+plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10),plane_para(7,i) );
 %仿真时长，仿真步进，经度，纬度，高度，速度，加速度，航向角，仰角
 end
 
@@ -82,7 +82,7 @@ while(clock<(simu_time/simu_step))
     
     %编码过程
     [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,plane{i}.cpr_f,...
-    plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID1(i,:),i);
+    plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID_double(i,:),i,plane_para(7,i));
     mess112 = crcencode(code_heading(i,:),mecode);
     
     %加上损耗增益等
