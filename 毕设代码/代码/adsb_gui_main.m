@@ -41,6 +41,13 @@ classdef adsb_gui_main < handle
         button_height;
         % The height of the space between buttons.
         space_height;
+        
+        %用于展示变量值
+        plane_lon_result;
+        plane_lat_result;
+        plane_high_result;
+        plane_ICAO_double;
+        plane_ID_double
     end
     
     methods
@@ -114,6 +121,11 @@ classdef adsb_gui_main < handle
         % Callback function for button handle 1.
         function button_1_callback(obj, source, eventdata)
             obj.gui_child_1 = no_satellite_mul_plane_gui_start(obj);
+            obj.plane_lon_result= obj.gui_child_1.plane_lon_result;
+            obj.plane_lat_result= obj.gui_child_1.plane_lat_result;
+            obj.plane_high_result= obj.gui_child_1.plane_high_result;
+             obj.plane_ICAO_double= obj.gui_child_1.plane_ICAO_double;
+              obj.plane_ID_double= obj.gui_child_1.plane_ID_double;
         end
         
         % Callback function for button handle 2.

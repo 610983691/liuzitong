@@ -1,4 +1,4 @@
-function [mess_rec_all,plane_lon,plane_lat,plane_high] =no_satellite_mul_plane_main(plane_para,simu_time,planes_id)
+function [mess_rec_all,plane_lon,plane_lat,plane_high,plane_ICAO_double,plane_ID_double] =no_satellite_mul_plane_main(plane_para,simu_time,planes_id)
 
 
 simu_step =1e-2;%s
