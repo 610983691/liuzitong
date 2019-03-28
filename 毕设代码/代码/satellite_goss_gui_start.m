@@ -34,6 +34,7 @@ classdef satellite_goss_gui_start < handle
         config_con;
         config_man;
         config_path;
+        set_wx_param_btn;
     
         
       
@@ -264,8 +265,13 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[7+(4*txt_area_width_label+3*edit_area_width)  10 ...
               edit_area_width 40]);
-            
-            
+                 % 设置卫星参数button 
+            obj.set_wx_param_btn = uicontrol('parent', obj.wx_panel_erea, 'style', ...
+                'pushbutton', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
+                'string','设置卫星参数','position',[8+(4*txt_area_width_label+4*edit_area_width)+txt_area_width_label/2 ...
+                10 txt_area_width_label 40]);
+                 
+          
               % 随机分布区域
             obj.wx_gaosi_erea1 = uipanel('parent', obj.gui_p, 'Units', ...
                 'pixels', 'BackgroundColor', [0.83, 0.82, 0.78], 'title', ...
@@ -387,8 +393,8 @@ classdef satellite_goss_gui_start < handle
      
       
         
-        % 自动配置并运行仿真的按钮点击回调
-        function result =button_auto_config_callback(obj, source, eventdata)
+        % 设置卫星参数的回调函数
+        function result =set_wx_param_btn_callback(obj, source, eventdata)
           set(obj.edt_echo, 'string', '错误，不应该调用到这里！');
         end
         
@@ -766,7 +772,7 @@ classdef satellite_goss_gui_start < handle
         function callback_mapping(obj)
           
             set(obj.config_man, 'callback', @obj.button_save_config_callback);
-            set(obj.config_auto, 'callback', @obj.button_auto_config_callback);
+            set(obj.set_wx_param_btn, 'callback', @obj.set_wx_param_btn_callback);
             set(obj.config_sct, 'callback', @obj.button_config_file_callback);
             set(obj.config_con, 'callback', @obj.button_config_callback);
 
