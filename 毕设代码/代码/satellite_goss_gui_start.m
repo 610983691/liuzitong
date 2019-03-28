@@ -102,7 +102,7 @@ classdef satellite_goss_gui_start < handle
         wx_gaosi_erea2;
         wx_gaosi_erea2_sub1;
         wx_gaosi_erea2_sub2;
-        
+        planes_id_result;
   
         
         %卫星panel各个字段的label定义和文本框定义
@@ -717,9 +717,10 @@ classdef satellite_goss_gui_start < handle
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取飞机参数...');
             planes= PlaneDistribute(wx_lon,wx_lat,high1,fnum,goss_num_arr,goss);
+            planes_id = ID_creat(size(planes,2));%根据飞机个数生成ID。
             set(obj.edt_echo, 'string', '正在进行仿真...');
             %调用主函数
-            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit);
+            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id);
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
                   obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:)-360;
