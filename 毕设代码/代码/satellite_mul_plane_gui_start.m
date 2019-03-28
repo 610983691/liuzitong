@@ -654,6 +654,9 @@ classdef satellite_mul_plane_gui_start < handle
             speed1=str2double(get(obj.plane_edt_vh1, 'string'));
             hxj1=str2double(get(obj.plane_edt_az1, 'string'));
             power1=str2double(get(obj.plane_edt_pw1, 'string'));
+            plane_hy_speed1=str2double(get(obj.plane_edt_hy_speed1, 'string'));
+             plane_icao1=get(obj.plane_edt_icao1, 'string');
+            plane_id1=get(obj.plane_edt_id1, 'string');
              % 用户输入的飞机二的参数
             lat2=str2double(get(obj.plane_edt_lat2, 'string'));
             lon2=str2double(get(obj.plane_edt_lon2, 'string'));
@@ -661,6 +664,9 @@ classdef satellite_mul_plane_gui_start < handle
             speed2=str2double(get(obj.plane_edt_vh2, 'string'));
             hxj2=str2double(get(obj.plane_edt_az2, 'string'));
             power2=str2double(get(obj.plane_edt_pw2, 'string'));
+             plane_hy_speed2=str2double(get(obj.plane_edt_hy_speed2, 'string'));
+            plane_icao2=get(obj.plane_edt_icao2, 'string');
+             plane_id2=get(obj.plane_edt_id2, 'string');
              % 用户输入的飞机三的参数
             lat3=str2double(get(obj.plane_edt_lat3, 'string'));
             lon3=str2double(get(obj.plane_edt_lon3, 'string'));
@@ -668,6 +674,9 @@ classdef satellite_mul_plane_gui_start < handle
             speed3=str2double(get(obj.plane_edt_vh3, 'string'));
             hxj3=str2double(get(obj.plane_edt_az3, 'string'));
             power3=str2double(get(obj.plane_edt_pw3, 'string'));
+             plane_hy_speed3=str2double(get(obj.plane_edt_hy_speed3, 'string'));
+            plane_icao3=get(obj.plane_edt_icao3, 'string');
+             plane_id3=get(obj.plane_edt_id3, 'string');
             % 校验飞机1参数
             if check_plane_1(obj,lon1,lat1,high1,speed1,hxj1,power1,'一')==0
                 return ;
@@ -678,7 +687,8 @@ classdef satellite_mul_plane_gui_start < handle
              end
              hxj1=hxj1*pi/180;
              speed1 = speed1/3600;
-             plane1 = createPlane(obj,lon1,lat1,high1,speed1,hxj1,power1);
+             plane1 = createPlane(obj,lon1,lat1,high1,speed1,hxj1,power1,plane_hy_speed1);
+             plane1_id =createId(obj,plane_icao1,plane_id1);
              %飞机2不为空,就需要校验参数，并且把参数合并到飞机1.2中
             if ~plane2isempty(obj)
                 if check_plane_1(obj,lon2,lat2,high2,speed2,hxj2,power2,'二')==0
@@ -690,7 +700,8 @@ classdef satellite_mul_plane_gui_start < handle
                      end
                     hxj2=hxj2*pi/180;
                     speed2=speed2/3600;
-                    plane2 = createPlane(obj,lon2,lat2,high2,speed2,hxj2,power2);
+                    plane2 = createPlane(obj,lon2,lat2,high2,speed2,hxj2,power2,plane_hy_speed2);
+                     plane2_id =createId(obj,plane_icao2,plane_id2);
                 end
             end
             
@@ -705,24 +716,29 @@ classdef satellite_mul_plane_gui_start < handle
                      end
                     hxj3=hxj3*pi/180;
                     speed3=speed3/3600;
-                    plane3 = createPlane(obj,lon3,lat3,high3,speed3,hxj3,power3);
+                    plane3 = createPlane(obj,lon3,lat3,high3,speed3,hxj3,power3,plane_hy_speed3);
+                    plane3_id =createId(obj,plane_icao3,plane_id3);
                 end
             end
             
             % 封装为矩阵
             if ~plane2isempty(obj)&&~plane3isempty(obj)
                   planes=[plane1,plane2,plane3];
+                  planes_id = [plane1_id,plane2_id,plane3_id];
             elseif ~plane2isempty(obj) && plane3isempty(obj)
                   planes=[plane1,plane2];
+                  planes_id = [plane1_id,plane2_id];
             elseif plane2isempty(obj) && ~plane3isempty(obj)
                   planes=[plane1,plane3];
+                  planes_id = [plane1_id,plane2_id];
             else
                 planes=plane1;
+                planes_id = plane1_id;
             end
             set(obj.edt_echo, 'string', '正在运行“多架飞机ADS-B信号模拟程序”...');
             pause(0.3);
             %调用主函数
-            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,wx_high,wx_speed,wx_hxj,tx_num_edit,wx_power,txbs_width_edit);
+            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,wx_high,wx_speed,wx_hxj,tx_num_edit,wx_power,txbs_width_edit,planes_id);
             obj.plane_lat_path = 90-obj.plane_lat_result;
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
@@ -942,8 +958,8 @@ classdef satellite_mul_plane_gui_start < handle
       
         
         %创建飞机位置
-        function plane = createPlane(obj,lon,lat,high,speed,hxj,power)
-                plane = zeros(6,1);
+        function plane = createPlane(obj,lon,lat,high,speed,hxj,power,hy_speed)
+                plane = zeros(7,1);
  
                 plane(1,1) = lon;
                 plane(2,1) = lat;
@@ -951,7 +967,15 @@ classdef satellite_mul_plane_gui_start < handle
                 plane(4,1) = speed;
                 plane(5,1) = hxj;
                 plane(6,1) = power;%dnm
+                plane(7,1) = hy_speed;
 
+        end
+        function planeid = createId(obj,icao,id)
+                planeid = cell(2,1);
+ 
+                planeid{1,1} = icao;
+                planeid{2,1} = id;
+               
         end
         
         function callback_mapping(obj)
