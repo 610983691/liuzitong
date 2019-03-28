@@ -475,7 +475,7 @@ classdef satellite_goss_gui_start < handle
         function result =button_start_callback(obj, source, eventdata)
               set(obj.edt_echo, 'string', '准备运行自动配置仿真数据...');
             if obj.goss_range(1,1)==-1000||obj.goss_range(1,2)==-1000||obj.goss_range(1,3)==-1000||obj.goss_range(1,4)==-1000
-                set(obj.edt_echo, 'string', '请先设置卫星参数获取高斯分布范围！');
+                set(obj.edt_echo, 'string', '请先设置卫星参数获取高斯分布范围...');
                 return;
             end
             %校验飞机随机数量和仿真时长 
@@ -528,10 +528,6 @@ classdef satellite_goss_gui_start < handle
                      set(obj.edt_echo, 'string', '高斯分布1飞机数量超出范围，应为[0,10000],请重新设置.');
                      return ;
                  end
-                 if is_gaosi_range_err(obj,gaosi_lon1,gaosi_lat1)
-                     set(obj.edt_echo, 'string', '高斯分布1经纬度不在范围内！.');
-                     return;
-                 end
                  goss_num_arr=[goss_plane_num];
                  if gaosi_lon1<0
                     gaosi_lon1=gaosi_lon1+360;
@@ -567,21 +563,12 @@ classdef satellite_goss_gui_start < handle
                      return ;
                  end
                   goss_num_arr = [goss_plane_num,goss_plane_num2];
-                  %校验高斯分布范围
-                  if is_gaosi_range_err(obj,gaosi_lon1,gaosi_lat1)
-                      set(obj.edt_echo, 'string', '高斯分布1经纬度不在范围内！.');
-                     return;
-                 end
                    if gaosi_lon1<0
                     gaosi_lon1=gaosi_lon1+360;
                    end
                    gaosi_lat1=90-gaosi_lat1;
                    goss1 =[gaosi_lon1,gaosi_lat1]; 
-                    %校验高斯分布范围
-                   if is_gaosi_range_err(obj,gaosi_lon2,gaosi_lat2)
-                       set(obj.edt_echo, 'string', '高斯分布2经纬度不在范围内！.');
-                     return;
-                   end
+
                    if gaosi_lon2<0
                         gaosi_lon2=gaosi_lon2+360;
                    end
@@ -758,15 +745,18 @@ classdef satellite_goss_gui_start < handle
          % 校验高斯分布经纬度范围
         function s = is_gaosi_range_err(obj,goss_lon,goss_lat)      
              s=1;
-             if goss_lon>obj.goss_range(1,2)||goss_lon<obj.goss_range(1,1)
-                 s=1;
+             if goss_lon
+                 s=0;
                  return;
              end
-             if goss_lat>obj.goss_range(1,4)||goss_lat<obj.goss_range(1,3)
-                 s=1;
+             if ~isempty(get(obj.gaosi_center_lon_edit_2, 'string'))
+                 s=0;
                  return;
              end
-             s=0;
+             if ~isempty(get(obj.gaosi_plane_num_edit_2, 'string'))
+                 s=0;
+                 return;
+             end
         end
         
         function callback_mapping(obj)
