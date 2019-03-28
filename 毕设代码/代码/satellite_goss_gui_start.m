@@ -153,8 +153,8 @@ classdef satellite_goss_gui_start < handle
             obj.gui_height = obj.height - 100;
             % Set the plane param settings panel widht and height.
             obj.panel_width = obj.gui_width;
-            obj.panel_height = 160;
-            
+            obj.panel_height = obj.gui_height/5;%panel是5行，所以是panel除以5的高度.
+
              % panle位置设置
             edit_area_width=80;%文本框的宽度固定为100
             txt_area_width_label=120;%label设置为130
