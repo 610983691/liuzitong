@@ -103,6 +103,8 @@ classdef no_satellite_random_plane_gui_start < handle
         ppc = 0;
         % Receiver parameter check flag.
         rpc = 0;
+        plane_ICAO_double;
+        plane_ID_double;
     end
     
     methods
@@ -228,7 +230,7 @@ classdef no_satellite_random_plane_gui_start < handle
             planes_id = ID_creat(fnum);
             set(obj.edt_echo, 'string', '正在进行仿真...');
             % 接下来调用紫童的方法传递参数，进行仿真
-            [obj.mess_rec_all,result_lon,result_lat,result_high] =no_satellite_random_plane_main(planes,ftime,planes_id);
+            [obj.mess_rec_all,result_lon,result_lat,result_high,plane_ICAO,plane_ID]  =no_satellite_random_plane_main(planes,ftime,planes_id);
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
@@ -240,6 +242,8 @@ classdef no_satellite_random_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
+            obj.plane_ICAO_double=plane_ICAO;
+            obj.plane_ID_double=plane_ID;
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             set(obj.edt_echo, 'string', '仿真结束');
