@@ -377,8 +377,7 @@ classdef satellite_mul_plane_gui_start < handle
                 obj.gui_height - 3*obj.panel_height, obj.panel_width-10, ...
                 obj.panel_height]);
             % panle位置设置
-            edit_area_width=120;%文本框的宽度固定为100
-            txt_area_width_label=130;%label设置为130
+            
             
             % The first row in the panel.
          
@@ -482,9 +481,6 @@ classdef satellite_mul_plane_gui_start < handle
                 obj.gui_height - 4*obj.panel_height , obj.panel_width-10, ...
                 obj.panel_height]);
             % panle位置设置
-     
-            
-            % The first row in the panel.
          
             % Init the Lattitude text for plane param.
             obj.plane_txt_lat3 = uicontrol('parent',obj.panel_plane_3, 'style', ...
