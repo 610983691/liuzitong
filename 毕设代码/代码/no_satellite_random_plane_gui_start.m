@@ -95,6 +95,7 @@ classdef no_satellite_random_plane_gui_start < handle
         plane_lat_path;
         mess_rec_all;
         planes_id_out;
+        
         % Callback function flag.
         cb_auto_config = 0;
         cb_man_config = 0;
