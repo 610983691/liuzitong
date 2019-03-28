@@ -8,7 +8,7 @@ N = N1;
 for i = 1:goss_num
     N = N+goss_plane_num(i);
 end
-plane = zeros(6,N);
+plane = zeros(7,N);
 for i = 1:N1
    phy = rand()*360*pi/180;
    theta1= rand()*theta;
@@ -65,6 +65,7 @@ for i = 1:N
     plane(4,i) = (rand()*2+800)/3600;
     plane(5,i) = rand()*360*pi/180;
     plane(6,i) = rand()*4+50;%dnm
+    plane(7,i) = randi(8)*64;%”¢≥ﬂ√ø∑÷÷”
 end
  end
 

@@ -1,4 +1,4 @@
-function [mess_rec_all,mess_rec_all1,mess_rec_all2,plane_lon,plane_lat,plane_high,planes_id] = satellite_simple_gui_main(plane_para,simu_time,lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width,planes_id)
+function [time_asix,mess_rec_all,mess_rec_all1,mess_rec_all2,plane_lon,plane_lat,plane_high,planes_id] = satellite_simple_gui_main(plane_para,simu_time,lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width,planes_id)
 
 simu_step =1e-2;%s
 ratio = 6371;%KM
@@ -49,7 +49,7 @@ end
 
 %信息的不同主要体现在ME字段的不同所以ME字段前面的编码可以在程序前就直接写好
 
-mecode = zeros(1,56);
+cpr = randi(2,1,N)-1;%0表示奇编码；1表示偶编码
 
 
 time_rec_all = [];
@@ -75,7 +75,8 @@ for i = 1:N
     clock = 0;
     flag = 0;%记录报文个数
     type = randi(4);
-    type_code(1,:) = bitget(type,5:-1:1); 
+    type_code(1,:) = bitget(type,5:-1:1);
+    even_old = cpr(i);
 while(clock<(simu_time/simu_step))  
     plane{i} = ChangePosition(plane{i},ratio);
     plane{i} = BroadCast(plane{i},clock); 
@@ -93,6 +94,11 @@ while(clock<(simu_time/simu_step))
     %编码过程
     if norm(plane{i}.r_h-satellite.r)<=3074 
     if plane{i}.broad_times(1,clock) ~= 0
+        cpr_flag = 0;  
+    if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是 位置信息
+       even_old =  mod(even_old+1,2);
+       cpr_flag = even_old+1;
+    end
     
     plane_lon(i,clock) = plane{i}.longitude;
     plane_lat(i,clock) = plane{i}.latitude;
@@ -101,7 +107,7 @@ while(clock<(simu_time/simu_step))
     flag = flag+1;%报文数量增加
     
     %编码过程
-    [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,plane{i}.cpr_f,...
+    [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,even_old,...
     plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID_double(i,:),i,plane_para(7,i));
     mess112 = crcencode(code_heading(i,:),mecode);
     
@@ -120,7 +126,8 @@ while(clock<(simu_time/simu_step))
     plane{i}.ant_gain = [plane{i}.ant_gain,gain];
     plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_para(6,i),loss,gain,rec_power,fd,mess(1,2:8)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
-    plane{i}.rec_time = [plane{i}.rec_time,[clock*simu_step;rec_time;i;flag]];
+    plane{i}.rec_time = [plane{i}.rec_time,[rec_time;plane{i}.last_broadtime*simu_step;i;flag;rec_power;plane{i}.longitude;...
+                         plane{i}.latitude;plane{i}.hight;plane{i}.velocity;plane{i}.rate_v;plane{i}.broad_times(1,clock);cpr_flag]];
     %ppm调制
     ppm = ppmencode(mess112,rs,fs,fd,fc_mid);%z中频信号
     ppm_value = ppm*peakU;
@@ -144,7 +151,8 @@ while(clock<(simu_time/simu_step))
     plane{i}.ant_gain = [plane{i}.ant_gain,[gain1;gain2]];
     plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_para(6,i),loss,gain1,gain2,rec_power1,rec_power2,fd,mess(1,2:8)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
-    plane{i}.rec_time = [plane{i}.rec_time,[clock*simu_step;rec_time;i;flag]];
+    plane{i}.rec_time = [plane{i}.rec_time,[rec_time;plane{i}.last_broadtime*simu_step;i;flag;rec_power1;rec_power2;plane{i}.longitude;...
+                         plane{i}.latitude;plane{i}.hight;plane{i}.velocity;plane{i}.rate_v;plane{i}.broad_times(1,clock);cpr_flag]];
 
   
     
@@ -173,13 +181,13 @@ end
 % plot(t,plane{1}.ppmseq(1,:),'r');
 % xlabel('采样点');30
 % ylabel('amplitude');
-time_asix = zeros(4,length(time_rec_all));
-[time_asix(2,:),index] = sort(time_rec_all(2,:)); 
+time_asix = zeros(size(time_rec_all,1),size(time_rec_all,2));
+[time_asix(1,:),index] = sort(time_rec_all(1,:)); 
 
-for i = 1:length(time_rec_all)
-    time_asix(1,i) = time_rec_all(1,index(i));
-    time_asix(3,i) = time_rec_all(3,index(i));
-    time_asix(4,i) = time_rec_all(4,index(i));
+for i = 1:size(time_rec_all,2)
+    for j = 2:size(time_rec_all,1)
+    time_asix(j,i) = time_rec_all(j,index(i));
+    end
 end
 
 % mess_rec_all = [];
@@ -192,19 +200,19 @@ end
    mess_rec_all2 = [];
 if ann_num==1
 
-     for i = 1:length(time_rec_all)
+     for i = 1:size(time_rec_all,2)
           A = [time_asix(:,i);plane{time_asix(3,i)}.power(time_asix(4,i));plane{time_asix(3,i)}.seq_mid(time_asix(4,i),:)'];
           mess_rec_all = [mess_rec_all,A];
      end
 end
 if ann_num==2
 
-     for i = 1:length(time_rec_all)
+     for i = 1:size(time_rec_all,2)
          A = [time_asix(:,i);plane{time_asix(3,i)}.power(1,time_asix(4,i));plane{time_asix(3,i)}.seq_mid1(time_asix(4,i),:)'];
           mess_rec_all1 = [mess_rec_all1,A];
      end  
 
-     for i = 1:length(time_rec_all)
+     for i = 1:size(time_rec_all,2)
           A = [time_asix(:,i);plane{time_asix(3,i)}.power(2,time_asix(4,i));plane{time_asix(3,i)}.seq_mid2(time_asix(4,i),:)'];
           mess_rec_all2 = [mess_rec_all2,A];
      end  
