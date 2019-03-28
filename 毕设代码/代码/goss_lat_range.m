@@ -3,6 +3,9 @@ function [lat_down,lat_up] = goss_lat_range(lons,lats,highs,lon_down,lon_up,lon)
      rs = [(highs+6371)*sin(lats*pi/180)*cos(lons*pi/180),(highs+6371)*sin(lats*pi/180)*sin(lons*pi/180),(highs+6371)*cos(lats*pi/180)];
     if (lon_up == 180)||(lon_down==-180)%极点包含在里面
       syms y;
+      if lon<0
+          lon = lon+360;
+      end  %将用户给的东西经变成球坐标系的角度进行下面的计算   
      r = [6371*sin(y*pi/180)*cos(lon*pi/180),6371*sin(y*pi/180)*sin(lon*pi/180),6371*cos(y*pi/180)];
      d = norm(r-rs);
      f = d-d1;

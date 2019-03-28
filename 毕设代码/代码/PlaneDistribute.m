@@ -48,14 +48,11 @@ r1 = [ R*sin(pi-theta1)*cos(phy); -R*sin(pi-theta1)*sin(phy);R*cos(pi-theta1)];%
 end
 
 
-%高斯分布 在均匀分布的随机点中选一个点作为高斯分布中心
 if goss_num~=0
-    position_center = zeros(goss_num,2);
     for i = 1:goss_num
-        position_center(i,:) =[plane(1,randi(N1)),plane(2,randi(N1))];
         for j = 1:goss_plane_num(i)
-            plane(1,N1+j) = mod(position_center(i,1)+randn(),2*pi);
-            plane(2,N1+j) = mod(position_center(i,2)+randn(),pi);
+            plane(1,N1+j) = mod(goss_center_info(i,1)+randn(),2*pi);
+            plane(2,N1+j) = mod(goss_center_info(i,2)+randn(),pi);
             plane(3,N1+j) = (randi(13)-1)*0.3+8.4+(rand()*2-1)*0.02;
 
         end

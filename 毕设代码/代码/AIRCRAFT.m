@@ -13,7 +13,6 @@ classdef AIRCRAFT
         last_AP=1;
         last_AV=2;
         last_ID=3;
-        cpr_f;
         r;
         v;
        mess_all ;
@@ -44,7 +43,6 @@ classdef AIRCRAFT
             obj.broad_times = zeros(1, simu_t/step_t);
             obj.last_broadtime = first_time;
             obj.broad_times(first_time) = 1;
-            obj.cpr_f = randi(2);%1表示奇编码 2 表示偶编码
             obj.mess_all = [];
             obj.mecode_all = [];
             obj.time_rec = [];
@@ -91,7 +89,7 @@ classdef AIRCRAFT
             %AP
             if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&...
                     ((count-obj.last_AP)*obj.time_step>=0.5))
-                broadt=ceil(count+rand(1)*10);
+                broadt=ceil(count+(rand(1)*2-1)*0.1/obj.time_step);%存在0.1s
                 obj.last_broadtime=broadt;
                 obj.last_AP=broadt;
                 obj.broad_times(broadt)=1;
@@ -99,7 +97,7 @@ classdef AIRCRAFT
             %AV
             if(((count-obj.last_broadtime)*obj.time_step>=120e-6) &...
                     ((count-obj.last_AV)*obj.time_step>=0.5))
-                broadt=ceil(count+rand(1)*10);
+                broadt=ceil(count+(rand(1)*2-1)*0.1/obj.time_step);
                 obj.last_broadtime=broadt;
                 obj.last_AV=broadt;
                 obj.broad_times(broadt)=2;                    
@@ -107,7 +105,7 @@ classdef AIRCRAFT
             %ID
             if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&...
                     ((count-obj.last_ID)*obj.time_step>=5))
-                broadt=ceil(count+rand(1)*10);
+                broadt=ceil(count+(rand(1)*2-1)*0.2/obj.time_step);
                 obj.last_broadtime=broadt;
                 obj.last_ID=broadt;
                 obj.broad_times(broadt)=3;                

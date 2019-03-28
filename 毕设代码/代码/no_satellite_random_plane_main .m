@@ -1,13 +1,11 @@
-function [mess_rec_all,plane_lon,plane_lat,plane_high,planes_id] =no_satellite_random_plane_main(plane_para,simu_time,planes_id)
+function [time_asix,mess_rec_all,plane_lon,plane_lat,plane_high,plane_ICAO_double,plane_ID_double] =no_satellite_mul_plane_main(plane_para,simu_time,planes_id)
 
 
 simu_step =1e-2;%s
 ratio = 6371;%KM
-c = 3e+5;%km/s
 rs = 1*10^6;
-fs = 500*10^6;
+fs = 200*10^6;
 fc_mid = 40*10^6; %中频载波频率40MHz
-fc = 1090;%发射频率1090MHz  
 
 
 
@@ -43,7 +41,6 @@ end
 
 %信息的不同主要体现在ME字段的不同所以ME字段前面的编码可以在程序前就直接写好
 
-mecode = zeros(1,56);
 
 
 time_rec_all = [];
@@ -53,7 +50,7 @@ time_rec_all = [];
 
 %飞机类
 for i = 1:N
-plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10),plane_para(7,i) );
+plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10),plane_para(7,i));
 %仿真时长，仿真步进，经度，纬度，高度，速度，加速度，航向角，仰角
 end
 
@@ -76,13 +73,18 @@ while(clock<(simu_time/simu_step))
 
     %编码过程
     if plane{i}.broad_times(1,clock) ~= 0
-    
-
+        
+     even_old = 0;
+    if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是 位置信息
+       even_old =  plane{i}.cpr_f;
+    end
+        
+        
     flag = flag+1;%报文数量增加
     
     %编码过程
     [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,plane{i}.cpr_f,...
-    plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID_double(i,:),i,plane_para(7,i));
+    plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID_double(i,:),i,plane_para(7,i));%最后一个是飞机的垂直速度
     mess112 = crcencode(code_heading(i,:),mecode);
     
     %加上损耗增益等
@@ -91,7 +93,8 @@ while(clock<(simu_time/simu_step))
     %信息放在同一个矩阵
     plane{i}.mess_all = [plane{i}.mess_all;plane_para(6,i),mess(1,2:8)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
-    plane{i}.rec_time = [plane{i}.rec_time,[clock*simu_step;i;flag]];
+    plane{i}.rec_time = [plane{i}.rec_time,[plane{i}.last_broadtime*simu_step;i;flag;plane_para(6,i);plane{i}.longitude;...
+                         plane{i}.latitude;plane{i}.hight;plane{i}.velocity;plane{i}.rate_v;plane{i}.broad_times(1,clock);even_old]];%发报时间要加上时间 的抖动
     %ppm调制
     fd = 0;
     ppm = ppmencode(mess112,rs,fs,fd,fc_mid);%z中频信号
@@ -102,12 +105,13 @@ while(clock<(simu_time/simu_step))
 end
 time_rec_all = [time_rec_all , plane{i}.rec_time];
 end
-time_asix = zeros(3,length(time_rec_all));%没有接收时间
+time_asix = zeros(11,length(time_rec_all));%没有接收时间
 [time_asix(1,:),index] = sort(time_rec_all(1,:));%根据发送时间排序 
 
 for i = 1:length(time_rec_all)
-    time_asix(2,i) = time_rec_all(2,index(i));
-    time_asix(3,i) = time_rec_all(3,index(i));
+    for j = 2:11
+    time_asix(j,i) = time_rec_all(j,index(i));
+    end
 end
   mess_rec_all = [];
   for i = 1:length(time_rec_all)

@@ -45,8 +45,7 @@ end
 
 time_rec_all = [];
 
-cpr = randi(2,1,N)-1;%0表示奇编码；1表示偶编码
-
+cpr = randi(3,N)
 
 
 %飞机类
@@ -62,7 +61,6 @@ for i = 1:N
     flag = 0;%记录报文个数
     type = randi(4);
     type_code(1,:) = bitget(type,5:-1:1); 
-    even_old = cpr(i);
 while(clock<(simu_time/simu_step))  
     plane{i} = ChangePosition(plane{i},ratio);
     plane{i} = BroadCast(plane{i},clock); 
@@ -75,17 +73,17 @@ while(clock<(simu_time/simu_step))
 
     %编码过程
     if plane{i}.broad_times(1,clock) ~= 0
-      cpr_flag = 0;  
+        
+     even_old = 0;
     if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是 位置信息
-       even_old =  mod(even_old+1,2);
-       cpr_flag = even_old+1;
+       even_old =  plane{i}.cpr_f;
     end
         
         
     flag = flag+1;%报文数量增加
     
     %编码过程
-    [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,even_old,...
+    [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,plane{i}.cpr_f,...
     plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID_double(i,:),i,plane_para(7,i));%最后一个是飞机的垂直速度
     mess112 = crcencode(code_heading(i,:),mecode);
     
@@ -96,7 +94,7 @@ while(clock<(simu_time/simu_step))
     plane{i}.mess_all = [plane{i}.mess_all;plane_para(6,i),mess(1,2:8)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
     plane{i}.rec_time = [plane{i}.rec_time,[plane{i}.last_broadtime*simu_step;i;flag;plane_para(6,i);plane{i}.longitude;...
-                         plane{i}.latitude;plane{i}.hight;plane{i}.velocity;plane{i}.rate_v;plane{i}.broad_times(1,clock);cpr_flag]];%发报时间要加上时间 的抖动
+                         plane{i}.latitude;plane{i}.hight;plane{i}.velocity;plane{i}.rate_v;plane{i}.broad_times(1,clock);even_old]];%发报时间要加上时间 的抖动
     %ppm调制
     fd = 0;
     ppm = ppmencode(mess112,rs,fs,fd,fc_mid);%z中频信号
@@ -116,7 +114,7 @@ for i = 1:size(time_rec_all,2)
     end
 end
   mess_rec_all = [];
-  for i = 1:size(time_rec_all,2)
+  for i = 1:length(time_rec_all)
           A = [time_asix(:,i);plane_para(6,time_asix(2,i));plane{time_asix(2,i)}.seq_mid(time_asix(3,i),:)'];
           mess_rec_all = [mess_rec_all,A];
      end

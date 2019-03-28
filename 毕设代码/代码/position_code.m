@@ -1,8 +1,8 @@
 function [hig,lat,lon] = position_code(hightmess,cpr_f,latitude,longitude)
     %先进行经纬度编码
-    cpr_f = 3-cpr_f;%prc formt 决定是奇编码还是偶编码      
+    cpr_f = mod(cpr_f+1,2);%prc formt 决定是奇编码还是偶编码      
          NZ = 15;
-         Dlat = 360/(4*NZ-cpr_f+1);
+         Dlat = 360/(4*NZ-cpr_f);
          lat =  latitude;
          yz = floor(2^17*mod(lat,Dlat)/Dlat+0.5);
          NL = floor(2*pi/(acos(1-(1-cos(pi/(2*NZ)))/(cos(abs(latitude)*pi/180)^2))));

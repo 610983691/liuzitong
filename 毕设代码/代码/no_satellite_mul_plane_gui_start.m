@@ -94,7 +94,8 @@ classdef no_satellite_mul_plane_gui_start < handle
         plane_lon_path;
         plane_lat_path;
         mess_rec_all;
-        
+        planes_id_out;
+        time_asix_mess;
         % Callback function flag.
         cb_auto_config = 0;
         cb_man_config = 0;
@@ -603,7 +604,7 @@ classdef no_satellite_mul_plane_gui_start < handle
             
             set(obj.edt_echo, 'string', '正在运行“多架飞机ADS-B信号模拟程序”...');
             pause(0.3);
-           [obj.mess_rec_all,result_lon,result_lat,result_high,plane_ICAO,plane_ID] =no_satellite_mul_plane_main(planes,ftime,planes_id);
+           [obj.time_asix_mess,obj.mess_rec_all,result_lon,result_lat,result_high,obj.planes_id_out] =no_satellite_mul_plane_main(planes,ftime,planes_id);
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
@@ -615,8 +616,6 @@ classdef no_satellite_mul_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
-            obj.plane_ICAO_double=plane_ICAO;
-            obj.plane_ID_double=plane_ID;
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             set(obj.edt_echo, 'string', '“多架飞机ADS-B信号模拟程序”运行完毕！');
