@@ -807,7 +807,7 @@ classdef satellite_goss_gui_start < handle
                 return;
              end
              if is_err_gl(power1)
-                set(obj.edt_echo, 'string',  '卫星功率超出范围，应为[0, 100]，请重新设置！');
+                set(obj.edt_echo, 'string',  '卫星功率必须是数字，请重新设置！');
                 return;
              end
              if isnan(tx_num_edit)

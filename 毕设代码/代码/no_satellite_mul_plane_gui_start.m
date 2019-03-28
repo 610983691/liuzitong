@@ -771,7 +771,7 @@ classdef no_satellite_mul_plane_gui_start < handle
                 return;
              end
              if is_err_gl(power1)
-                set(obj.edt_echo, 'string',  strcat(str,'功率超出范围，应为[0, 100]，请重新设置！'));
+                set(obj.edt_echo, 'string',  strcat(str,'功率必须是数字，请重新设置！'));
                 return;
              end
              if isnan(plane_hy_speed)
