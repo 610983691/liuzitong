@@ -436,7 +436,7 @@ classdef satellite_goss_gui_start < handle
             set(obj.edt_echo, 'string', '获取经纬度范围结束');
             setwx_param_inactive(obj);
             set_goss_range_tooltip(obj,obj.goss_range);
-            set(obj.edt_echo, 'string', '已经获取到gaosi范围');
+            set(obj.edt_echo, 'string', '已经获取到高斯分布范围。');
         end
         
         function setwx_param_inactive(obj)
