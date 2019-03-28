@@ -12,7 +12,6 @@ fc = 1090;%∑¢…‰∆µ¬ 1090MHz
 
 
 N= size(plane_para,2);
-plane_para1 = plane_para;
 plane_lon = zeros(N,simu_time/simu_step);
 plane_lat = zeros(N,simu_time/simu_step);
 plane_high = zeros(N,simu_time/simu_step);
@@ -55,7 +54,6 @@ for i = 1:N
         plane_ICAO1(i,j) = cell2mat(plane_ICAO{i,j});
     end
 end
-ICAO = zeros(N,24);
 code_heading = zeros(N,32);
 for i = 1:N
     icaobin = zeros(1,24);

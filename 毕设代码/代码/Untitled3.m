@@ -1,1 +1,3 @@
-a = randi(2)-1;
+A= {'ABCD'};
+B = {'SDHEKNC'};
+C = [A,B];
