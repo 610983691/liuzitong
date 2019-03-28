@@ -44,7 +44,7 @@ classdef satellite_mul_plane_gui_start < handle
         panel_plane_3;
         plane_txt_times;%飞行时间
         plane_edt_times;
-        panel_plane_start
+        panel_plane_start;
        
         
         % Text handle for plane param, Lattitude, Longtitude, and height.
@@ -95,7 +95,7 @@ classdef satellite_mul_plane_gui_start < handle
         mess_rec_all;
         mess_rec_all1;
         mess_rec_all2;
-        
+        planes_id_result;
         % Callback function flag.
         cb_auto_config = 0;
         cb_man_config = 0;
@@ -738,7 +738,7 @@ classdef satellite_mul_plane_gui_start < handle
             set(obj.edt_echo, 'string', '正在运行“多架飞机ADS-B信号模拟程序”...');
             pause(0.3);
             %调用主函数
-            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,wx_high,wx_speed,wx_hxj,tx_num_edit,wx_power,txbs_width_edit,planes_id);
+            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,wx_high,wx_speed,wx_hxj,tx_num_edit,wx_power,txbs_width_edit,planes_id);
             obj.plane_lat_path = 90-obj.plane_lat_result;
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
