@@ -785,11 +785,19 @@ classdef no_satellite_mul_plane_gui_start < handle
                   return;
              end
              if is_not_char_and_num(plane_icao)
-                 set(obj.edt_echo, 'string',  strcat(str,'参数ICAO必须是字母或数字！'));
+                set(obj.edt_echo, 'string',  strcat(str,'参数ICAO必须是字母或数字！'));
+                return;
+             end
+             if length(plane_icao)~=4
+                set(obj.edt_echo, 'string',  strcat(str,'参数ICAO长度必须为4！'));
                 return;
              end
              if is_not_char_and_num(plane_id)
                  set(obj.edt_echo, 'string',  strcat(str,'参数ID必须是字母或数字！'));
+                return;
+             end
+             if length(plane_id)~=8
+                set(obj.edt_echo, 'string',  strcat(str,'参数ID长度必须为8！'));
                 return;
              end
             s=1;
