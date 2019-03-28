@@ -1,6 +1,6 @@
  function [plane] = PlaneDistribute(lons,lats,highs,N1,goss_plane_num_arr,goss_center_info)% 卫星的经度维度高度,均匀分布个数,每个高斯分布区域飞机个数，高斯分布中心点信息 
 %N1 = 10;%均匀分布飞机个数
-goss_num = size(goss_center_info,2);%高斯分布区域个数
+goss_num = size(goss_plane_num_arr,2);%高斯分布区域个数
 goss_plane_num = goss_plane_num_arr;%每个高斯分布的飞机个数，这是个数组
 rs = [(highs+6371)*sin(lats*pi/180)*cos(lons*pi/180),(highs+6371)*sin(lats*pi/180)*sin(lons*pi/180),(highs+6371)*cos(lats*pi/180)];
 theta = asin(6371/(6371+highs));

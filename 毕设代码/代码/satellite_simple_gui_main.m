@@ -1,4 +1,4 @@
-function [mess_rec_all,mess_rec_all1,mess_rec_all2,plane_lon,plane_lat,plane_high] = satellite_simple_gui_main(plane_para,simu_time,lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width,planes_id)
+function [mess_rec_all,mess_rec_all1,mess_rec_all2,plane_lon,plane_lat,plane_high,planes_id] = satellite_simple_gui_main(plane_para,simu_time,lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width,planes_id)
 
 simu_step =1e-2;%s
 ratio = 6371;%KM

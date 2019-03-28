@@ -102,7 +102,7 @@ classdef satellite_goss_gui_start < handle
         wx_gaosi_erea2;
         wx_gaosi_erea2_sub1;
         wx_gaosi_erea2_sub2;
-        
+        planes_id_result;
   
         
         %卫星panel各个字段的label定义和文本框定义
@@ -139,6 +139,8 @@ classdef satellite_goss_gui_start < handle
         gaosi_plane_num_edit_2;
         goss_range_tooltip1;
         goss_range_tooltip2;
+        get_goss_lat_range_btn1;
+        get_goss_lat_range_btn2;
     end
     
     methods
@@ -317,20 +319,28 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[81 (obj.panel_height/3+10) ...
               80 40]);
+            set(obj.gaosi_center_lon_edit_1,'Enable','off');
+            
+             % 获取纬度范围button1
+            obj.get_goss_lat_range_btn1 = uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
+                'pushbutton', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
+                'string','获取纬度范围','position',[181 ...
+                (obj.panel_height/3+10) txt_area_width_label+40 40]);
+            
             obj.gaosi_center_lat_txt_1 = uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','纬度','position',[180 (obj.panel_height/3) 80 40]);
+                'string','纬度','position',[280+80 (obj.panel_height/3) 80 40]);
             obj.gaosi_center_lat_edit_1 = uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
                 'edit', 'BackgroundColor','white' ...
-              ,'Fontsize',11,'position',[281 (obj.panel_height/3+10) ...
+              ,'Fontsize',11,'position',[381+80 (obj.panel_height/3+10) ...
               80 40]);
-         
+           set(obj.gaosi_center_lat_edit_1,'Enable','off');
            obj.gaosi_plane_num_txt_1 = uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','飞机数量','position',[370 (obj.panel_height/3) 100 40]);
+                'string','飞机数量','position',[470+80 (obj.panel_height/3) 100 40]);
             obj.gaosi_plane_num_edit_1 = uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
                 'edit', 'BackgroundColor','white' ...
-              ,'Fontsize',11,'position',[471 (obj.panel_height/3+10) ...
+              ,'Fontsize',11,'position',[571+80 (obj.panel_height/3+10) ...
               80 40]);
             
           %以下6个是高斯分布参数区域二的文本框
@@ -341,20 +351,27 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[81 (obj.panel_height/3+10) ...
               80 40]);
+            set(obj.gaosi_center_lon_edit_2,'Enable','off');
+             % 获取纬度范围button1
+            obj.get_goss_lat_range_btn2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
+                'pushbutton', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
+                'string','获取纬度范围','position',[181 ...
+                (obj.panel_height/3+10) txt_area_width_label+40 40]);
             obj.gaosi_center_lat_txt_2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','纬度','position',[180 (obj.panel_height/3) 80 40]);
+                'string','纬度','position',[280+80 (obj.panel_height/3) 80 40]);
             obj.gaosi_center_lat_edit_2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
                 'edit', 'BackgroundColor','white' ...
-              ,'Fontsize',11,'position',[281 (obj.panel_height/3+10) ...
+              ,'Fontsize',11,'position',[381+80 (obj.panel_height/3+10) ...
               80 40]);
+           set(obj.gaosi_center_lat_edit_2,'Enable','off');
            
            obj.gaosi_plane_num_txt_2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','飞机数量','position',[370 (obj.panel_height/3) 100 40]);
+                'string','飞机数量','position',[470+80 (obj.panel_height/3) 100 40]);
             obj.gaosi_plane_num_edit_2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
                 'edit', 'BackgroundColor','white' ...
-              ,'Fontsize',11,'position',[471 (obj.panel_height/3+10) ...
+              ,'Fontsize',11,'position',[571+80 (obj.panel_height/3+10) ...
               80 40]);
           
           
@@ -422,7 +439,7 @@ classdef satellite_goss_gui_start < handle
             if wx_lon<0
                 wx_lon=wx_lon+360;%转为0-360
             end
-            high1 = str2double(get(obj.wx_high_edit, 'string'));
+            high = str2double(get(obj.wx_high_edit, 'string'));
             power1 = str2double(get(obj.wx_tx_power_edit, 'string'));
             hxj1 = str2double(get(obj.wx_hxj_edit, 'string'));
             hxj1=hxj1*pi/180;% 改为pi的形式
@@ -432,11 +449,117 @@ classdef satellite_goss_gui_start < handle
 
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取高斯分布经纬度范围...');
-            obj.goss_range= [wx_lon,wx_lon+10,wx_lat,wx_lat+10]; %这一步要调用紫童的方法来生成
+            [lon_down,lon_up]= goss_lon_range(wx_lon,wx_lat,high); %这一步要调用紫童的方法来生成
             set(obj.edt_echo, 'string', '获取经纬度范围结束');
-            setwx_param_inactive(obj);
-            set_goss_range_tooltip(obj,obj.goss_range);
-            set(obj.edt_echo, 'string', '已经获取到高斯分布范围。');
+            %高斯分布经度范围获取成功，才允许输入经度框
+            set(obj.gaosi_center_lon_edit_1,'Enable','on');
+            set(obj.gaosi_center_lon_edit_2,'Enable','on');
+            setwx_param_inactive(obj);%设置卫星参数不可编辑
+            set_goss_lon_range_tooltip(obj,lon_down,lon_up);%设置经度范围提示
+            obj.goss_range(1,1)=lon_down;
+            obj.goss_range(1,2)=lon_up;
+            set(obj.edt_echo, 'string', '已经获取到高斯分布经度范围。');
+        end
+        
+         % 设置高斯经度范围按钮1的回调函数
+        function result =set_goss_lon_btn1_callback(obj, source, eventdata)
+            set(obj.edt_echo, 'string', '准备计算纬度范围...');
+            %校验卫星的8个参数
+            if check_wx_param(obj)==0
+                 return;
+            end
+            %卫星参数获取
+            wx_lat = str2double(get(obj.wx_lat_edit, 'string'));
+            wx_lat=90-wx_lat;%转为0-180
+            wx_lon = str2double(get(obj.wx_lon_edit, 'string'));
+            if wx_lon<0
+                wx_lon=wx_lon+360;%转为0-360
+            end
+            high = str2double(get(obj.wx_high_edit, 'string'));
+            power1 = str2double(get(obj.wx_tx_power_edit, 'string'));
+            hxj1 = str2double(get(obj.wx_hxj_edit, 'string'));
+            hxj1=hxj1*pi/180;% 改为pi的形式
+            speed1 = str2double(get(obj.wx_speed_edit, 'string'));
+            tx_num_edit = str2double(get(obj.wx_tx_num_edit, 'string'));
+            txbs_width_edit = str2double(get(obj.wx_txbs_width_edit, 'string'));
+
+            % 接下来需要调用随机方法生成随机的飞机信息矩阵
+            set(obj.edt_echo, 'string', '正在获取高斯分布纬度范围...');
+            lon = str2double(get(obj.gaosi_center_lon_edit_1, 'string'));%用户输入的经度
+            if isnan(lon)
+                set(obj.edt_echo, 'string', '请输入数字！');
+                return;
+            end
+            if obj.goss_range(1,1)<obj.goss_range(1,2)%开始经度小于结束经度
+                if lon>obj.goss_range(1,2)||lon<obj.goss_range(1,1)%大于大的小于小的就是错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            else
+                if (lon>obj.goss_range(1,1)&&lon<=180)||(lon<obj.goss_range(1,2)&&lon>=-180)
+                    % 正确的经度
+                else
+                    % 错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            end
+
+            [lat_down,lat_up]=  goss_lat_range(wx_lon,wx_lat,high,obj.goss_range(1,1),obj.goss_range(1,2),lon); %这一步要调用紫童的方法来生成
+            set(obj.edt_echo, 'string', '获取纬度范围成功');
+            %高斯分布经度范围获取成功，才允许输入经度框
+            set_goss_lat_range_tooltip(obj,obj.goss_range_tooltip1,obj.gaosi_center_lat_edit_1,lat_down,lat_up);
+            set(obj.gaosi_center_lon_edit_1,'Enable','off');
+            obj.goss_range(1,3)=lat_down;
+            obj.goss_range(1,4)=lat_up;
+            set(obj.edt_echo, 'string', '已经获取到高斯分布1纬度度范围。');
+        end
+        
+        function result =set_goss_lon_btn2_callback(obj, source, eventdata)
+            set(obj.edt_echo, 'string', '准备计算纬度范围...');
+            %校验卫星的8个参数
+            if check_wx_param(obj)==0
+                 return;
+            end
+            %卫星参数获取
+            wx_lat = str2double(get(obj.wx_lat_edit, 'string'));
+            wx_lat=90-wx_lat;%转为0-180
+            wx_lon = str2double(get(obj.wx_lon_edit, 'string'));
+            if wx_lon<0
+                wx_lon=wx_lon+360;%转为0-360
+            end
+            high = str2double(get(obj.wx_high_edit, 'string'));
+
+            % 接下来需要调用随机方法生成随机的飞机信息矩阵
+            set(obj.edt_echo, 'string', '正在获取高斯分布纬度范围...');
+            lon = str2double(get(obj.gaosi_center_lon_edit_2, 'string'));%用户输入的经度
+            if isnan(lon)
+                set(obj.edt_echo, 'string', '请输入数字！');
+                return;
+            end
+            if obj.goss_range(1,1)<obj.goss_range(1,2)%开始经度小于结束经度
+                if lon>obj.goss_range(1,2)||lon<obj.goss_range(1,1)%大于大的小于小的就是错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            else
+                if (lon>obj.goss_range(1,1)&&lon<=180)||(lon<obj.goss_range(1,2)&&lon>=-180)
+                    % 正确的经度
+                else
+                    % 错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            end
+
+            [lat_down,lat_up]=  goss_lat_range(wx_lon,wx_lat,high,obj.goss_range(1,1),obj.goss_range(1,2),lon); %这一步要调用紫童的方法来生成
+            set(obj.edt_echo, 'string', '获取纬度范围成功');
+            %高斯分布经度范围获取成功，才允许输入经度框
+            set_goss_lat_range_tooltip(obj,obj.goss_range_tooltip2,obj.gaosi_center_lat_edit_2,lat_down,lat_up);
+            set(obj.gaosi_center_lon_edit_2,'Enable','off');
+            obj.goss_range(1,3)=lat_down;
+            obj.goss_range(1,4)=lat_up;
+            set(obj.edt_echo, 'string', '已经获取到高斯分布2纬度度范围。');
         end
         
         function setwx_param_inactive(obj)
@@ -451,16 +574,14 @@ classdef satellite_goss_gui_start < handle
             set(obj.plane_edt_times,'Enable','off');
         end
         
-        function set_goss_range_tooltip(obj,goss_range)
+        function set_goss_lon_range_tooltip(obj,lon_down,lon_up)
             obj.goss_range_tooltip1 = uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[0 ...
               (obj.panel_height/3+10 +40) obj.gui_width/2 40]);
-          temp = strcat('高斯分布经度范围，应为[',num2str(goss_range(1,1)),',');
-          temp =strcat(temp,num2str(goss_range(1,2)));
+          temp = strcat('高斯分布经度范围，应为[',num2str(lon_down),',');
+          temp =strcat(temp,num2str(lon_up));
           temp = strcat(temp,']。');
-          temp = strcat(temp,'高斯分布纬度度范围，应为[',num2str(goss_range(1,3)),',',num2str(goss_range(1,4)),']');
-       
           set(obj.goss_range_tooltip1,'string',temp);
             set(obj.goss_range_tooltip1,'Enable','off');
             obj.goss_range_tooltip2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
@@ -469,6 +590,12 @@ classdef satellite_goss_gui_start < handle
               (obj.panel_height/3+10+40) obj.gui_width/2 40]);
             set(obj.goss_range_tooltip2,'string',temp);
             set(obj.goss_range_tooltip2,'Enable','off');
+        end
+        
+         function set_goss_lat_range_tooltip(obj,latecho,lat_input,lat_down,lat_up)
+            temp = strcat('高斯分布纬度度范围，应为[',num2str(lat_down),',',num2str(lat_up),'].');
+            set(latecho,'string',temp);
+            set(lat_input,'Enable','on');
         end
         
         % Callback function for button start.
@@ -510,10 +637,7 @@ classdef satellite_goss_gui_start < handle
                  set(obj.edt_echo, 'string', '高斯分布参数1,纬度必须为[-90,90].');
                  return;
              end
-             if is_err_lon(gaosi_lon1)
-                 set(obj.edt_echo, 'string', '高斯分布参数1,经度度必须为[-180,180].');
-                 return;
-              end
+             
               
              % 设置高斯分布参数
              if gaosi_center1_isempty(obj)&&gaosi_center2_isempty(obj)
@@ -528,8 +652,8 @@ classdef satellite_goss_gui_start < handle
                      set(obj.edt_echo, 'string', '高斯分布1飞机数量超出范围，应为[0,10000],请重新设置.');
                      return ;
                  end
-                 if is_gaosi_range_err(obj,gaosi_lon1,gaosi_lat1)
-                     set(obj.edt_echo, 'string', '高斯分布1经纬度不在范围内！.');
+                 if is_gaosi_lat_range_err(obj,gaosi_lat1)
+                     set(obj.edt_echo, 'string', '高斯分布1纬度不在范围内！.');
                      return;
                  end
                  goss_num_arr=[goss_plane_num];
@@ -542,60 +666,61 @@ classdef satellite_goss_gui_start < handle
                   set(obj.edt_echo, 'string', '高斯分布1参数不能为空.');
                  return ;
              else
-                 if is_err_lat(gaosi_lat2)
-                     set(obj.edt_echo, 'string', '高斯分布参数2,纬度必须为[-90,90].');
+                 if is_gaosi_lat_range_err(obj,gaosi_lat2)
+                     set(obj.edt_echo, 'string', '高斯分布1纬度不在范围内！.');
                      return;
                  end
                   if is_err_lon(gaosi_lon2)
                      set(obj.edt_echo, 'string', '高斯分布参数2,经度度必须为[-180,180].');
                      return;
                   end
-                   goss_plane_num =str2double(get(obj.gaosi_plane_num_edit_1, 'string'));
-                 if isnan(goss_plane_num)
-                     set(obj.edt_echo, 'string', '高斯分布1飞机数量必须为数字.');
-                 return ;
-                 elseif goss_plane_num<0 || goss_plane_num>10000
-                     set(obj.edt_echo, 'string', '高斯分布1飞机数量超出范围，应为[0,10000],请重新设置.');
-                     return ;
-                 end
-                  goss_plane_num2 =str2double(get(obj.gaosi_plane_num_edit_2, 'string'));
-                 if isnan(goss_plane_num2)
-                     set(obj.edt_echo, 'string', '高斯分布2飞机数量必须为数字.');
-                 return ;
-                 elseif goss_plane_num2<0 || goss_plane_num2>10000
-                     set(obj.edt_echo, 'string', '高斯分布2飞机数量超出范围，应为[0,10000],请重新设置.');
-                     return ;
-                 end
-                  goss_num_arr = [goss_plane_num,goss_plane_num2];
-                  %校验高斯分布范围
-                  if is_gaosi_range_err(obj,gaosi_lon1,gaosi_lat1)
-                      set(obj.edt_echo, 'string', '高斯分布1经纬度不在范围内！.');
-                     return;
-                 end
-                   if gaosi_lon1<0
-                    gaosi_lon1=gaosi_lon1+360;
-                   end
-                   gaosi_lat1=90-gaosi_lat1;
-                   goss1 =[gaosi_lon1,gaosi_lat1]; 
-                    %校验高斯分布范围
-                   if is_gaosi_range_err(obj,gaosi_lon2,gaosi_lat2)
-                       set(obj.edt_echo, 'string', '高斯分布2经纬度不在范围内！.');
-                     return;
-                   end
-                   if gaosi_lon2<0
-                        gaosi_lon2=gaosi_lon2+360;
-                   end
-                   gaosi_lat2=90-gaosi_lat2;
-                   goss2 =[gaosi_lon2,gaosi_lat2];
-                   goss=[goss1;goss2];
+                       goss_plane_num =str2double(get(obj.gaosi_plane_num_edit_1, 'string'));
+                      if isnan(goss_plane_num)
+                         set(obj.edt_echo, 'string', '高斯分布1飞机数量必须为数字.');
+                          return ;
+                     elseif goss_plane_num<0 || goss_plane_num>10000
+                         set(obj.edt_echo, 'string', '高斯分布1飞机数量超出范围，应为[0,10000],请重新设置.');
+                         return ;
+                      end
+                    goss_plane_num2 =str2double(get(obj.gaosi_plane_num_edit_2, 'string'));
+                     if isnan(goss_plane_num2)
+                         set(obj.edt_echo, 'string', '高斯分布2飞机数量必须为数字.');
+                            return ;
+                     elseif goss_plane_num2<0 || goss_plane_num2>10000
+                         set(obj.edt_echo, 'string', '高斯分布2飞机数量超出范围，应为[0,10000],请重新设置.');
+                         return ;
+                     end
+                      goss_num_arr = [goss_plane_num,goss_plane_num2];
+                      %校验高斯分布范围
+                      if is_gaosi_lat_range_err(obj,gaosi_lat1)
+                          set(obj.edt_echo, 'string', '高斯分布1纬度不在范围内！.');
+                         return;
+                     end
+                       if gaosi_lon1<0
+                        gaosi_lon1=gaosi_lon1+360;
+                       end
+                       gaosi_lat1=90-gaosi_lat1;
+                       goss1 =[gaosi_lon1,gaosi_lat1]; 
+                        %校验高斯分布范围
+                       if is_gaosi_lat_range_err(obj,gaosi_lat2)
+                           set(obj.edt_echo, 'string', '高斯分布2纬度不在范围内！.');
+                         return;
+                       end
+                       if gaosi_lon2<0
+                            gaosi_lon2=gaosi_lon2+360;
+                       end
+                       gaosi_lat2=90-gaosi_lat2;
+                       goss2 =[gaosi_lon2,gaosi_lat2];
+                       goss=[goss1;goss2];
              end
 
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取飞机参数...');
             planes= PlaneDistribute(wx_lon,wx_lat,high1,fnum,goss_num_arr,goss);
+            planes_id = ID_creat(size(planes,2));%根据飞机个数生成ID。
             set(obj.edt_echo, 'string', '正在进行仿真...');
             %调用主函数
-            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit);
+            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id);
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
                   obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:)-360;
@@ -756,26 +881,29 @@ classdef satellite_goss_gui_start < handle
         end
         
          % 校验高斯分布经纬度范围
-        function s = is_gaosi_range_err(obj,goss_lon,goss_lat)      
+        function s = is_gaosi_lat_range_err(obj,goss_lat)      
              s=1;
-             if goss_lon>obj.goss_range(1,2)||goss_lon<obj.goss_range(1,1)
-                 s=1;
+             if  goss_lat>90||goss_lat<-90
+                 set(obj.edt_echo, 'string', '你输入的纬度不在范围内,请重新输入！');
                  return;
              end
-             if goss_lat>obj.goss_range(1,4)||goss_lat<obj.goss_range(1,3)
-                 s=1;
-                 return;
-             end
+             if goss_lat>=obj.goss_range(1,4)&&goss_lat<=obj.goss_range(1,3)
+                  % 正确的纬度
+             else
+                  % 错误的纬度
+                  set(obj.edt_echo, 'string', '你输入的纬度不在范围内,请重新输入！');
+                  return;
+             end        
              s=0;
         end
         
+        
+        
         function callback_mapping(obj)
           
-            set(obj.config_man, 'callback', @obj.button_save_config_callback);
             set(obj.set_wx_param_btn, 'callback', @obj.set_wx_param_btn_callback);
-            set(obj.config_sct, 'callback', @obj.button_config_file_callback);
-            set(obj.config_con, 'callback', @obj.button_config_callback);
-
+            set(obj.get_goss_lat_range_btn1, 'callback', @obj.set_goss_lon_btn1_callback);
+            set(obj.get_goss_lat_range_btn2, 'callback', @obj.set_goss_lon_btn2_callback);
             set(obj.btn_c1, 'callback', @obj.button_start_callback);
             set(obj.btn_c2, 'callback', @obj.button_exit_callback);
            
