@@ -678,7 +678,7 @@ classdef satellite_mul_plane_gui_start < handle
             plane_icao3=get(obj.plane_edt_icao3, 'string');
              plane_id3=get(obj.plane_edt_id3, 'string');
             % 校验飞机1参数
-            if check_plane_1(obj,lon1,lat1,high1,speed1,hxj1,power1,'一')==0
+            if check_plane_1(obj,lon1,lat1,high1,speed1,hxj1,power1,plane_hy_speed1,plane_icao1,plane_id1,'一')==0
                 return ;
             end
              lat1=90-lat1;
@@ -691,7 +691,7 @@ classdef satellite_mul_plane_gui_start < handle
              plane1_id =createId(obj,plane_icao1,plane_id1);
              %飞机2不为空,就需要校验参数，并且把参数合并到飞机1.2中
             if ~plane2isempty(obj)
-                if check_plane_1(obj,lon2,lat2,high2,speed2,hxj2,power2,'二')==0
+                if check_plane_1(obj,lon2,lat2,high2,speed2,hxj2,power2,plane_hy_speed2,plane_icao2,plane_id2,'二')==0
                     return ;
                 else
                     lat2=90-lat2;
@@ -707,7 +707,7 @@ classdef satellite_mul_plane_gui_start < handle
             
             %飞机3不为空,就需要校验参数，并且把参数合并到飞机1.2中
             if ~plane3isempty(obj)
-                 if check_plane_1(obj,lon3,lat3,high3,speed3,hxj3,power3,'三')==0
+                 if check_plane_1(obj,lon3,lat3,high3,speed3,hxj3,power3,plane_hy_speed3,plane_icao3,plane_id3,'三')==0
                     return ;
                  else
                      lat3=90-lat3;

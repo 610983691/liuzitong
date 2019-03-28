@@ -1,4 +1,4 @@
-function [mess_rec_all,mess_rec_all1,mess_rec_all2,plane_lon,plane_lat,plane_high] = satellite_simple_gui_main(plane_para,simu_time,lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width)
+function [mess_rec_all,mess_rec_all1,mess_rec_all2,plane_lon,plane_lat,plane_high] = satellite_simple_gui_main(plane_para,simu_time,lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width,planes_id)
 
 simu_step =1e-2;%s
 ratio = 6371;%KM
@@ -29,42 +29,18 @@ velocity(i,1) = plane_para(4,i);
 end
 
 
-character_select = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N',...
-                    'O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1',...
-                    '2','3','4','5','6','7','8','9',' '};
-plane_ID =cell(N,8);
-select1 = unidrnd(37,N,8);
+plane_ICAO_double = zeros(N,4);
+plane_ID_double = zeros(N,8);
 for i = 1:N
-    for j = 1:8
-       plane_ID{i,j} = character_select(select1(i,j));
-    end
-end
-plane_ID1 = zeros(N,8);
-for i = 1:N
-    for j = 1:8
-        plane_ID1(i,j) = cell2mat(plane_ID{i,j});
-    end
+   plane_ICAO_double(i,:) = double(planes_id{1,i});
+   plane_ID_double(i,:) = double(planes_id{2,i});
 end
 
-plane_ICAO = cell(N,4);
-select2 = unidrnd(26,N,4);
-for i = 1:N
-    for j = 1:4
-       plane_ICAO{i,j} = character_select(select2(i,j));
-    end
-end
-plane_ICAO1 = zeros(N,4);
-for i = 1:N
-    for j = 1:4
-        plane_ICAO1(i,j) = cell2mat(plane_ICAO{i,j});
-    end
-end
-ICAO = zeros(N,24);
 code_heading = zeros(N,32);
 for i = 1:N
     icaobin = zeros(1,24);
     for j = 1:4 
-            icaobin(1,(j*6-5):(j*6)) = bitand(bitget(plane_ICAO1(i,j),6:-1:1),[1,1,1,1,1,1]);  
+            icaobin(1,(j*6-5):(j*6)) = bitand(bitget(plane_ICAO_double(i,j),6:-1:1),[1,1,1,1,1,1]);  
      end
     code_heading(i,:) = [1 ,0 ,0 ,0, 1,0,1,0,icaobin]; %DF CA AA
 end
@@ -88,7 +64,7 @@ measured_value = spline(theta,value,X);
 
 %飞机类
 for i = 1:N
-plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10) );
+plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10),plane_para(7,i) );
 %仿真时长，仿真步进，经度，纬度，高度，速度，加速度，航向角，仰角
 end
 %卫星类
@@ -126,7 +102,7 @@ while(clock<(simu_time/simu_step))
     
     %编码过程
     [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,plane{i}.cpr_f,...
-    plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID1(i,:),i);
+    plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID_double(i,:),i,plane_para(7,i));
     mess112 = crcencode(code_heading(i,:),mecode);
     
     %加上损耗增益等
