@@ -1,5 +1,5 @@
 function plane = PlaneDistribute1(N)
-  plane = zeros(1,N);
+  plane = zeros(7,N);
   for i = 1:N
     plane(1,i) = rand()*360;
     plane(2,i) = rand()*180;
@@ -7,5 +7,6 @@ function plane = PlaneDistribute1(N)
     plane(4,i) = (rand()*2+800)/3600;
     plane(5,i) = rand()*360*pi/180;
     plane(6,i) = rand()*30-115;%dnm
+    plane(7,i) = randi(8)*64;%”¢≥ﬂ√ø∑÷÷”
   end
 end

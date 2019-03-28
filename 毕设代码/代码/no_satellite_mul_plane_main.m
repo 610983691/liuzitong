@@ -52,7 +52,7 @@ time_rec_all = [];
 
 %飞机类
 for i = 1:N
-plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10) );
+plane{i} = AIRCRAFT(simu_time,simu_step,plane_para(1,i),plane_para(2,i),plane_para(3,i),plane_para(4,i),plane_para(5,i),ceil(rand(1)*10),plane_para(7,i));
 %仿真时长，仿真步进，经度，纬度，高度，速度，加速度，航向角，仰角
 end
 

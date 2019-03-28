@@ -225,9 +225,10 @@ classdef no_satellite_random_plane_gui_start < handle
             set(obj.edt_echo, 'string', '正在获取飞机参数...');
   
             planes= PlaneDistribute1(fnum);
+            planes_id = ID_creat(fnum);
             set(obj.edt_echo, 'string', '正在进行仿真...');
             % 接下来调用紫童的方法传递参数，进行仿真
-            [obj.mess_rec_all,result_lon,result_lat,result_high] =no_satellite_simple_main(planes,ftime);
+            [obj.mess_rec_all,result_lon,result_lat,result_high] =no_satellite_random_plane_main(planes,ftime,planes_id);
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
@@ -305,19 +306,6 @@ classdef no_satellite_random_plane_gui_start < handle
             return ;
         end
         
-    
-        %创建飞机信息
-        function plane = createPlane(obj,lon,lat,high,speed,hxj,power)
-                plane = zeros(6,1);
- 
-                plane(1,1) = lon;
-                plane(2,1) = lat;
-                plane(3,1) = (high-1)*0.3+8.4+(rand()*2-1)*0.02;
-                plane(4,1) = speed;
-                plane(5,1) = hxj;
-                plane(6,1) = power;%dnm
-
-        end
         
         function callback_mapping(obj)
           

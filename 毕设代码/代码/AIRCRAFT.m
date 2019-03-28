@@ -29,10 +29,11 @@ classdef AIRCRAFT
        seq_mid1;
        seq_mid2;
        r_h;
+       rate_v;
     end
     
     methods
-        function obj = AIRCRAFT(simu_t,step_t,lo,la,high,vel,p_a,first_time)
+        function obj = AIRCRAFT(simu_t,step_t,lo,la,high,vel,p_a,first_time,rate_v)
             obj.simu_time = simu_t;
             obj.time_step = step_t;
             obj.longitude = lo;
@@ -56,12 +57,13 @@ classdef AIRCRAFT
             obj.power = [];
             obj.seq_mid1 = [];
             obj.seq_mid2 = [];
+            obj.rate_v = rate_v;
         end
         
         %位置变化  这里的经纬度其实就是角度，最后如果需要显示出来再按照对应规则显示
         function obj = ChangePosition(obj,ratio)
             obj.velocity = obj.velocity ;
-            obj.hight = obj.hight ;
+            obj.hight = obj.hight+obj.rate_v*5.08*10^(-6)*obj.time_step ;%将垂直速度英尺每分钟变成KM/S英尺每分钟等于5。08毫米每秒
             obj.latitude = obj.latitude + obj.velocity*cos(obj.path_angle)*obj.time_step/(ratio+obj.hight);
             obj.longitude = obj.longitude + obj.velocity*sin(obj.path_angle)*obj.time_step/(ratio+obj.hight)/cos(obj.latitude*pi/180);
              %飞机在直角坐标系中位置表示
@@ -77,7 +79,7 @@ classdef AIRCRAFT
             %obj.v =[v,90-仰角，航向角];
             ns_v = obj.velocity*sin(obj.path_angle);
             ew_v = obj.velocity*cos(obj.path_angle);%西东速度
-            r1 = [ ew_v; ns_v;0];%er,etheta,rphy
+            r1 = [ ew_v; ns_v;obj.rate_v*5.08*10^(-6)];%er,etheta,rphy
             obj.v = [-sin(obj.longitude*pi/180),cos(obj.longitude*pi/180),0;cos(obj.latitude*pi/180)*cos(obj.longitude*pi/180),cos(obj.latitude*pi/180)*sin(obj.longitude*pi/180),-sin(obj.latitude*pi/180);...
                   sin(obj.latitude*pi/180)*cos(obj.longitude*pi/180),sin(obj.latitude*pi/180)*sin(obj.longitude*pi/180),cos(obj.latitude*pi/180)]^-1*r1+obj.r;
         end

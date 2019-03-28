@@ -1,4 +1,4 @@
-function [mess_rec_all,plane_lon,plane_lat,plane_high] =no_satellite_simple_main(plane_para,simu_time)
+function [mess_rec_all,plane_lon,plane_lat,plane_high] =no_satellite_random_plane_main(plane_para,simu_time,planes_id)
 
 
 simu_step =1e-2;%s
@@ -23,42 +23,18 @@ plane_high(i,1) = plane_para(3,i);
 velocity(i,1) = plane_para(4,i);
 end
 
-
-character_select = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N',...
-                    'O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1',...
-                    '2','3','4','5','6','7','8','9',' '};
-plane_ID =cell(N,8);
-select1 = unidrnd(37,N,8);
+plane_ICAO_double = zeros(N,4);
+plane_ID_double = zeros(N,8);
 for i = 1:N
-    for j = 1:8
-       plane_ID{i,j} = character_select(select1(i,j));
-    end
-end
-plane_ID1 = zeros(N,8);
-for i = 1:N
-    for j = 1:8
-        plane_ID1(i,j) = cell2mat(plane_ID{i,j});
-    end
+   plane_ICAO_double(i,:) = double(planes_id{1,i});
+   plane_ID_double(i,:) = double(planes_id{2,i});
 end
 
-plane_ICAO = cell(N,4);
-select2 = unidrnd(26,N,4);
-for i = 1:N
-    for j = 1:4
-       plane_ICAO{i,j} = character_select(select2(i,j));
-    end
-end
-plane_ICAO1 = zeros(N,4);
-for i = 1:N
-    for j = 1:4
-        plane_ICAO1(i,j) = cell2mat(plane_ICAO{i,j});
-    end
-end
 code_heading = zeros(N,32);
 for i = 1:N
     icaobin = zeros(1,24);
     for j = 1:4 
-            icaobin(1,(j*6-5):(j*6)) = bitand(bitget(plane_ICAO1(i,j),6:-1:1),[1,1,1,1,1,1]);  
+            icaobin(1,(j*6-5):(j*6)) = bitand(bitget(plane_ICAO_double(i,j),6:-1:1),[1,1,1,1,1,1]);  
      end
     code_heading(i,:) = [1 ,0 ,0 ,0, 1,0,1,0,icaobin]; %DF CA AA
 end
