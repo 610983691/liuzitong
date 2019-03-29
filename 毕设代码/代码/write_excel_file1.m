@@ -1,15 +1,29 @@
-function write_excel_file1(time_asix_mess,planes_id)
+function write_excel_file1(time_asix_mess,planes_id)%无卫星情况excel文件写入
 filename = 'testdata.xls';
 A = {'发送时间','飞机编号','报文编号','报文功率','经度','纬度','高度','速度','垂直速度','报文类型','奇偶编码','ICAO','ID'};
 sheet = 1;
 xlRange = 'A1';
 xlswrite(filename,A,sheet,xlRange);%写入表头
-planes_id_asix = cell(2,size(time_asix_mess,2));
-for i = 1:size(time_asix_mess,2)
+%封装数据矩阵
+rows =size(time_asix_mess,2);%每个飞机数据在excel里边是一行
+data = cell(rows,13);%rows*13列的元胞数组，rows是飞机个数
+
+planes_id_asix = cell(2,rows);%Id的大小2行，飞机列数(飞机数目)作为列数
+for i = 1:rows%遍历所有的飞机
     for j = 1:2
-        planes_id_asix{j,i} = planes_id{j,time_asix_mess(2,i)};
+        planes_id_asix{j,i} = planes_id{j,time_asix_mess(2,i)};%根据飞机的编号，去获取plane_id放到planes_id_asix里边，一个飞机就是一列
     end
 end
-data =[1,2,3;4,5,6];
-xlswrite(filename,data,sheet,'A2:C3');%写入
+
+for row=1:rows %遍历每一行
+    for col=1:11
+        data{row,col}=time_asix_mess(col,row);%飞机数据的行和列是反着的
+    end
+    data{row,12}=planes_id_asix(col,1);%飞机的ID也是一列一列放的
+    data{row,13}=planes_id_asix(col,2);
+end
+
+
+%接下来开始写入数据
+xlswrite(filename,data,sheet,'A2');%写入
 end
