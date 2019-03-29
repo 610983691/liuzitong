@@ -161,7 +161,7 @@ classdef no_satellite_random_plane_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[3+(3*txt_area_width_label+edit_area_width) obj.panel_height/3 ...
               edit_area_width 40]);
-             set(obj.plane_edt_auto_power, 'string', '57');
+             set(obj.plane_edt_auto_power, 'string', '-90');
           
                % Init 仿真时长
             obj.plane_txt_times = uicontrol('parent', obj.panel_auto_config, 'style', ...
@@ -243,10 +243,11 @@ classdef no_satellite_random_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
+            set(obj.edt_echo, 'string', '仿真结束，正在写入结果文件...');
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file1(obj.time_asix_mess,obj.planes_id_out);
-            set(obj.edt_echo, 'string', '仿真结束');
+            set(obj.edt_echo, 'string', '结果写入完毕，程序结束！');
         end
         
         % Callback function for exit button.
@@ -299,9 +300,6 @@ classdef no_satellite_random_plane_gui_start < handle
              plane_power = str2double(get(obj.plane_edt_auto_power, 'string'));%报文功率
              if isnan(plane_power)
                 set(obj.edt_echo, 'string', '设置的报文功率中包含非法字符，应为数值，请重新设置！');
-                return ;
-            elseif plane_power <= 0 || plane_power > 1000
-                set(obj.edt_echo, 'string', '设置的报文功率超出范围，应为(0, 1000]，请重新设置！');
                 return ;
              end
             

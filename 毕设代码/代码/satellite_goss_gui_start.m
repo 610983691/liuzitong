@@ -209,7 +209,7 @@ classdef satellite_goss_gui_start < handle
             obj.wx_tx_power_edit = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'edit', 'BackgroundColor','white','Fontsize',11,'position', ...
                 [5+(3*txt_area_width_label+2*edit_area_width) 60 edit_area_width 40]);
-            set(obj.wx_tx_power_edit, 'string', '-100');
+            set(obj.wx_tx_power_edit, 'string', '10');
             % Init the height text for the plane.
             obj.wx_high_txt = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 11, ...
@@ -219,7 +219,7 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white'...
               ,'Fontsize',11,'position',[7+(4*txt_area_width_label+3*edit_area_width) 60 ...
               edit_area_width 40]);
-          set(obj.wx_high_edit, 'string', '700');
+           set(obj.wx_high_edit, 'string', '700');
             % Init the velocity text for the plane.
             obj.wx_speed_txt = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 11, ...
@@ -229,7 +229,7 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[9+(5*txt_area_width_label+4*edit_area_width) 60 ...
               edit_area_width 40]);
-             set(obj.wx_speed_edit, 'string', '100');
+             set(obj.wx_speed_edit, 'string', '7.9');
             % Init the azimuth of the plane.
             obj.wx_hxj_txt = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 11, ...
@@ -712,6 +712,12 @@ classdef satellite_goss_gui_start < handle
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file2(obj.time_asix_mess,obj.planes_id_result);
+            if wx_lon>180
+                temp_lon =wx_lon-360;
+            else 
+                temp_lon =wx_lon;
+            end
+            write_satellite_location(temp_lon,90-wx_lat,high1);%写入卫星位置文件
             set(obj.edt_echo, 'string', '写入结果文件完成.');
         end
         
@@ -795,7 +801,7 @@ classdef satellite_goss_gui_start < handle
             if isnan(speed1)
                 set(obj.edt_echo, 'string',  '卫星速度必须为数字，请重新设置！');
                 return;
-             elseif high1<0||high1>1000
+             elseif speed1<0||speed1>1000
                 set(obj.edt_echo, 'string',  '卫星速度必须为数字，应为[0, 1000]，请重新设置！');
                 return;
              end
