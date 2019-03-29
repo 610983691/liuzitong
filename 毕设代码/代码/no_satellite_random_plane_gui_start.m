@@ -94,6 +94,7 @@ classdef no_satellite_random_plane_gui_start < handle
         plane_lon_path;
         plane_lat_path;
         mess_rec_all;
+        time_asix_mess;
         planes_id_out;
         
         % Callback function flag.
@@ -230,7 +231,7 @@ classdef no_satellite_random_plane_gui_start < handle
             planes_id = ID_creat(fnum);
             set(obj.edt_echo, 'string', '正在进行仿真...');
             % 接下来调用紫童的方法传递参数，进行仿真
-            [obj.mess_rec_all,result_lon,result_lat,result_high,obj.planes_id_out]  =no_satellite_random_plane_main(planes,ftime,planes_id);
+            [obj.time_asix_mess,obj.mess_rec_all,result_lon,result_lat,result_high,obj.planes_id_out]  =no_satellite_mul_plane_main(planes,ftime,planes_id);
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
