@@ -62,7 +62,8 @@ for i = 1:N
     flag = 0;%记录报文个数
     type = randi(4);
     type_code(1,:) = bitget(type,5:-1:1); 
-    even_old = cpr(i);
+    even_old = cpr(i);   
+    cpr_all = [];
 while(clock<(simu_time/simu_step))  
     plane{i} = ChangePosition(plane{i},ratio);
     plane{i} = BroadCast(plane{i},clock); 
@@ -75,14 +76,16 @@ while(clock<(simu_time/simu_step))
 
     %编码过程
     if plane{i}.broad_times(1,clock) ~= 0
+                
+     flag = flag+1;%报文数量增加
       cpr_flag = 0;  
-    if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是 位置信息
-       even_old =  mod(even_old+1,2);
-       cpr_flag = even_old+1;
+    if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是位置信息
+       even_old =  mod(even_old+1,2);%不考虑上下天线时的cpr情况
+       cpr_all= [cpr_all,[even_old;flag]];%不考虑上下天线时的这一架飞机的所有cpr情况，并且记录下这是飞机的第几个报文
+       cpr_flag = even_old+1;%不考虑上下天线时最后的输入列表中表示奇偶编码的变量
     end
         
-        
-    flag = flag+1;%报文数量增加
+
     
     %编码过程
     [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,even_old,...
@@ -105,7 +108,15 @@ while(clock<(simu_time/simu_step))
     plane{i}.seq_mid = [plane{i}.seq_mid;ppm_value]; 
     end
 end
-time_rec_all = [time_rec_all , plane{i}.rec_time];
+   time_rec_all = [time_rec_all , plane{i}.rec_time];
+   %完成一架飞机的仿真后，得到考虑上下天线的数据
+   cpr_all_1 = [];
+   for j = 1:2:size(cpr_all,2)
+       cpr_all_1 = [cpr_all_1,cpr_all(:,j)];
+   end
+   
+   
+   
 end
 time_asix = zeros(11,size(time_rec_all,2));%没有接收时间
 [time_asix(1,:),index] = sort(time_rec_all(1,:));%根据发送时间排序 

@@ -33,17 +33,17 @@ for i = 1:N1
     end
     plane_lat_path(i) = 90-lat(i);
 end
-% goss_center_info = [lon(1,randi(N1)),lat(1,randi(N1))];
-% for i = 1:num1
-%     lon(1,N1+i) = mod(goss_center_info(1,1)+randn(),360);
-%     lat(1,N1+i) = mod(goss_center_info(1,2)+randn(),180);
-%     if lon(N1+i)>180
-%        plane_lon_path(N1+i) = lon(N1+i)-360;
-%     else
-%        plane_lon_path(N1+i) = lon(N1+i);
-%     end
-%     plane_lat_path(N1+i) = 90-lat(N1+i);
-% end
+goss_center_info = [lon(1,randi(N1)),lat(1,randi(N1))];
+for i = 1:num1
+    lon(1,N1+i) = mod(goss_center_info(1,1)+randn(),360);
+    lat(1,N1+i) = mod(goss_center_info(1,2)+randn(),180);
+    if lon(N1+i)>180
+       plane_lon_path(N1+i) = lon(N1+i)-360;
+    else
+       plane_lon_path(N1+i) = lon(N1+i);
+    end
+    plane_lat_path(N1+i) = 90-lat(N1+i);
+end
 
 t = 0:0.02:2*pi;
 plot(space*cos(t),space*sin(t),'r');
@@ -53,4 +53,4 @@ plot(x,y,'*');
 lats = 30;
 write_init_lon_data_2_file(plane_lon_path);
 write_init_lat_data_2_file(plane_lat_path);
-write_satellite_location(lons,lats,highs);
+% write_satellite_location(lons,lats,highs);
