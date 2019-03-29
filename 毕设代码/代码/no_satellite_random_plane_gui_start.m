@@ -301,9 +301,6 @@ classdef no_satellite_random_plane_gui_start < handle
              if isnan(plane_power)
                 set(obj.edt_echo, 'string', '设置的报文功率中包含非法字符，应为数值，请重新设置！');
                 return ;
-            elseif plane_power <= 0 || plane_power > 1000
-                set(obj.edt_echo, 'string', '设置的报文功率超出范围，应为(0, 1000]，请重新设置！');
-                return ;
              end
             
              %全部校验完了就表明正确返回1
