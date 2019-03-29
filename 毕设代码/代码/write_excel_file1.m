@@ -1,5 +1,5 @@
 function write_excel_file1(time_asix_mess,planes_id)%无卫星情况excel文件写入
-filename = 'testdata.xls';
+filename = 'no_satellite_data.xls';
 A = {'发送时间','飞机编号','报文编号','报文功率','经度','纬度','高度','速度','垂直速度','报文类型','奇偶编码','ICAO','ID'};
 sheet = 1;
 xlRange = 'A1';
@@ -19,8 +19,8 @@ for row=1:rows %遍历每一行
     for col=1:11
         data{row,col}=time_asix_mess(col,row);%飞机数据的行和列是反着的
     end
-    data{row,12}=planes_id_asix(col,1);%飞机的ID也是一列一列放的
-    data{row,13}=planes_id_asix(col,2);
+    data{row,12}=planes_id_asix{1,row};%飞机的ID也是一列一列放的
+    data{row,13}=planes_id_asix{2,row};
 end
 
 

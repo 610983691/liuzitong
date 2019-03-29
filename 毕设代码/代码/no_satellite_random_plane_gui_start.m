@@ -245,6 +245,7 @@ classdef no_satellite_random_plane_gui_start < handle
             end
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
+            write_excel_file1(obj.time_asix_mess,obj.planes_id_out);
             set(obj.edt_echo, 'string', '·ÂÕæ½áÊø');
         end
         
