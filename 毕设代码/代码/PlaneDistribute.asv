@@ -68,5 +68,6 @@ for i = 1:N
     plane(7,i) = randi(8)*64;%”¢≥ﬂ√ø∑÷÷”
 end
  end
+nnnnn
 
 

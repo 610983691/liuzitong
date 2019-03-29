@@ -1,7 +1,7 @@
 clear all;
-N1 = 2000;
+N1 = 1000;
 lats =90;
-lons = 0;
+lons = 20;
 highs = 700;
 rs = [(highs+6371)*sin(lats*pi/180)*cos(lons*pi/180),(highs+6371)*sin(lats*pi/180)*sin(lons*pi/180),(highs+6371)*cos(lats*pi/180)];
 space = 6371*acos(6371/7071);%ÇòÃæ¾àÀë°ë¾¶
@@ -13,7 +13,6 @@ x = zeros(1,N1);
 y = zeros(1,N1);
 lon_change = zeros(1,N1);
 lat_change = zeros(1,N1);
-d = zeros(1,N1);
 for i = 1:N1
     x(i)= r(i).*cos(phy(i));
     y(i) =r(i).*sin(phy(i));
@@ -22,8 +21,7 @@ for i = 1:N1
     lon = mod(lons+lon_change(i),360);
     lat = mod(lats+lat_change(i),180);
     r_plane = [6371*sin(lat*pi/180)*cos(lon*pi/180),6371*sin(lat*pi/180)*sin(lon*pi/180),6371*cos(lat*pi/180)];
-    d(i) = norm(r_plane-rs);
-    if lon>180
+    if lon<0
        plane_lon_path(i) = lon-360;
     else
        plane_lon_path(i) = lon;

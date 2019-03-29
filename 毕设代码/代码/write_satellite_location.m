@@ -6,7 +6,8 @@ fprintf(fid,'%3.12f',lon);
 fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
 fprintf(fid,'%3.12f',lat);
 fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
-r = high;%球面半径需要根据经纬高计算出来，这个计算方法紫童来完成，单位是KM
+theta = acos(6371/(6371+high));
+r = theta*6371*2;%球面半径需要根据经纬高计算出来，这个计算方法紫童来完成，单位是KM
 fprintf(fid,'%3.12f',r);
 
 

@@ -92,7 +92,7 @@ while(clock<(simu_time/simu_step))
     satellite_high(1,clock) = satellite.hight;
 
     %编码过程
-    if norm(plane{i}.r_h-satellite.r)<=3074 
+    if norm(plane{i}.r_h-satellite.r)<=sqrt((ratio+high_s)^2-ratio^2);
     if plane{i}.broad_times(1,clock) ~= 0
         cpr_flag = 0;  
     if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是 位置信息
