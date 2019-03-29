@@ -243,10 +243,11 @@ classdef no_satellite_random_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
+            set(obj.edt_echo, 'string', '仿真结束，正在写入结果文件...');
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file1(obj.time_asix_mess,obj.planes_id_out);
-            set(obj.edt_echo, 'string', '仿真结束');
+            set(obj.edt_echo, 'string', '结果写入完毕，程序结束！');
         end
         
         % Callback function for exit button.

@@ -752,6 +752,12 @@ classdef satellite_mul_plane_gui_start < handle
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file2(obj.time_asix_mess,obj.planes_id_result);
+            if wx_lon>180
+                temp_lon =wx_lon-360;
+            else 
+                temp_lon =wx_lon;
+            end
+            write_satellite_location(temp_lon,90-lat,wx_high);%写入卫星位置文件
             set(obj.edt_echo, 'string', '写入结果文件完成.程序运行完毕！');
            
         end
