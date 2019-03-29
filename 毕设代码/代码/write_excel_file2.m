@@ -1,6 +1,11 @@
 function write_excel_file2(time_asix_mess,planes_id)
 filename = 'testdata.xls';
+if size(time_asix_mess,1)==12
 A = {'接收时间','发送时间','飞机编号','报文编号','报文功率','经度','纬度','高度','速度','垂直速度','报文类型','奇偶编码','ICAO','ID'};
+end
+if  size(time_asix_mess,1)==13
+A = {'接收时间','发送时间','飞机编号','报文编号','天线1报文功率','天线2报文功率','经度','纬度','高度','速度','垂直速度','报文类型','奇偶编码','ICAO','ID'};
+end
 sheet = 1;
 xlRange = 'A1';
 xlswrite(filename,A,sheet,xlRange);%写入表头
