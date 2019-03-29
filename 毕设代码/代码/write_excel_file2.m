@@ -18,7 +18,7 @@ data = cell(rows,cols);%rows*A列的元胞数组，rows是飞机个数
 planes_id_asix = cell(2,rows);%Id的大小2行，飞机列数(飞机数目)作为列数
 for i = 1:rows%遍历所有的飞机
     for j = 1:2
-        planes_id_asix{j,i} = planes_id{j,time_asix_mess(2,i)};%根据飞机的编号，去获取plane_id放到planes_id_asix里边，一个飞机就是一列
+        planes_id_asix{j,i} = planes_id{j,time_asix_mess(3,i)};%根据飞机的编号，去获取plane_id放到planes_id_asix里边，一个飞机就是一列
     end
 end
 

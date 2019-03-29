@@ -209,7 +209,7 @@ classdef satellite_goss_gui_start < handle
             obj.wx_tx_power_edit = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'edit', 'BackgroundColor','white','Fontsize',11,'position', ...
                 [5+(3*txt_area_width_label+2*edit_area_width) 60 edit_area_width 40]);
-            set(obj.wx_tx_power_edit, 'string', '-90');
+            set(obj.wx_tx_power_edit, 'string', '10');
             % Init the height text for the plane.
             obj.wx_high_txt = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 11, ...
@@ -219,7 +219,7 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white'...
               ,'Fontsize',11,'position',[7+(4*txt_area_width_label+3*edit_area_width) 60 ...
               edit_area_width 40]);
-           set(obj.wx_high_edit, 'string', '6700');
+           set(obj.wx_high_edit, 'string', '700');
             % Init the velocity text for the plane.
             obj.wx_speed_txt = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 11, ...
@@ -717,7 +717,7 @@ classdef satellite_goss_gui_start < handle
             else 
                 temp_lon =wx_lon;
             end
-            write_satellite_location(temp_lon,90-lat,wx_high);%写入卫星位置文件
+            write_satellite_location(temp_lon,90-wx_lat,high1);%写入卫星位置文件
             set(obj.edt_echo, 'string', '写入结果文件完成.');
         end
         
