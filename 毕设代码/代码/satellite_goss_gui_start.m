@@ -708,8 +708,11 @@ classdef satellite_goss_gui_start < handle
             end
            obj.plane_lat_path = 90-obj.plane_lat_result;
             set(obj.edt_echo, 'string', '仿真结束');
+            set(obj.edt_echo, 'string', '正在写入结果文件...');
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
+            write_excel_file2(obj.time_asix_mess,obj.planes_id_result);
+            set(obj.edt_echo, 'string', '写入结果文件完成.');
         end
         
         % Callback function for exit button.

@@ -80,7 +80,7 @@ classdef satellite_mul_plane_gui_start < handle
         % Button handle 2.
         btn_c2;
         
-       
+        time_asix_mess;
         
      
         % Plane info cell.
@@ -738,7 +738,7 @@ classdef satellite_mul_plane_gui_start < handle
             set(obj.edt_echo, 'string', '正在运行“多架飞机ADS-B信号模拟程序”...');
             pause(0.3);
             %调用主函数
-            [obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,wx_high,wx_speed,wx_hxj,tx_num_edit,wx_power,txbs_width_edit,planes_id);
+            [obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,wx_high,wx_speed,wx_hxj,tx_num_edit,wx_power,txbs_width_edit,planes_id);
             obj.plane_lat_path = 90-obj.plane_lat_result;
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
@@ -747,9 +747,12 @@ classdef satellite_mul_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
+            set(obj.edt_echo, 'string', '仿真结束，正在写入结果文件...');
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
-            set(obj.edt_echo, 'string', '“多架飞机ADS-B信号模拟程序”运行完毕！');
+            write_excel_file2(obj.time_asix_mess,obj.planes_id_result);
+            set(obj.edt_echo, 'string', '写入结果文件完成.程序运行完毕！');
+           
         end
         
         % Callback function for exit button.
