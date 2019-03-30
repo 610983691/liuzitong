@@ -50,7 +50,7 @@ plot(space*cos(t),space*sin(t),'r');
 axis square
 hold on
 plot(x,y,'*');
-lats = 30;
+lats = 90-lats;
 write_init_lon_data_2_file(plane_lon_path);
 write_init_lat_data_2_file(plane_lat_path);
-% write_satellite_location(lons,lats,highs);
+write_satellite_location(lons,lats,highs);

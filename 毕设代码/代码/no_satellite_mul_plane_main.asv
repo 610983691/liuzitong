@@ -69,10 +69,6 @@ while(clock<(simu_time/simu_step))
     switch plane_ann_num
         case 1
         plane{i} = BroadCast(plane{i},clock); 
-        case 2
-        plane{i} = BroadCast1(plane{i},clock); 
-    end
-            
     clock = clock + 1;
     
     plane_lon(i,clock) = plane{i}.longitude;
@@ -87,7 +83,7 @@ while(clock<(simu_time/simu_step))
       cpr_flag = 0;  
     if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是位置信息
        even_old =  mod(even_old+1,2);%不考虑上下天线时的cpr情况
-%        cpr_all= [cpr_all,[even_old;flag]];%不考虑上下天线时的这一架飞机的所有cpr情况，并且记录下这是飞机的第几个报文
+       cpr_all= [cpr_all,[even_old;flag]];%不考虑上下天线时的这一架飞机的所有cpr情况，并且记录下这是飞机的第几个报文
        cpr_flag = even_old+1;%不考虑上下天线时最后的输入列表中表示奇偶编码的变量
     end
         

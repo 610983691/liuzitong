@@ -114,6 +114,33 @@ classdef AIRCRAFT
             end
          
        end
+        function obj=BroadCast1(obj,count)
+           
+            %AP
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&...
+                    ((count-obj.last_AP)*obj.time_step>=1))
+                broadt=ceil(count+(rand(1)*2-1)*0.1/obj.time_step);%´æÔÚ0.1s
+                obj.last_broadtime=broadt;
+                obj.last_AP=broadt;
+                obj.broad_times(broadt)=1;
+            end
+            %AV
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6) &...
+                    ((count-obj.last_AV)*obj.time_step>=1))
+                broadt=ceil(count+(rand(1)*2-1)*0.1/obj.time_step);
+                obj.last_broadtime=broadt;
+                obj.last_AV=broadt;
+                obj.broad_times(broadt)=2;                    
+            end
+            %ID
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&...
+                    ((count-obj.last_ID)*obj.time_step>=5))
+                broadt=ceil(count+(rand(1)*2-1)*0.2/obj.time_step);
+                obj.last_broadtime=broadt;
+                obj.last_ID=broadt;
+                obj.broad_times(broadt)=3;                
+            end
+        end
     end
 end
         
