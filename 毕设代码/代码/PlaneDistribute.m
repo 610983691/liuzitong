@@ -2,7 +2,7 @@
 %N1 = 10;%均匀分布飞机个数
 goss_num = size(goss_plane_num_arr,2);%高斯分布区域个数
 goss_plane_num = goss_plane_num_arr;%每个高斯分布的飞机个数，这是个数组
-rs = [(highs+6371)*sin(lats*pi/180)*cos(lons*pi/180),(highs+6371)*sin(lats*pi/180)*sin(lons*pi/180),(highs+6371)*cos(lats*pi/180)];
+rs = [(highs+6371)*sin(lats*pi/180)*cos(lons*pi/180);(highs+6371)*sin(lats*pi/180)*sin(lons*pi/180);(highs+6371)*cos(lats*pi/180)];
 N = N1;
 for i = 1:goss_num
     N = N+goss_plane_num(i);

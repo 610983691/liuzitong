@@ -8,7 +8,7 @@ fd = fc*norm(r_v)*costheta/c;
 %路径损耗
 loss = 32.44 + 20*log10(fc+fd) + 20*log10(norm(r_r));
 %机载天线增益
-theta1 = acos(r'*r_r/(norm(r_r)*norm(r')));
+theta1 = acos(abs(r'*r_r/(norm(r_r)*norm(r'))));
 a = round(theta1*10000/pi+1);
 plane_gain = Y(1,a);
 %星载天线增益
