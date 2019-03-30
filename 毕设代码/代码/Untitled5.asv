@@ -1,0 +1,20 @@
+clear all;
+N = 100;
+lons = 20;
+lats = 80;
+highs=700;
+[lon_down,lon_up] = goss_lon_range(lons,lats,highs);
+[lat_down,lat_up] = goss_lat_range(lons,lats,highs,lon_down,lon_up,lons);
+lat_down = 90-lat_down;
+lat_up = 90-lat_up;
+if lon_up<0
+    lon_up = lon_up+360;
+end
+if lon_down<0
+    lon_down = lon_down+360;
+end 
+lon_up = lon_up+360;
+for i = 1:N
+    lon = 
+    while()
+

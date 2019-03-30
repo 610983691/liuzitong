@@ -10,6 +10,7 @@ end
 plane = zeros(7,N);
 space = 6371*acos(6371/7071);%ÇòÃæ¾àÀë°ë¾¶
 r = space*sqrt(rand(1,N1));
+phy = 2*pi*rand(1,N1);
 plane_lon_path = zeros(1,N1);
 plane_lat_path = zeros(1,N1);
 lon = zeros(1,N1);
@@ -34,11 +35,8 @@ for i = 1:N1
     while(norm(r3-rs)>sqrt((highs+6371)^2-6371^2))
          lon(i) = mod(rand()*(lon_up-lon_down)+lon_down,360);
          lat(i) = rand()*(lat_up-lat_down)+lat_down;  
-         r3 = [6371*sin(lat(i)*pi/180)*cos(lon(i)*pi/180);6371*sin(lat(i)*pi/180)*sin(lon(i)*pi/180);6371*cos(lat(i)*pi/180)];
+         r = [6371*sin(lat(i)*pi/180)*cos(lon(i)*pi/180);6371*sin(lat(i)*pi/180)*sin(lon(i)*pi/180);6371*cos(lat(i)*pi/180)];
     end
-    plane(1,i) = lon(i);
-    plane(2,i) = lat(i);
-    
 %     x(i)= r(i).*cos(phy(i));
 %     y(i) =r(i).*sin(phy(i));
 %     lon_change(i) = x(i)/(2*pi*6371*cos(90-lats)/360);
@@ -46,12 +44,12 @@ for i = 1:N1
 %     plane(1,i) = mod(lons+lon_change(i),360);
 %     plane(2,i) = mod(lats+lat_change(i),180);
 % %     r_plane = [6371*sin(lat*pi/180)*cos(lon*pi/180),6371*sin(lat*pi/180)*sin(lon*pi/180),6371*cos(lat*pi/180)];
-    if  plane(1,i)>180
-       plane_lon_path(i) = plane(1,i)-360;
-    else
-       plane_lon_path(i) =  plane(1,i);
-    end
-    plane_lat_path(i) = 90- plane(2,i);
+%     if  plane(1,i)>180
+%        plane_lon_path(i) = plane(1,i)-360;
+%     else
+%        plane_lon_path(i) =  plane(1,i);
+%     end
+%     plane_lat_path(i) = 90- plane(2,i);
 end
 
 if goss_num~=0
