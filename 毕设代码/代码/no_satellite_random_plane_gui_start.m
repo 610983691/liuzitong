@@ -282,8 +282,8 @@ classdef no_satellite_random_plane_gui_start < handle
             elseif ~isempty(find(get(obj.plane_num_edt, 'string') == '.', 1))
                 set(obj.edt_echo, 'string', '设置的飞机数量为小数，应为正整数，请重新设置！');
                 return;
-            elseif fnum <= 0 || fnum > 100
-                set(obj.edt_echo, 'string', '设置的飞机数量超出范围，应为(0, 100]，请重新设置！');
+            elseif fnum <= 0 || fnum > 10000
+                set(obj.edt_echo, 'string', '设置的飞机数量超出范围，应为(0, 10000]，请重新设置！');
                 return ;
             end
             
