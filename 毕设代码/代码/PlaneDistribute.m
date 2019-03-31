@@ -57,8 +57,8 @@ end
 if goss_num~=0
     for i = 1:goss_num
         for j = 1:goss_plane_num(i)
-            plane(1,N1+j) = mod(goss_center_info(i,1)*sqrt(goss_para(1,i))+randn(),360);
-            plane(2,N1+j) = goss_center_info(i,2)*sqrt(goss_para(1,i))+randn();
+            plane(1,N1+j) = mod(goss_center_info(i,1)+randn()*sqrt(goss_para(1,i)),360);
+            plane(2,N1+j) = goss_center_info(i,2)+randn()*sqrt(goss_para(1,i));
             if plane(2,N1+j)>180
                plane(2,N1+j) = 180-(plane(2,N1+j)-180);
             end

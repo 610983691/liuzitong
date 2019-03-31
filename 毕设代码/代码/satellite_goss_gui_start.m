@@ -673,7 +673,7 @@ classdef satellite_goss_gui_start < handle
                  gaosi_lat1=90-gaosi_lat1;
                  goss =[gaosi_lon1,gaosi_lat1];
                  range1=goss_parameter(gaosi_lat1,gaosi_range_edt1);
-                  range=zero(2,1);
+                  range=zeros(2,1);
                   range(1,1)=range1(1,1);
                   range(2,1)=range1(1,2);
              elseif  gaosi_center1_isempty(obj) && ~gaosi_center2_isempty(obj)
