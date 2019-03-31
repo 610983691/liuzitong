@@ -1,4 +1,4 @@
- function [plane] = PlaneDistribute(lons,lats,highs,N1,goss_plane_num_arr,goss_center_info)% 卫星的经度维度高度,均匀分布个数,每个高斯分布区域飞机个数，高斯分布中心点信息 
+ function [plane] = PlaneDistribute(lons,lats,highs,N1,goss_plane_num_arr,goss_center_info,goss_para)% 卫星的经度维度高度,均匀分布个数,每个高斯分布区域飞机个数，高斯分布中心点信息 
 %N1 = 10;%均匀分布飞机个数
 goss_num = size(goss_plane_num_arr,2);%高斯分布区域个数
 goss_plane_num = goss_plane_num_arr;%每个高斯分布的飞机个数，这是个数组
@@ -57,9 +57,11 @@ end
 if goss_num~=0
     for i = 1:goss_num
         for j = 1:goss_plane_num(i)
-            plane(1,N1+j) = mod(goss_center_info(i,1)+randn(),360);
-            plane(2,N1+j) = mod(goss_center_info(i,2)+randn(),180);
-
+            plane(1,N1+j) = mod(goss_center_info(i,1)*sqrt(goss_para(1,i))+randn(),360);
+            plane(2,N1+j) = goss_center_info(i,2)*sqrt(goss_para(1,i))+randn();
+            if plane(2,N1+j)>180
+               plane(2,N1+j) = 180-(plane(2,N1+j)-180);
+            end
         end
         N1 = N1+goss_plane_num(i);
     end
