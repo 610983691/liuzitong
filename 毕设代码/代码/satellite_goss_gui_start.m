@@ -36,7 +36,8 @@ classdef satellite_goss_gui_start < handle
         config_path;
         set_wx_param_btn;
         goss_range;
-        
+        gaosi_gl_range_edt1;
+        gaosi_gl_range_edt2;
       
         
         % Panel handle of the plane settings panel.飞机1,2,3的panel
@@ -342,6 +343,13 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[571+80 (10) ...
               80 40]);
+            uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
+                'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
+                'string','高斯范围','position',[660+80 (0) 100 40]);
+            obj.gaosi_gl_range_edt1 = uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
+                'edit', 'BackgroundColor','white' ...
+              ,'Fontsize',11,'position',[660+161 (10) ...
+              80 40]);
             
           %以下6个是高斯分布参数区域二的文本框
             obj.gaosi_center_lon_txt_2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
@@ -373,7 +381,13 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[571+80 (10) ...
               80 40]);
-          
+            uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
+                'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
+                'string','高斯范围','position',[660+80 (0) 100 40]);
+            obj.gaosi_gl_range_edt2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
+                'edit', 'BackgroundColor','white' ...
+              ,'Fontsize',11,'position',[660+161 (10) ...
+              80 40]);
           
         
  
@@ -597,6 +611,7 @@ classdef satellite_goss_gui_start < handle
             if check_plane_num_times(obj)==0
                 return ;
             end
+            
             fnum = str2double(get(obj.plane_num_edt, 'string'));%随机均匀分布的飞机个数
             ftime = str2double(get(obj.plane_edt_times, 'string'));%仿真时长
             %卫星参数获取
@@ -634,7 +649,7 @@ classdef satellite_goss_gui_start < handle
                  goss_plane_num =str2double(get(obj.gaosi_plane_num_edit_1, 'string'));
                  if isnan(goss_plane_num)
                      set(obj.edt_echo, 'string', '高斯分布1飞机数量必须为数字.');
-                 return ;
+                     return ;
                  elseif goss_plane_num<0 || goss_plane_num>10000
                      set(obj.edt_echo, 'string', '高斯分布1飞机数量超出范围，应为[0,10000],请重新设置.');
                      return ;
@@ -643,12 +658,24 @@ classdef satellite_goss_gui_start < handle
                      set(obj.edt_echo, 'string', '高斯分布1纬度不在范围内！.');
                      return;
                  end
+                 gaosi_range_edt1 = str2double(get(obj.gaosi_gl_range_edt1, 'string'));
+                 if isnan(gaosi_range_edt1)
+                     set(obj.edt_echo, 'string', '高斯分布1高斯范围参数必须为数字.');
+                     return ;
+                 elseif gaosi_range_edt1<0
+                     set(obj.edt_echo, 'string', '高斯分布1高斯范围参数必须大于0.');
+                     return ;
+                 end
                  goss_num_arr=[goss_plane_num];
                  if gaosi_lon1<0
                     gaosi_lon1=gaosi_lon1+360;
                  end
                  gaosi_lat1=90-gaosi_lat1;
                  goss =[gaosi_lon1,gaosi_lat1];
+                 range1=goss_parameter(gaosi_lat1,gaosi_range_edt1);
+                  range=zero(2,1);
+                  range(1,1)=range1(1,1);
+                  range(2,1)=range1(1,2);
              elseif  gaosi_center1_isempty(obj) && ~gaosi_center2_isempty(obj)
                   set(obj.edt_echo, 'string', '高斯分布1参数不能为空.');
                  return ;
@@ -661,6 +688,15 @@ classdef satellite_goss_gui_start < handle
                      set(obj.edt_echo, 'string', '高斯分布1飞机数量超出范围，应为[0,10000],请重新设置.');
                      return ;
                   end
+               
+                  gaosi_range_edt1 = str2double(get(obj.gaosi_gl_range_edt1, 'string'));
+                 if isnan(gaosi_range_edt1)
+                     set(obj.edt_echo, 'string', '高斯分布1高斯范围参数必须为数字.');
+                     return ;
+                 elseif gaosi_range_edt1<0
+                     set(obj.edt_echo, 'string', '高斯分布1高斯范围参数必须大于0.');
+                     return ;
+                 end
                   goss_plane_num2 =str2double(get(obj.gaosi_plane_num_edit_2, 'string'));
                   if isnan(goss_plane_num2)
                          set(obj.edt_echo, 'string', '高斯分布2飞机数量必须为数字.');
@@ -669,6 +705,14 @@ classdef satellite_goss_gui_start < handle
                          set(obj.edt_echo, 'string', '高斯分布2飞机数量超出范围，应为[0,10000],请重新设置.');
                          return ;
                   end
+                  gaosi_range_edt2 = str2double(get(obj.gaosi_gl_range_edt2, 'string'));
+                 if isnan(gaosi_range_edt2)
+                     set(obj.edt_echo, 'string', '高斯分布2高斯范围参数必须为数字.');
+                     return ;
+                 elseif gaosi_range_edt2<0
+                     set(obj.edt_echo, 'string', '高斯分布2高斯范围参数必须大于0.');
+                     return ;
+                 end
                   goss_num_arr = [goss_plane_num,goss_plane_num2];
                       %校验高斯纬度分布范围
                   if is_gaosi_lat_range_err(obj,gaosi_lat1,obj.goss_range(1,3),obj.goss_range(1,4))
@@ -684,17 +728,24 @@ classdef satellite_goss_gui_start < handle
                   end
                   gaosi_lat1=90-gaosi_lat1;
                   goss1 =[gaosi_lon1,gaosi_lat1]; 
+                  range1=goss_parameter(gaosi_lat1,gaosi_range_edt1);
                   if gaosi_lon2<0
                         gaosi_lon2=gaosi_lon2+360;
                   end
                   gaosi_lat2=90-gaosi_lat2;
                   goss2 =[gaosi_lon2,gaosi_lat2];
                   goss=[goss1;goss2];
+                  range2=goss_parameter(gaosi_lat2,gaosi_range_edt2);
+                  range=zero(2,2);
+                  range(1,1)=range1(1,1);
+                  range(2,1)=range1(1,2);
+                  range(1,2)=range2(1,1);
+                  range(2,2)=range2(1,2);
              end
 
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取飞机参数...');
-            planes= PlaneDistribute(wx_lon,wx_lat,high1,fnum,goss_num_arr,goss);
+            planes= PlaneDistribute(wx_lon,wx_lat,high1,fnum,goss_num_arr,goss,range);
             planes_id = ID_creat(size(planes,2));%根据飞机个数生成ID。
             set(obj.edt_echo, 'string', '正在进行仿真...');
             %调用主函数
