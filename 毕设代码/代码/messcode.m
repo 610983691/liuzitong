@@ -5,7 +5,7 @@ function [code,mess] = messcode(clock,broad_times,longitude,latitude,hight,cpr_f
    if broad_times(1,clock) == 1
       mess = [clock,longitude,latitude, hight,0,0,0,0,0];
       [hig,lat,lon] = position_code(hight,cpr_f,latitude,longitude);
-      code = [1,0,1,0,0,0,0,1,hig,1,cpr_f,lat,lon]; 
+      code = [1,0,1,1,0,0,0,0,hig,1,cpr_f,lat,lon]; 
    else
        if broad_times(1,clock) == 2
           ns_v = velocity*cos(path_angle*pi/180);

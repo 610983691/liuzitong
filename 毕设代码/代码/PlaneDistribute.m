@@ -75,6 +75,7 @@ for i = 1:N
     plane(6,i) = rand()*4+50;%dnm
     plane(7,i) = randi(8)*64;%”¢≥ﬂ√ø∑÷÷”
 end
+
  end
 
 

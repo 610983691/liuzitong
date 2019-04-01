@@ -55,6 +55,6 @@ function [code]  = vel_code(ns_v,ew_v,rate_v)
        end
        %垂直速度直接输入参数就是英尺每分钟
        rate_v_bin = bitget(round(abs(rate_v/64))+1,9:-1:1);
-       code = [bitget(19,5:-1:1),subtype,0,0,0,0,0,speed_sign_ew,ew_v_bin,speed_sign_ns,ns_v_bin,0,rate,rate_v_bin,zeros(1,10)];
+       code = [bitget(19,5:-1:1),subtype,0,0,0,0,0,speed_sign_ew,ew_v_bin,speed_sign_ns,ns_v_bin,0,rate,rate_v_bin,zeros(1,9),1];
 end
                  

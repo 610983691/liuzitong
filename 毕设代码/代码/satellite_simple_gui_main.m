@@ -96,7 +96,7 @@ while(clock<(simu_time/simu_step))
     if plane{i}.broad_times(1,clock) ~= 0
         cpr_flag = 0;  
     if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是 位置信息
-       even_old =  mod(even_old+1,2);
+       even_old =  mod(even_old+1,2);%奇偶编码0,1交替出现
        cpr_flag = even_old+1;
     end
     
