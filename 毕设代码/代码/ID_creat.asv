@@ -1,16 +1,26 @@
-function planes_id = ID_creat(N)
-%     N = 5;
+% function planes_id = ID_creat(N)
+    N = 5;
     planes_id = cell(2,N);%第一行是ICAO，第二行是ID
     character_select = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N',...
                     'O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1',...
                     '2','3','4','5','6','7','8','9',' '};
     icao = randperm(2^24,N)-1;
+    icao_hex = char(1,N);
     for i = 1:N
        a= dec2hex(icao(i));
-       planes_id{1,i} = a;
+       
     end
-      
-
+       
+    
+    plane_ICAO = cell(N,4);
+    select2 = unidrnd(10,N,4)+26;
+for i = 1:N
+    for j = 1:4
+       plane_ICAO{i,j} = character_select(select2(i,j));
+    end
+    planes_id{1,i}= strcat(plane_ICAO{i,1},plane_ICAO{i,2},plane_ICAO{i,3},plane_ICAO{i,4});
+    planes_id{1,i} = cell2mat(planes_id{1,i});
+end
 
 
     plane_ID =cell(N,8);
@@ -22,4 +32,4 @@ function planes_id = ID_creat(N)
        planes_id{2,i}= strcat(plane_ID{i,1},plane_ID{i,2},plane_ID{i,3},plane_ID{i,4},plane_ID{i,5},plane_ID{i,6},plane_ID{i,7},plane_ID{i,8});
        planes_id{2,i} = cell2mat(planes_id{2,i});
     end
-end
+% end

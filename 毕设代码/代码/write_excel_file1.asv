@@ -1,11 +1,11 @@
-function write_excel_file1(time_asix_mess,planes_id,mess_112_hex)%无卫星情况excel文件写入
+function write_excel_file1(time_asix_mess,planes_id)%无卫星情况excel文件写入
 filename = 'no_satellite_data.xls';
 A = {'发送时间(ms)','飞机编号(ICAO)','报文功率(dbm)','经度','纬度','高度(Km)','南北速度(knots)','东西速度(knots)','垂直速度(feet/min)','报文类型','ID','数据链信息'};
 sheet = 1;
 xlRange = 'A1';
 xlswrite(filename,A,sheet,xlRange);%写入表头
 %封装数据矩阵
-rows =size(time_asix_mess,2);%每个报文数据在excel里边是一行
+rows =size(time_asix_mess,2);%每个飞机数据在excel里边是一行
 data = cell(rows,12);%rows*13列的元胞数组，rows是报文个数
 
 planes_id_asix = cell(2,rows);%Id的大小2行，飞机列数(飞机数目)作为列数
@@ -21,20 +21,8 @@ for row=1:rows %遍历每一行
     for col=3:9
         data{row,col}=time_asix_mess(col+1,row);%飞机数据的行和列是反着的
     end
-    switch(time_asix_mess(11,row))
-        case 1 
-            data{row,10}='位置消息';
-        case 2
-            if time_asix_mess(12,row) == 0
-               data{row,10}='速度消息-奇';
-            else
-               data{row,10}='速度消息-偶';
-            end
-        case 3
-            data{row,10}='ID消息';
-    end
-    data{row,11}=planes_id_asix{2,row};%ID消息
-    data{row,12} = mess_112_hex(1,row);
+    data{row,12}=planes_id_asix{1,row};%飞机的ID也是一列一列放的
+    data{row,13}=planes_id_asix{2,row};
 end
 
 
