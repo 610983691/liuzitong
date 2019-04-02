@@ -6,15 +6,11 @@ function planes_id = ID_creat(N)
                     '2','3','4','5','6','7','8','9',' '};
     icao = randperm(2^24,N)-1;
     for i = 1:N
-       a= dec2hex(icao(i));
+       a= dec2hex(icao(i),6);
        planes_id{1,i} = a;
     end
-      
-
-
-
     plane_ID =cell(N,8);
-    select1 = unidrnd(37,N,8);
+    select1 = unidrnd(36,N,8);
     for i = 1:N
        for j = 1:8
            plane_ID{i,j} = character_select(select1(i,j));
