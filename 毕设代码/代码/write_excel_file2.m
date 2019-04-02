@@ -26,8 +26,8 @@ for row=1:rows %遍历每一行
     for col=1:cols-2 %前面cols-2列是飞机数据，后面两列是ID数据
         data{row,col}=time_asix_mess(col,row);%飞机数据的行和列是反着的
     end
-    data{row,12}=planes_id_asix{1,row};%飞机的ID也是一列一列放的
-    data{row,13}=planes_id_asix{2,row};
+    data{row,cols-1}=planes_id_asix{1,row};%飞机的ID也是一列一列放的
+    data{row,cols}=planes_id_asix{2,row};
 end
 
 
