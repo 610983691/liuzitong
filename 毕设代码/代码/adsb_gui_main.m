@@ -47,7 +47,7 @@ classdef adsb_gui_main < handle
         plane_lat_result;
         plane_high_result;
         plane_ICAO_double;
-        plane_ID_double
+        plane_ID_double;
     end
     
     methods

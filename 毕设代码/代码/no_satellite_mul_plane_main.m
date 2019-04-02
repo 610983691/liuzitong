@@ -122,9 +122,16 @@ for i = 1:size(time_rec_all,2)
     time_asix(j,i) = time_rec_all(j,index(i));
     end
 end
-mess_112_hex = cell(1,size(time_rec_all,2));%报文个数
+mess_112_hex = cell(4,size(time_rec_all,2));%报文个数%用四个位置储存112bit的数据，每个位置是七位的16进制
 for i = 1:size(time_rec_all,2)
-    mess_112_hex{1,i} = dec2hex(bin2dec(mess_112_all(index(i),:)));
+    dec112 = zeros(1,4);
+    for j = 1:4
+           dec112(1,j) = 0; 
+        for k = 1:28
+           dec112(1,j) = dec112(1,j)+mess_112_all(index(i),(j-1)*28+k)*2^(28-k) ;
+        end
+        mess_112_hex{j,i} = dec2hex(dec112(1,j));
+    end
 end
 
   mess_rec_all = [];
