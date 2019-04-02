@@ -81,7 +81,8 @@ classdef no_satellite_random_plane_gui_start < handle
         btn_c1;
         % Button handle 2.
         btn_c2;
-        
+        btn_export_icao;
+        edt_export_icao;
        
         
      
@@ -194,17 +195,28 @@ classdef no_satellite_random_plane_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[obj.gui_width/4 ...
               obj.panel_height - 80 obj.gui_width/2 40]);
+          %导出ICAO
+          obj.edt_export_icao = uicontrol('parent', obj.panel_plane_start, 'style', ...
+                'edit', 'BackgroundColor','white' ...
+              ,'Fontsize',11,'position',[floor((obj.gui_width ) / 4) obj.panel_height/3 ...
+              edit_area_width 40]);
+            
+          obj.btn_export_icao = uicontrol('parent', obj.panel_plane_start, ...
+                'style', 'pushbutton', 'BackgroundColor', ...
+                [0.83, 0.82, 0.78], 'string', '获取ICAO', ...
+                'Fontsize', 11, 'position', [floor((obj.gui_width ) / 4)+edit_area_width, ...
+                obj.panel_height - 130, 150, 40]);
             % Create handle for button "Start programme".
             obj.btn_c1 = uicontrol('parent', obj.panel_plane_start, ...
                 'style', 'pushbutton', 'BackgroundColor', ...
                 [0.83, 0.82, 0.78], 'string', '开始', ...
-                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 3), ...
+                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 4)+edit_area_width+250, ...
                 obj.panel_height - 130, 150, 40]);
             % Create handle for button "Stop programme"。
             obj.btn_c2 = uicontrol('parent', obj.panel_plane_start, ...
                 'style', 'pushbutton', 'BackgroundColor', ...
                 [0.83, 0.82, 0.78], 'string', '退出', ...
-                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 3)+250 , ...
+                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 4)+edit_area_width+450 , ...
                 obj.panel_height - 130, 150, 40]);
             
             % Mapping to the callback function.
@@ -212,8 +224,12 @@ classdef no_satellite_random_plane_gui_start < handle
         end
          
         % Callback function for automatic configuration button.
-        function result =button_auto_config_callback(obj, source, eventdata)
-            set(obj.edt_echo, 'string', '错误,不应该调用到这里！');
+        function btn_export_icao_callback(obj, source, eventdata)
+           
+            icao = get(obj.edt_export_icao, 'string');
+             set(obj.edt_echo, 'string', strcat('正在获取ICAO=',icao));
+            write_excel_file_filter_plane_nosatellite(obj.time_asix_mess,obj.planes_id_out,obj.mess_112_hex,icao);
+             set(obj.edt_echo, 'string', strcat('获取ICAO=',icao,'数据完毕!'));
             return
         end
         
@@ -312,11 +328,8 @@ classdef no_satellite_random_plane_gui_start < handle
         
         function callback_mapping(obj)
           
-            set(obj.config_man, 'callback', @obj.button_save_config_callback);
-            set(obj.config_auto, 'callback', @obj.button_auto_config_callback);
-            set(obj.config_sct, 'callback', @obj.button_config_file_callback);
-            set(obj.config_con, 'callback', @obj.button_config_callback);
-
+            
+            set(obj.btn_export_icao, 'callback', @obj.btn_export_icao_callback);
             set(obj.btn_c1, 'callback', @obj.button_start_callback);
             set(obj.btn_c2, 'callback', @obj.button_exit_callback);
            

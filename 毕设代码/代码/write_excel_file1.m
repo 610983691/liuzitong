@@ -1,4 +1,5 @@
 function write_excel_file1(time_asix_mess,planes_id,mess_112_hex)%无卫星情况excel文件写入
+delete('no_satellite_data.xls');
 filename = 'no_satellite_data.xls';
 A = {'发送时间(ms)','飞机编号(ICAO)','报文功率(dbm)','经度','纬度','高度(Km)','南北速度(knots)','东西速度(knots)','垂直速度(feet/min)',...
     '报文类型','ID','数据链信息1-28bit','数据链信息29-56bit','数据链信息57-84bit','数据链信息85-112bit'};
