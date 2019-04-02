@@ -81,7 +81,8 @@ classdef no_satellite_mul_plane_gui_start < handle
         btn_c1;
         % Button handle 2.
         btn_c2;
-        
+        btn_export_icao;
+        edt_export_icao;
        
         
      
@@ -477,17 +478,29 @@ classdef no_satellite_mul_plane_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[obj.gui_width/4 ...
               obj.panel_height - 80 obj.gui_width/2 40]);
+          
+            %导出ICAO
+            obj.edt_export_icao = uicontrol('parent', obj.panel_plane_start, 'style', ...
+                'edit', 'BackgroundColor','white' ...
+              ,'Fontsize',11,'position',[floor((obj.gui_width ) / 4) obj.panel_height/3 ...
+              edit_area_width 40]);
+            
+            obj.btn_export_icao = uicontrol('parent', obj.panel_plane_start, ...
+                'style', 'pushbutton', 'BackgroundColor', ...
+                [0.83, 0.82, 0.78], 'string', '获取ICAO', ...
+                'Fontsize', 11, 'position', [floor((obj.gui_width ) / 4)+edit_area_width, ...
+                obj.panel_height - 130, 150, 40]);
             % Create handle for button "Start programme".
             obj.btn_c1 = uicontrol('parent', obj.panel_plane_start, ...
                 'style', 'pushbutton', 'BackgroundColor', ...
                 [0.83, 0.82, 0.78], 'string', '开始', ...
-                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 3), ...
+                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 4)+edit_area_width+250, ...
                 obj.panel_height - 130, 150, 40]);
             % Create handle for button "Stop programme"。
             obj.btn_c2 = uicontrol('parent', obj.panel_plane_start, ...
                 'style', 'pushbutton', 'BackgroundColor', ...
                 [0.83, 0.82, 0.78], 'string', '退出', ...
-                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 3)+250 , ...
+                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 4)+edit_area_width+450 , ...
                 obj.panel_height - 130, 150, 40]);
             
             % Mapping to the callback function.
@@ -495,13 +508,18 @@ classdef no_satellite_mul_plane_gui_start < handle
         end
          
         % Callback function for automatic configuration button.
-        function result =button_auto_config_callback(obj, source, eventdata)
-             set(obj.edt_echo, 'string', '不应该调用到这里。');
-            return;
+          % Callback function for automatic configuration button.
+        function btn_export_icao_callback(obj, source, eventdata)
+           
+            icao = get(obj.edt_export_icao, 'string');
+             set(obj.edt_echo, 'string', strcat('正在获取ICAO=',icao));
+            write_excel_file_filter_plane_nosatellite(obj.time_asix_mess,obj.planes_id_out,obj.mess_112_hex,icao);
+             set(obj.edt_echo, 'string', strcat('获取ICAO=',icao,'数据完毕!'));
+            return
         end
         
         % Callback function for button start.
-        function result =button_start_callback(obj, source, eventdata)
+        function button_start_callback(obj, source, eventdata)
              set(obj.edt_echo, 'string', '准备进行仿真...');
              %校验飞行时间参数
               ftime = str2double(get(obj.plane_edt_times, 'string'));
@@ -619,6 +637,7 @@ classdef no_satellite_mul_plane_gui_start < handle
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file1(obj.time_asix_mess,obj.planes_id_out,obj.mess_112_hex);
             set(obj.edt_echo, 'string', '“多架飞机ADS-B信号模拟程序”运行完毕！');
+            return;
         end
         
         % Callback function for exit button.
@@ -788,8 +807,8 @@ classdef no_satellite_mul_plane_gui_start < handle
                 set(obj.edt_echo, 'string',  strcat(str,'参数ICAO必须是字母或数字！'));
                 return;
              end
-             if length(plane_icao)~=4
-                set(obj.edt_echo, 'string',  strcat(str,'参数ICAO长度必须为4！'));
+             if length(plane_icao)~=6
+                set(obj.edt_echo, 'string',  strcat(str,'参数ICAO长度必须为6！'));
                 return;
              end
              if is_not_char_and_num(plane_id)
@@ -826,11 +845,8 @@ classdef no_satellite_mul_plane_gui_start < handle
         
         function callback_mapping(obj)
           
-            set(obj.config_man, 'callback', @obj.button_save_config_callback);
-            set(obj.config_auto, 'callback', @obj.button_auto_config_callback);
-            set(obj.config_sct, 'callback', @obj.button_config_file_callback);
-            set(obj.config_con, 'callback', @obj.button_config_callback);
-
+            
+            set(obj.btn_export_icao, 'callback', @obj.btn_export_icao_callback);
             set(obj.btn_c1, 'callback', @obj.button_start_callback);
             set(obj.btn_c2, 'callback', @obj.button_exit_callback);
            

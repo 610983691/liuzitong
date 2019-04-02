@@ -234,7 +234,7 @@ classdef no_satellite_random_plane_gui_start < handle
         end
         
         % Callback function for button start.
-        function result =button_start_callback(obj, source, eventdata)
+        function button_start_callback(obj, source, eventdata)
            set(obj.edt_echo, 'string', '准备进行仿真...');
            if check_plane_param(obj)==0
                 return ;
@@ -265,6 +265,7 @@ classdef no_satellite_random_plane_gui_start < handle
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file1(obj.time_asix_mess,obj.planes_id_out,obj.mess_112_hex);
             set(obj.edt_echo, 'string', '结果写入完毕，程序结束！');
+            return;
         end
         
         % Callback function for exit button.
