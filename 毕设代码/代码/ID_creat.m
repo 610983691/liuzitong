@@ -5,7 +5,7 @@ function planes_id = ID_creat(N)
                     'O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1',...
                     '2','3','4','5','6','7','8','9',' '};
     plane_ICAO = cell(N,4);
-    select2 = unidrnd(37,N,4);
+    select2 = unidrnd(10,N,4)+26;
 for i = 1:N
     for j = 1:4
        plane_ICAO{i,j} = character_select(select2(i,j));

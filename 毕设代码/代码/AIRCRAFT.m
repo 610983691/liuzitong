@@ -6,6 +6,8 @@ classdef AIRCRAFT
         latitude;
         hight;
         velocity;
+        NS_v;
+        WE_v;
         path_angle;%航向角
         ID;
         broad_times;
@@ -77,9 +79,9 @@ classdef AIRCRAFT
             
              %飞机在直角坐标系中速度表示
             %obj.v =[v,90-仰角，航向角];
-            ns_v = obj.velocity*sin(obj.path_angle);
-            ew_v = obj.velocity*cos(obj.path_angle);%西东速度
-            r1 = [ ew_v; ns_v;obj.rate_v*5.08*10^(-6)];%er,etheta,rphy
+            obj.NS_v = obj.velocity*cos(obj.path_angle);
+            obj.WE_v = obj.velocity*sin(obj.path_angle);%西东速度
+            r1 = [ obj.WE_v; -obj.NS_v;obj.rate_v*5.08*10^(-6)];%er,etheta,rphy
             obj.v = [-sin(obj.longitude*pi/180),cos(obj.longitude*pi/180),0;cos(obj.latitude*pi/180)*cos(obj.longitude*pi/180),cos(obj.latitude*pi/180)*sin(obj.longitude*pi/180),-sin(obj.latitude*pi/180);...
                   sin(obj.latitude*pi/180)*cos(obj.longitude*pi/180),sin(obj.latitude*pi/180)*sin(obj.longitude*pi/180),cos(obj.latitude*pi/180)]^-1*r1+obj.r;
         end

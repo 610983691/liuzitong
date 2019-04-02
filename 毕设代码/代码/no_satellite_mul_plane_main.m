@@ -1,7 +1,7 @@
 function [time_asix,mess_rec_all,plane_lon,plane_lat,plane_high,planes_id] =no_satellite_mul_plane_main(plane_para,simu_time,planes_id)
 
 plane_ann_num = 1;
-simu_step =1e-2;%s
+simu_step =1e-7;%s
 ratio = 6371;%KM
 rs = 1*10^6;
 fs = 200*10^6;
@@ -104,8 +104,8 @@ while(clock<(simu_time/simu_step))
     %信息放在同一个矩阵
     plane{i}.mess_all = [plane{i}.mess_all;plane_para(6,i),mess(1,2:8)];
     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
-    plane{i}.rec_time = [plane{i}.rec_time,[plane{i}.last_broadtime*simu_step;i;flag;plane_para(6,i);plane{i}.longitude;...
-                         plane{i}.latitude;plane{i}.hight;plane{i}.velocity;plane{i}.rate_v;plane{i}.broad_times(1,clock);cpr_flag]];%发报时间要加上时间 的抖动
+    plane{i}.rec_time =[plane{i}.rec_time,[plane{i}.last_broadtime*simu_step*10^3;i;flag;plane_para(6,i);plane{i}.longitude;...
+                         plane{i}.latitude;plane{i}.hight;plane{i}.NS_v*3600/1.852;plane{i}.WE_v*3600/1.852;plane{i}.rate_v;plane{i}.broad_times(1,clock);even_old]];%发报时间要加上时间 的抖动
     %ppm调制
     fd = 0;
     ppm = ppmencode(mess112,rs,fs,fd,fc_mid);%z中频信号
@@ -116,11 +116,11 @@ while(clock<(simu_time/simu_step))
 end
    time_rec_all = [time_rec_all , plane{i}.rec_time];
 end
-time_asix = zeros(11,size(time_rec_all,2));%没有接收时间
+time_asix = zeros(size(time_rec_all,1),size(time_rec_all,2));%没有接收时间
 [time_asix(1,:),index] = sort(time_rec_all(1,:));%根据发送时间排序 
 
 for i = 1:size(time_rec_all,2)
-    for j = 2:11
+    for j = 2:size(time_rec_all,1)
     time_asix(j,i) = time_rec_all(j,index(i));
     end
 end
