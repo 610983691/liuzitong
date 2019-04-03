@@ -773,7 +773,8 @@ classdef satellite_goss_gui_start < handle
             planes_id = ID_creat(size(planes,2));%根据飞机个数生成ID。
             set(obj.edt_echo, 'string', '正在进行仿真...');
             %调用主函数
-            [ obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id);
+             minimal_rec_power_edt = str2double(get(obj.minimal_rec_power, 'string'));
+            [ obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id,minimal_rec_power_edt);
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
                   obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:)-360;
