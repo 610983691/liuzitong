@@ -77,7 +77,8 @@ classdef satellite_goss_gui_start < handle
         % Button handle 2.
         btn_c2;
         
-       
+        btn_export_icao;
+        edt_export_icao;
         
      
         % Plane info cell.
@@ -409,20 +410,31 @@ classdef satellite_goss_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[obj.gui_width/4 ...
               obj.panel_height - 80 obj.gui_width/2 40]);
+          
+           %导出ICAO
+            obj.edt_export_icao = uicontrol('parent', obj.panel_plane_start, 'style', ...
+                'edit', 'BackgroundColor','white' ...
+              ,'Fontsize',11,'position',[floor((obj.gui_width ) / 4) 0 ...
+              edit_area_width 40]);
+            
+            obj.btn_export_icao = uicontrol('parent', obj.panel_plane_start, ...
+                'style', 'pushbutton', 'BackgroundColor', ...
+                [0.83, 0.82, 0.78], 'string', '获取ICAO数据', ...
+                'Fontsize', 11, 'position', [floor((obj.gui_width ) / 4)+edit_area_width, ...
+                0, 150, 40]);
             % Create handle for button "Start programme".
             obj.btn_c1 = uicontrol('parent', obj.panel_plane_start, ...
                 'style', 'pushbutton', 'BackgroundColor', ...
                 [0.83, 0.82, 0.78], 'string', '开始', ...
-                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 3), ...
-                obj.panel_height - 130, 150, 40]);
+                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 4)+edit_area_width+150, ...
+                0, 150, 40]);
             % Create handle for button "Stop programme"。
             obj.btn_c2 = uicontrol('parent', obj.panel_plane_start, ...
                 'style', 'pushbutton', 'BackgroundColor', ...
                 [0.83, 0.82, 0.78], 'string', '退出', ...
-                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 3)+250 , ...
-                obj.panel_height - 130, 150, 40]);
-            
-            
+                'Fontsize', 15, 'position', [floor((obj.gui_width ) / 4)+edit_area_width+350 , ...
+                0, 150, 40]);
+          
             % Mapping to the callback function.
             callback_mapping(obj);
         end
@@ -431,7 +443,7 @@ classdef satellite_goss_gui_start < handle
       
         
         % 设置卫星参数的回调函数
-        function result =set_wx_param_btn_callback(obj, source, eventdata)
+        function set_wx_param_btn_callback(obj, source, eventdata)
             set(obj.edt_echo, 'string', '准备计算...');
             %校验卫星的8个参数
             if check_wx_param(obj)==0
@@ -471,7 +483,7 @@ classdef satellite_goss_gui_start < handle
         end
         
          % 设置高斯经度范围按钮1的回调函数
-        function result =set_goss_lon_btn1_callback(obj, source, eventdata)
+        function set_goss_lon_btn1_callback(obj, source, eventdata)
             set(obj.edt_echo, 'string', '准备计算纬度范围...');
             %校验卫星的8个参数
             if check_wx_param(obj)==0
@@ -518,7 +530,7 @@ classdef satellite_goss_gui_start < handle
             set(obj.edt_echo, 'string', '已经获取到高斯分布1纬度度范围。');
         end
         
-        function result =set_goss_lon_btn2_callback(obj, source, eventdata)
+        function set_goss_lon_btn2_callback(obj, source, eventdata)
             set(obj.edt_echo, 'string', '准备计算纬度范围...');
             %校验卫星的8个参数
             if check_wx_param(obj)==0
@@ -602,7 +614,7 @@ classdef satellite_goss_gui_start < handle
         end
         
         % Callback function for button start.
-        function result =button_start_callback(obj, source, eventdata)
+        function button_start_callback(obj, source, eventdata)
               set(obj.edt_echo, 'string', '正在校验参数...');
             if (obj.goss_range(1,1)==-1000||obj.goss_range(1,2)==-1000||obj.goss_range(1,3)==-1000||obj.goss_range(1,4)==-1000)
                 set(obj.edt_echo, 'string', '请先设置卫星参数获取高斯分布范围！');
@@ -936,7 +948,15 @@ classdef satellite_goss_gui_start < handle
              s=0;
         end
         
-        
+        %获取单独的飞机数据
+        function btn_export_icao_callback(obj, source, eventdata)
+           
+            icao = get(obj.edt_export_icao, 'string');
+            set(obj.edt_echo, 'string', strcat('正在获取ICAO=',icao));
+            write_excel_file_filter_plane_satellite(obj.time_asix_mess,obj.planes_id_result, obj.mess_112_hex,icao);
+            set(obj.edt_echo, 'string', strcat('获取ICAO=',icao,'数据完毕!'));
+            return
+        end
         
         function callback_mapping(obj)
           
@@ -945,7 +965,7 @@ classdef satellite_goss_gui_start < handle
             set(obj.get_goss_lat_range_btn2, 'callback', @obj.set_goss_lon_btn2_callback);
             set(obj.btn_c1, 'callback', @obj.button_start_callback);
             set(obj.btn_c2, 'callback', @obj.button_exit_callback);
-           
+            set(obj.btn_export_icao, 'callback', @obj.btn_export_icao_callback);
         end
         
     
