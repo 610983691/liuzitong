@@ -154,6 +154,7 @@ classdef satellite_mul_plane_gui_start < handle
         get_lat_range_btn2;
         get_lat_range_btn3;
          goss_range;
+         minimal_rec_power;
     end
     
     methods
@@ -284,10 +285,18 @@ classdef satellite_mul_plane_gui_start < handle
               ,'Fontsize',11,'position',[7+(4*txt_area_width_label+3*edit_area_width)  10 ...
               edit_area_width 40]);
             set(obj.plane_edt_times, 'string', '10');%仿真时长
+            uicontrol('parent', obj.wx_panel_erea, 'style', ...
+                'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
+                'string','最小接收功率','position',[8+(4*txt_area_width_label+4*edit_area_width) ...
+                0 txt_area_width_label 40]);
+            obj.minimal_rec_power = uicontrol('parent', obj.wx_panel_erea, 'style', ...
+                'edit', 'BackgroundColor','white' ...
+              ,'Fontsize',11,'position',[9+(5*txt_area_width_label+4*edit_area_width)  10 ...
+              edit_area_width 40]);
                  % 设置卫星参数button 
             obj.set_wx_param_btn = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'pushbutton', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','设置卫星参数','position',[8+(4*txt_area_width_label+4*edit_area_width)+txt_area_width_label/2 ...
+                'string','设置卫星参数','position',[10+(5*txt_area_width_label+5*edit_area_width)+txt_area_width_label/2 ...
                 10 txt_area_width_label 40]);
             
            % Create plane param settings panel.
@@ -1174,6 +1183,8 @@ classdef satellite_mul_plane_gui_start < handle
             speed1 = str2double(get(obj.wx_speed_edit, 'string'));
             tx_num_edit = str2double(get(obj.wx_tx_num_edit, 'string'));
             txbs_width_edit = str2double(get(obj.wx_txbs_width_edit, 'string'));
+            minimal_rec_power_edt = str2double(get(obj.minimal_rec_power, 'string'));
+            
             if is_err_lat(lat1)
                 set(obj.edt_echo, 'string', '卫星纬度度超出范围，应为[-90, 90]，请重新设置！');
                 return;
@@ -1217,6 +1228,13 @@ classdef satellite_mul_plane_gui_start < handle
                 return;
              elseif txbs_width_edit<0
                 set(obj.edt_echo, 'string', '卫星天线波速宽度必须为正数，请重新设置！');
+                return;
+             end
+             if isnan(minimal_rec_power_edt)
+                set(obj.edt_echo, 'string', '最小接收功率必须为数字，请重新设置！');
+                return;
+             elseif minimal_rec_power_edt<0
+                set(obj.edt_echo, 'string', '最小接收功率必须为正数，请重新设置！');
                 return;
              end
              
