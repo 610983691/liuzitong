@@ -13,14 +13,15 @@ for i = 1:50001
 end
 % value2 = [measured_value,measured_value,measured_value,measured_value];
 polar(X,power);
-hold on;
+% hold on;
+
 % Y =pi/2:pi/100000:pi;
 % polar(Y,power1);
 % hold on;
 % T =pi:pi/100000:3*pi/2;
 % polar(T,power);
 % hold on;
-
-H =3*pi/2:pi/100000:2*pi;
-polar(H,power1);
-hold on;
+% 
+% H =3*pi/2:pi/100000:2*pi;
+% polar(H,power1);
+% hold on;

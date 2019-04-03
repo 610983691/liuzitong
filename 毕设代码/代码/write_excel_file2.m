@@ -5,7 +5,7 @@ A = {'接收时间(s)','发送时间(ms)','飞机编号(ICAO)','报文功率(dbm)','经度','纬度'
     '报文类型','ID','数据链信息1-28bit','数据链信息29-56bit','数据链信息57-84bit','数据链信息85-112bit'};
 end
 if  size(time_asix_mess,1)==14
-A = {'发送时间(ms)','飞机编号(ICAO)','天线1报文功率(dbm)','天线2报文功率(dbm)','经度','纬度','高度(Km)','南北速度(knots)','东西速度(knots)','垂直速度(feet/min)',...
+A = {'接收时间(s)','发送时间(ms)','飞机编号(ICAO)','天线1报文功率(dbm)','天线2报文功率(dbm)','经度','纬度','高度(Km)','南北速度(knots)','东西速度(knots)','垂直速度(feet/min)',...
     '报文类型','ID','数据链信息1-28bit','数据链信息29-56bit','数据链信息57-84bit','数据链信息85-112bit'};
 end
 sheet = 1;
@@ -31,9 +31,9 @@ for row=1:rows %遍历每一行
     for col=4:size(A,2)-6%功率经纬高南北速度东西速度垂直速度 
         data{row,col}=time_asix_mess(col+1,row);%飞机数据的行和列是反着的
     end
-    switch(time_asix_mess(size(time_asix_mess,2)-1,row))
+    switch(time_asix_mess(size(time_asix_mess,1)-1,row))
         case 1 
-            if time_asix_mess(size(time_asix_mess,2),row) == 0
+            if time_asix_mess(size(time_asix_mess,1),row) == 0
                data{row,size(A,2)-5}='位置消息-奇';
             else
                data{row,size(A,2)-5}='位置消息-偶';

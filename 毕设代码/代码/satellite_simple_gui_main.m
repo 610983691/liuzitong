@@ -29,19 +29,17 @@ velocity(i,1) = plane_para(4,i);
 end
 
 
-plane_ICAO_double = zeros(N,4);
+
+plane_ICAO_double = zeros(N,1);
 plane_ID_double = zeros(N,8);
 for i = 1:N
-   plane_ICAO_double(i,:) = double(planes_id{1,i});
+   plane_ICAO_double(i,1) = hex2dec(planes_id{1,i});
    plane_ID_double(i,:) = double(planes_id{2,i});
 end
 
 code_heading = zeros(N,32);
 for i = 1:N
-    icaobin = zeros(1,24);
-    for j = 1:4 
-            icaobin(1,(j*6-5):(j*6)) = bitand(bitget(plane_ICAO_double(i,j),6:-1:1),[1,1,1,1,1,1]);  
-     end
+    icaobin = bitget(plane_ICAO_double(i,1),24:-1:1);  
     code_heading(i,:) = [1 ,0 ,0 ,0, 1,0,1,0,icaobin]; %DF CA AA
 end
 
