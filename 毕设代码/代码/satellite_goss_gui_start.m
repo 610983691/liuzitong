@@ -144,6 +144,8 @@ classdef satellite_goss_gui_start < handle
         goss_range_tooltip2;
         get_goss_lat_range_btn1;
         get_goss_lat_range_btn2;
+        
+        minimal_rec_power;
     end
     
     methods
@@ -207,7 +209,7 @@ classdef satellite_goss_gui_start < handle
             % Init the transmit power of the plane.
             obj.wx_tx_power_txt = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 11, ...
-                'string','功率(dbm)','position',[4+(2*txt_area_width_label+2*edit_area_width) 50 ...
+                'string','最大天线增益(dbm)','position',[4+(2*txt_area_width_label+2*edit_area_width) 50 ...
                 txt_area_width_label 40]);
             obj.wx_tx_power_edit = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'edit', 'BackgroundColor','white','Fontsize',11,'position', ...
@@ -273,11 +275,20 @@ classdef satellite_goss_gui_start < handle
               ,'Fontsize',11,'position',[7+(4*txt_area_width_label+3*edit_area_width)  10 ...
               edit_area_width 40]);
             set(obj.plane_edt_times, 'string', '10');
+             uicontrol('parent', obj.wx_panel_erea, 'style', ...
+                'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
+                'string','最小接收功率','position',[8+(4*txt_area_width_label+4*edit_area_width) ...
+                0 txt_area_width_label 40]);
+            obj.minimal_rec_power = uicontrol('parent', obj.wx_panel_erea, 'style', ...
+                'edit', 'BackgroundColor','white' ...
+              ,'Fontsize',11,'position',[9+(5*txt_area_width_label+4*edit_area_width)  10 ...
+              edit_area_width 40]);
+            
             
                  % 设置卫星参数button 
             obj.set_wx_param_btn = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'pushbutton', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','设置卫星参数','position',[8+(4*txt_area_width_label+4*edit_area_width)+txt_area_width_label/2 ...
+                'string','设置卫星参数','position',[10+(5*txt_area_width_label+5*edit_area_width)+txt_area_width_label/2 ...
                 10 txt_area_width_label 40]);
                  
           
@@ -347,10 +358,10 @@ classdef satellite_goss_gui_start < handle
               80 40]);
             uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','高斯范围','position',[660+80 (0) 100 40]);
+                'string','高斯覆盖半径(km)','position',[660+80 (0) 180 40]);
             obj.gaosi_gl_range_edt1 = uicontrol('parent', obj.wx_gaosi_erea2_sub1, 'style', ...
                 'edit', 'BackgroundColor','white' ...
-              ,'Fontsize',11,'position',[660+161 (10) ...
+              ,'Fontsize',11,'position',[660+161+80 (10) ...
               80 40]);
             
           %以下6个是高斯分布参数区域二的文本框
@@ -385,10 +396,10 @@ classdef satellite_goss_gui_start < handle
               80 40]);
             uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','高斯范围','position',[660+80 (0) 100 40]);
+                'string','高斯覆盖半径(km)','position',[660+80 (0) 180 40]);
             obj.gaosi_gl_range_edt2 = uicontrol('parent', obj.wx_gaosi_erea2_sub2, 'style', ...
                 'edit', 'BackgroundColor','white' ...
-              ,'Fontsize',11,'position',[660+161 (10) ...
+              ,'Fontsize',11,'position',[660+161+80 (10) ...
               80 40]);
           
         
@@ -615,7 +626,8 @@ classdef satellite_goss_gui_start < handle
         
         % Callback function for button start.
         function button_start_callback(obj, source, eventdata)
-              set(obj.edt_echo, 'string', '正在校验参数...');
+            set(obj.edt_echo, 'string', '正在校验参数...');
+            pause(0.2);
             if (obj.goss_range(1,1)==-1000||obj.goss_range(1,2)==-1000||obj.goss_range(1,3)==-1000||obj.goss_range(1,4)==-1000)
                 set(obj.edt_echo, 'string', '请先设置卫星参数获取高斯分布范围！');
                 return;
@@ -758,11 +770,14 @@ classdef satellite_goss_gui_start < handle
 
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取飞机参数...');
+            pause(0.2);
             planes= PlaneDistribute(wx_lon,wx_lat,high1,fnum,goss_num_arr,goss,range);
             planes_id = ID_creat(size(planes,2));%根据飞机个数生成ID。
             set(obj.edt_echo, 'string', '正在进行仿真...');
+            pause(0.2);
             %调用主函数
-            [ obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id);
+             minimal_rec_power_edt = str2double(get(obj.minimal_rec_power, 'string'));
+            [ obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id,minimal_rec_power_edt);
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
                   obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:)-360;
@@ -771,8 +786,8 @@ classdef satellite_goss_gui_start < handle
                end
             end
            obj.plane_lat_path = 90-obj.plane_lat_result;
-            set(obj.edt_echo, 'string', '仿真结束');
             set(obj.edt_echo, 'string', '正在写入结果文件...');
+            pause(0.2);
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file2(obj.time_asix_mess,obj.planes_id_result, obj.mess_112_hex);
@@ -782,7 +797,7 @@ classdef satellite_goss_gui_start < handle
                 temp_lon =wx_lon;
             end
             write_satellite_location(temp_lon,90-wx_lat,high1);%写入卫星位置文件
-            set(obj.edt_echo, 'string', '写入结果文件完成.');
+            set(obj.edt_echo, 'string', '写入结果文件完成.程序结束！');
         end
         
         % Callback function for exit button.
@@ -847,6 +862,8 @@ classdef satellite_goss_gui_start < handle
             speed1 = str2double(get(obj.wx_speed_edit, 'string'));
             tx_num_edit = str2double(get(obj.wx_tx_num_edit, 'string'));
             txbs_width_edit = str2double(get(obj.wx_txbs_width_edit, 'string'));
+            minimal_rec_power_edt = str2double(get(obj.minimal_rec_power, 'string'));
+            
             if is_err_lat(lat1)
                 set(obj.edt_echo, 'string', '卫星纬度度超出范围，应为[-90, 90]，请重新设置！');
                 return;
@@ -892,6 +909,16 @@ classdef satellite_goss_gui_start < handle
                 set(obj.edt_echo, 'string', '卫星天线波速宽度必须为正数，请重新设置！');
                 return;
              end
+             
+             if isnan(minimal_rec_power_edt)
+                set(obj.edt_echo, 'string', '最小接收功率必须为数字，请重新设置！');
+                return;
+             elseif minimal_rec_power_edt<0
+                set(obj.edt_echo, 'string', '最小接收功率必须为正数，请重新设置！');
+                return;
+             end
+             
+             
              
             s=1;
         end

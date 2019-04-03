@@ -154,6 +154,7 @@ classdef satellite_mul_plane_gui_start < handle
         get_lat_range_btn2;
         get_lat_range_btn3;
          goss_range;
+         minimal_rec_power;
     end
     
     methods
@@ -216,7 +217,7 @@ classdef satellite_mul_plane_gui_start < handle
             % Init the transmit power of the plane.
             obj.wx_tx_power_txt = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 11, ...
-                'string','功率(dbm)','position',[4+(2*txt_area_width_label+2*edit_area_width) 50 ...
+                'string','最大天线增益(dbm)','position',[4+(2*txt_area_width_label+2*edit_area_width) 50 ...
                 txt_area_width_label 40]);
             obj.wx_tx_power_edit = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'edit', 'BackgroundColor','white','Fontsize',11,'position', ...
@@ -284,10 +285,18 @@ classdef satellite_mul_plane_gui_start < handle
               ,'Fontsize',11,'position',[7+(4*txt_area_width_label+3*edit_area_width)  10 ...
               edit_area_width 40]);
             set(obj.plane_edt_times, 'string', '10');%仿真时长
+            uicontrol('parent', obj.wx_panel_erea, 'style', ...
+                'text', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
+                'string','最小接收功率','position',[8+(4*txt_area_width_label+4*edit_area_width) ...
+                0 txt_area_width_label 40]);
+            obj.minimal_rec_power = uicontrol('parent', obj.wx_panel_erea, 'style', ...
+                'edit', 'BackgroundColor','white' ...
+              ,'Fontsize',11,'position',[9+(5*txt_area_width_label+4*edit_area_width)  10 ...
+              edit_area_width 40]);
                  % 设置卫星参数button 
             obj.set_wx_param_btn = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'pushbutton', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
-                'string','设置卫星参数','position',[8+(4*txt_area_width_label+4*edit_area_width)+txt_area_width_label/2 ...
+                'string','设置卫星参数','position',[10+(5*txt_area_width_label+5*edit_area_width)+txt_area_width_label/2 ...
                 10 txt_area_width_label 40]);
             
            % Create plane param settings panel.
@@ -849,6 +858,7 @@ classdef satellite_mul_plane_gui_start < handle
         % Callback function for button start.
         function button_start_callback(obj, source, eventdata)
             set(obj.edt_echo, 'string', '准备运行“多架飞机ADS-B信号模拟程序”...');
+            pause(0.2);
             if check_wx_param(obj)==0
                  return;
             end
@@ -973,10 +983,11 @@ classdef satellite_mul_plane_gui_start < handle
                 planes=plane1;
                 planes_id = plane1_id;
             end
-            set(obj.edt_echo, 'string', '正在运行“多架飞机ADS-B信号模拟程序”...');
+            set(obj.edt_echo, 'string', '正在进行仿真...');
             pause(0.3);
             %调用主函数
-            [obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,wx_high,wx_speed,wx_hxj,tx_num_edit,wx_power,txbs_width_edit,planes_id);
+             minimal_rec_power_edt = str2double(get(obj.minimal_rec_power, 'string'));
+            [obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,wx_high,wx_speed,wx_hxj,tx_num_edit,wx_power,txbs_width_edit,planes_id,minimal_rec_power_edt);
             obj.plane_lat_path = 90-obj.plane_lat_result;
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
@@ -985,7 +996,8 @@ classdef satellite_mul_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
-            set(obj.edt_echo, 'string', '仿真结束，正在写入结果文件...');
+            set(obj.edt_echo, 'string', '仿真完成，正在写入结果文件...');
+            pause(0.2);
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file2(obj.time_asix_mess,obj.planes_id_result,obj.mess_112_hex);
@@ -1174,6 +1186,8 @@ classdef satellite_mul_plane_gui_start < handle
             speed1 = str2double(get(obj.wx_speed_edit, 'string'));
             tx_num_edit = str2double(get(obj.wx_tx_num_edit, 'string'));
             txbs_width_edit = str2double(get(obj.wx_txbs_width_edit, 'string'));
+            minimal_rec_power_edt = str2double(get(obj.minimal_rec_power, 'string'));
+            
             if is_err_lat(lat1)
                 set(obj.edt_echo, 'string', '卫星纬度度超出范围，应为[-90, 90]，请重新设置！');
                 return;
@@ -1217,6 +1231,13 @@ classdef satellite_mul_plane_gui_start < handle
                 return;
              elseif txbs_width_edit<0
                 set(obj.edt_echo, 'string', '卫星天线波速宽度必须为正数，请重新设置！');
+                return;
+             end
+             if isnan(minimal_rec_power_edt)
+                set(obj.edt_echo, 'string', '最小接收功率必须为数字，请重新设置！');
+                return;
+             elseif minimal_rec_power_edt<0
+                set(obj.edt_echo, 'string', '最小接收功率必须为正数，请重新设置！');
                 return;
              end
              
