@@ -79,28 +79,25 @@ while(clock<(simu_time/simu_step))
     plane{i} = ChangePosition(plane{i},ratio);
     plane{i} = BroadCast(plane{i},clock); 
     satellite = ChangePositionS(satellite,ratio);
-    clock = clock + 1;
+
     
-    plane_lon(i,clock) = plane{i}.longitude;
-    plane_lat(i,clock) = plane{i}.latitude;
-    plane_high(i,clock) = plane{i}.hight;
+    plane_lon(i,clock+1) = plane{i}.longitude;
+    plane_lat(i,clock+1) = plane{i}.latitude;
+    plane_high(i,clock+1) = plane{i}.hight;
     
-    satellite_lon(1,clock) = satellite.longitude;
-    satellite_lat(1,clock) = satellite.latitude;
-    satellite_high(1,clock) = satellite.hight;
+    satellite_lon(1,clock+1) = satellite.longitude;
+    satellite_lat(1,clock+1) = satellite.latitude;
+    satellite_high(1,clock+1) = satellite.hight;
 
     %编码过程
     if norm(plane{i}.r_h-satellite.r)<=sqrt((ratio+high_s)^2-ratio^2);
-    if plane{i}.broad_times(1,clock) ~= 0
+    if plane{i}.broad_times(1,clock+1) ~= 0
         cpr_flag = 0;  
-    if plane{i}.broad_times(1,clock)==1%位置信息是奇编码还是偶编码，首先判断是否是 位置信息
+    if plane{i}.broad_times(1,clock+1)==1%位置信息是奇编码还是偶编码，首先判断是否是 位置信息
        even_old =  mod(even_old+1,2);%奇偶编码0,1交替出现
-       cpr_flag = even_old+1;
+       cpr_flag = even_old;
     end
     
-    plane_lon(i,clock) = plane{i}.longitude;
-    plane_lat(i,clock) = plane{i}.latitude;
-    plane_high(i,clock) = plane{i}.hight;
     
     flag = flag+1;%报文数量增加
     
@@ -170,9 +167,10 @@ while(clock<(simu_time/simu_step))
     
    
        %开始进行位置信息编码，最重要的是经纬度编码和高度编码
-       
+        clock = clock + 1;   
         
 end
+
 time_rec_all = [time_rec_all , plane{i}.rec_time];
 end
 
