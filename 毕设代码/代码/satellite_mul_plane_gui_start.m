@@ -153,7 +153,7 @@ classdef satellite_mul_plane_gui_start < handle
         get_lat_range_btn1;
         get_lat_range_btn2;
         get_lat_range_btn3;
-        
+         goss_range;
     end
     
     methods
@@ -658,7 +658,7 @@ classdef satellite_mul_plane_gui_start < handle
                 [0.83, 0.82, 0.78], 'string', '退出', ...
                 'Fontsize', 15, 'position', [floor((obj.gui_width ) / 4)+edit_area_width+350 , ...
                 0, 150, 40]);
-            
+            obj.goss_range=[-1000,-1000,-1000,-1000,-1000,-1000,-1000,-1000];
             % Mapping to the callback function.
             callback_mapping(obj);
         end
@@ -713,7 +713,119 @@ classdef satellite_mul_plane_gui_start < handle
             return
         end
         
-         function setwx_param_inactive(obj)
+         %获取纬度范围
+        function get_lat_range_btn1_callback(obj, source, eventdata)
+            %卫星参数获取
+            wx_lat = str2double(get(obj.wx_lat_edit, 'string'));
+            wx_lat=90-wx_lat;%转为0-180
+            wx_lon = str2double(get(obj.wx_lon_edit, 'string'));
+            if wx_lon<0
+                wx_lon=wx_lon+360;%转为0-360
+            end
+            high = str2double(get(obj.wx_high_edit, 'string'));
+            lon = str2double(get(obj.plane_edt_lon1, 'string'));
+            if isnan(lon)
+                set(obj.edt_echo, 'string', '请输入数字');
+                return;
+            end
+            if obj.goss_range(1,1)<obj.goss_range(1,2)%开始经度小于结束经度
+                if lon>obj.goss_range(1,2)||lon<obj.goss_range(1,1)%大于大的小于小的就是错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            else
+                if (lon>obj.goss_range(1,1)&&lon<=180)||(lon<obj.goss_range(1,2)&&lon>=-180)
+                    % 正确的经度
+                else
+                    % 错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            end
+            [lat_down,lat_up]=  goss_lat_range(wx_lon,wx_lat,high,obj.goss_range(1,1),obj.goss_range(1,2),lon); %这一步要调用紫童的方法来生成
+            set(obj.edt_echo, 'string', '获取纬度范围成功');
+            set_lat_range_tooltip(obj,obj.plane_txt_lat1_range,lat_down,lat_up);
+            set(obj.plane_edt_lat1,'Enable','on');
+            set(obj.plane_edt_lon1,'Enable','off');
+            obj.goss_range(1,3)=lat_down;
+            obj.goss_range(1,4)=lat_up;
+        end
+         %获取单独的飞机数据
+        function get_lat_range_btn2_callback(obj, source, eventdata)
+            %卫星参数获取
+            wx_lat = str2double(get(obj.wx_lat_edit, 'string'));
+            wx_lat=90-wx_lat;%转为0-180
+            wx_lon = str2double(get(obj.wx_lon_edit, 'string'));
+            if wx_lon<0
+                wx_lon=wx_lon+360;%转为0-360
+            end
+            high = str2double(get(obj.wx_high_edit, 'string'));
+            lon = str2double(get(obj.plane_edt_lon2, 'string'));
+            if isnan(lon)
+                set(obj.edt_echo, 'string', '请输入数字');
+                return;
+            end
+            if obj.goss_range(1,1)<obj.goss_range(1,2)%开始经度小于结束经度
+                if lon>obj.goss_range(1,2)||lon<obj.goss_range(1,1)%大于大的小于小的就是错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            else
+                if (lon>obj.goss_range(1,1)&&lon<=180)||(lon<obj.goss_range(1,2)&&lon>=-180)
+                    % 正确的经度
+                else
+                    % 错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            end
+            [lat_down,lat_up]=  goss_lat_range(wx_lon,wx_lat,high,obj.goss_range(1,1),obj.goss_range(1,2),lon); %这一步要调用紫童的方法来生成
+            set(obj.edt_echo, 'string', '获取纬度范围成功');
+            set_lat_range_tooltip(obj,obj.plane_txt_lat2_range,lat_down,lat_up);
+            set(obj.plane_edt_lat2,'Enable','on');
+            set(obj.plane_edt_lon2,'Enable','off');
+            obj.goss_range(1,5)=lat_down;
+            obj.goss_range(1,6)=lat_up;
+        end
+         %获取单独的飞机数据
+        function get_lat_range_btn3_callback(obj, source, eventdata)
+            %卫星参数获取
+            wx_lat = str2double(get(obj.wx_lat_edit, 'string'));
+            wx_lat=90-wx_lat;%转为0-180
+            wx_lon = str2double(get(obj.wx_lon_edit, 'string'));
+            if wx_lon<0
+                wx_lon=wx_lon+360;%转为0-360
+            end
+            high = str2double(get(obj.wx_high_edit, 'string'));
+            lon = str2double(get(obj.plane_edt_lon3, 'string'));
+            if isnan(lon)
+                set(obj.edt_echo, 'string', '请输入数字');
+                return;
+            end
+            if obj.goss_range(1,1)<obj.goss_range(1,2)%开始经度小于结束经度
+                if lon>obj.goss_range(1,2)||lon<obj.goss_range(1,1)%大于大的小于小的就是错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            else
+                if (lon>obj.goss_range(1,1)&&lon<=180)||(lon<obj.goss_range(1,2)&&lon>=-180)
+                    % 正确的经度
+                else
+                    % 错误的经度
+                    set(obj.edt_echo, 'string', '你输入的经度不在范围内,请重新输入！');
+                    return;
+                end
+            end
+            [lat_down,lat_up]=  goss_lat_range(wx_lon,wx_lat,high,obj.goss_range(1,1),obj.goss_range(1,2),lon); %这一步要调用紫童的方法来生成
+            set(obj.edt_echo, 'string', '获取纬度范围成功');
+            set_lat_range_tooltip(obj,obj.plane_txt_lat3_range,lat_down,lat_up);
+            set(obj.plane_edt_lat3,'Enable','on');
+            set(obj.plane_edt_lon3,'Enable','off');
+            obj.goss_range(1,7)=lat_down;
+            obj.goss_range(1,8)=lat_up;
+        end
+        
+        function setwx_param_inactive(obj)
             set(obj.wx_lat_edit,'Enable','off');
             set(obj.wx_lon_edit,'Enable','off');
             set(obj.wx_high_edit,'Enable','off');
@@ -729,6 +841,10 @@ classdef satellite_mul_plane_gui_start < handle
           set(obj.plane_txt_lon1_range,'string',temp);
           set(obj.plane_txt_lon2_range,'string',temp);
           set(obj.plane_txt_lon3_range,'string',temp);
+        end
+        function set_lat_range_tooltip(obj,latecho,lat_down,lat_up)
+            temp = strcat('范围[',num2str(lat_down),',',num2str(lat_up),'].');
+            set(latecho,'string',temp);
         end
         % Callback function for button start.
         function button_start_callback(obj, source, eventdata)
@@ -791,6 +907,10 @@ classdef satellite_mul_plane_gui_start < handle
             if check_plane_1(obj,lon1,lat1,high1,speed1,hxj1,power1,plane_hy_speed1,plane_icao1,plane_id1,'一')==0
                 return ;
             end
+                if is_gaosi_lat_range_err(obj,lat1,obj.goss_range(1,3),obj.goss_range(1,4))
+                     set(obj.edt_echo, 'string', '飞机1纬度不在范围内！.');
+                     return;
+                end
              lat1=90-lat1;
              if lon1<0
                  lon1=360+lon1;
@@ -804,6 +924,10 @@ classdef satellite_mul_plane_gui_start < handle
                 if check_plane_1(obj,lon2,lat2,high2,speed2,hxj2,power2,plane_hy_speed2,plane_icao2,plane_id2,'二')==0
                     return ;
                 else
+                    if is_gaosi_lat_range_err(obj,lat2,obj.goss_range(1,5),obj.goss_range(1,6))
+                         set(obj.edt_echo, 'string', '飞机2纬度不在范围内！.');
+                         return;
+                     end
                     lat2=90-lat2;
                      if lon2<0
                          lon2=360+lon2;
@@ -820,6 +944,10 @@ classdef satellite_mul_plane_gui_start < handle
                  if check_plane_1(obj,lon3,lat3,high3,speed3,hxj3,power3,plane_hy_speed3,plane_icao3,plane_id3,'三')==0
                     return ;
                  else
+                     if is_gaosi_lat_range_err(obj,lat3,obj.goss_range(1,7),obj.goss_range(1,7))
+                         set(obj.edt_echo, 'string', '飞机3纬度不在范围内！.');
+                         return;
+                     end
                      lat3=90-lat3;
                      if lon3<0
                          lon3=360+lon3;
@@ -870,7 +998,22 @@ classdef satellite_mul_plane_gui_start < handle
             set(obj.edt_echo, 'string', '写入结果文件完成.程序运行完毕！');
            
         end
-        
+          % 校验高斯分布经纬度范围
+        function s = is_gaosi_lat_range_err(obj,goss_lat,lat_down,lat_up)      
+             s=1;
+             if  goss_lat>90||goss_lat<-90
+                 set(obj.edt_echo, 'string', '你输入的纬度不在范围内,请重新输入！');
+                 return;
+             end
+             if goss_lat>=lat_up&&goss_lat<=lat_down
+                  % 正确的纬度
+             else
+                  % 错误的纬度
+                  set(obj.edt_echo, 'string', '你输入的纬度不在范围内,请重新输入！');
+                  return;
+             end        
+             s=0;
+        end
         % Callback function for exit button.
         function button_exit_callback(obj, source, eventdata)
             set(obj.edt_echo, 'string', '退出程序...');
@@ -1110,6 +1253,9 @@ classdef satellite_mul_plane_gui_start < handle
             set(obj.btn_c2, 'callback', @obj.button_exit_callback);
             set(obj.btn_export_icao, 'callback', @obj.btn_export_icao_callback);
             set(obj.set_wx_param_btn, 'callback', @obj.set_wx_param_btn_callback);
+            set(obj.get_lat_range_btn1, 'callback', @obj.get_lat_range_btn1_callback);
+            set(obj.get_lat_range_btn2, 'callback', @obj.get_lat_range_btn2_callback);
+            set(obj.get_lat_range_btn3, 'callback', @obj.get_lat_range_btn3_callback);
             
         end
         
