@@ -858,6 +858,7 @@ classdef satellite_mul_plane_gui_start < handle
         % Callback function for button start.
         function button_start_callback(obj, source, eventdata)
             set(obj.edt_echo, 'string', '准备运行“多架飞机ADS-B信号模拟程序”...');
+            pause(0.2);
             if check_wx_param(obj)==0
                  return;
             end
@@ -982,7 +983,7 @@ classdef satellite_mul_plane_gui_start < handle
                 planes=plane1;
                 planes_id = plane1_id;
             end
-            set(obj.edt_echo, 'string', '正在运行“多架飞机ADS-B信号模拟程序”...');
+            set(obj.edt_echo, 'string', '正在进行仿真...');
             pause(0.3);
             %调用主函数
              minimal_rec_power_edt = str2double(get(obj.minimal_rec_power, 'string'));
@@ -995,7 +996,8 @@ classdef satellite_mul_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
-            set(obj.edt_echo, 'string', '仿真结束，正在写入结果文件...');
+            set(obj.edt_echo, 'string', '仿真完成，正在写入结果文件...');
+            pause(0.2);
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file2(obj.time_asix_mess,obj.planes_id_result,obj.mess_112_hex);

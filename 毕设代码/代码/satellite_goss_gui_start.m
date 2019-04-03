@@ -626,7 +626,8 @@ classdef satellite_goss_gui_start < handle
         
         % Callback function for button start.
         function button_start_callback(obj, source, eventdata)
-              set(obj.edt_echo, 'string', '正在校验参数...');
+            set(obj.edt_echo, 'string', '正在校验参数...');
+            pause(0.2);
             if (obj.goss_range(1,1)==-1000||obj.goss_range(1,2)==-1000||obj.goss_range(1,3)==-1000||obj.goss_range(1,4)==-1000)
                 set(obj.edt_echo, 'string', '请先设置卫星参数获取高斯分布范围！');
                 return;
@@ -769,9 +770,11 @@ classdef satellite_goss_gui_start < handle
 
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取飞机参数...');
+            pause(0.2);
             planes= PlaneDistribute(wx_lon,wx_lat,high1,fnum,goss_num_arr,goss,range);
             planes_id = ID_creat(size(planes,2));%根据飞机个数生成ID。
             set(obj.edt_echo, 'string', '正在进行仿真...');
+            pause(0.2);
             %调用主函数
              minimal_rec_power_edt = str2double(get(obj.minimal_rec_power, 'string'));
             [ obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id,minimal_rec_power_edt);
@@ -783,8 +786,8 @@ classdef satellite_goss_gui_start < handle
                end
             end
            obj.plane_lat_path = 90-obj.plane_lat_result;
-            set(obj.edt_echo, 'string', '仿真结束');
             set(obj.edt_echo, 'string', '正在写入结果文件...');
+            pause(0.2);
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file2(obj.time_asix_mess,obj.planes_id_result, obj.mess_112_hex);
@@ -794,7 +797,7 @@ classdef satellite_goss_gui_start < handle
                 temp_lon =wx_lon;
             end
             write_satellite_location(temp_lon,90-wx_lat,high1);%写入卫星位置文件
-            set(obj.edt_echo, 'string', '写入结果文件完成.');
+            set(obj.edt_echo, 'string', '写入结果文件完成.程序结束！');
         end
         
         % Callback function for exit button.

@@ -236,6 +236,7 @@ classdef no_satellite_random_plane_gui_start < handle
         % Callback function for button start.
         function button_start_callback(obj, source, eventdata)
            set(obj.edt_echo, 'string', '准备进行仿真...');
+            pause(0.2);
            if check_plane_param(obj)==0
                 return ;
            end
@@ -244,9 +245,11 @@ classdef no_satellite_random_plane_gui_start < handle
             plane_power = str2double(get(obj.plane_edt_auto_power, 'string'));%报文功率
             % 接下来需要调用随机方法生成随机的飞机信息矩阵
             set(obj.edt_echo, 'string', '正在获取飞机参数...');
+            pause(0.2);
             planes= PlaneDistribute1(fnum);
             planes_id = ID_creat(fnum);
             set(obj.edt_echo, 'string', '正在进行仿真...');
+            pause(0.2);
             % 接下来调用紫童的方法传递参数，进行仿真
             [obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,result_lon,result_lat,result_high,obj.planes_id_out]  =no_satellite_mul_plane_main(planes,ftime,planes_id);
              obj.plane_lon_result=result_lon;
@@ -260,7 +263,8 @@ classdef no_satellite_random_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
-            set(obj.edt_echo, 'string', '仿真结束，正在写入结果文件...');
+            set(obj.edt_echo, 'string', '仿真完成，正在写入结果文件...');
+            pause(0.2);
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file1(obj.time_asix_mess,obj.planes_id_out,obj.mess_112_hex);

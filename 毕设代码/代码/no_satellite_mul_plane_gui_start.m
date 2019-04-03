@@ -520,7 +520,8 @@ classdef no_satellite_mul_plane_gui_start < handle
         
         % Callback function for button start.
         function button_start_callback(obj, source, eventdata)
-             set(obj.edt_echo, 'string', '准备进行仿真...');
+            set(obj.edt_echo, 'string', '准备进行仿真...');
+            pause(0.2);
              %校验飞行时间参数
               ftime = str2double(get(obj.plane_edt_times, 'string'));
             if is_err_time(ftime)
@@ -618,7 +619,7 @@ classdef no_satellite_mul_plane_gui_start < handle
             end
           
             
-            set(obj.edt_echo, 'string', '正在运行“多架飞机ADS-B信号模拟程序”...');
+            set(obj.edt_echo, 'string', '正在进行仿真...');
             pause(0.3);
            [obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,result_lon,result_lat,result_high,obj.planes_id_out] =no_satellite_mul_plane_main(planes,ftime,planes_id);
              obj.plane_lon_result=result_lon;
@@ -632,11 +633,12 @@ classdef no_satellite_mul_plane_gui_start < handle
                  obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:); 
                end
             end
-            set(obj.edt_echo, 'string', '仿真结束，正在写入结果文件...');
+            set(obj.edt_echo, 'string', '仿真完成，正在写入结果文件...');
+            pause(0.2);
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
             write_excel_file1(obj.time_asix_mess,obj.planes_id_out,obj.mess_112_hex);
-            set(obj.edt_echo, 'string', '“多架飞机ADS-B信号模拟程序”运行完毕！');
+            set(obj.edt_echo, 'string', '文件写入完成。程序运行完毕！');
             return;
         end
         
