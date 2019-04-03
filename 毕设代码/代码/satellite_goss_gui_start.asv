@@ -750,7 +750,7 @@ classdef satellite_goss_gui_start < handle
             planes_id = ID_creat(size(planes,2));%根据飞机个数生成ID。
             set(obj.edt_echo, 'string', '正在进行仿真...');
             %调用主函数
-            [ obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id);
+            [obj.time_asix_mess,obj.mess_rec_all,obj.mess_rec_all1,obj.mess_rec_all2,obj.plane_lon_result,obj.plane_lat_result,obj.plane_high_result,obj.planes_id_result]=satellite_simple_gui_main(planes,ftime,wx_lon,wx_lat,high1,speed1,hxj1,tx_num_edit,power1,txbs_width_edit,planes_id);
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
                   obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:)-360;
@@ -763,7 +763,7 @@ classdef satellite_goss_gui_start < handle
             set(obj.edt_echo, 'string', '正在写入结果文件...');
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
-            write_excel_file2(obj.time_asix_mess,obj.planes_id_result, obj.mess_112_hex);
+            write_excel_file2(obj.time_asix_mess,obj.planes_id_result);
             if wx_lon>180
                 temp_lon =wx_lon-360;
             else 

@@ -12,9 +12,9 @@ classdef AIRCRAFT
         ID;
         broad_times;
         last_broadtime;
-        last_AP=1;
-        last_AV=2;
-        last_ID=3;
+        last_AP
+        last_AV;
+        last_ID;
         r;
         v;
        mess_all ;
@@ -43,9 +43,7 @@ classdef AIRCRAFT
             obj.hight = high;
             obj.velocity = vel;
             obj.path_angle = p_a;
-            obj.broad_times = zeros(1, simu_t/step_t);
-            obj.last_broadtime = first_time;
-            obj.broad_times(first_time) = 1;
+            obj.broad_times = zeros(1, simu_t/step_t);          
             obj.mess_all = [];
             obj.mecode_all = [];
             obj.time_rec = [];
@@ -60,6 +58,10 @@ classdef AIRCRAFT
             obj.seq_mid2 = [];
             obj.rate_v = rate_v;
             obj.cpr = [];
+            obj.last_AP = -0.55/obj.time_step;
+            obj.last_AV = -0.35/obj.time_step;
+            obj.last_ID = -0.15/obj.time_step;
+            obj.last_broadtime = -0.15/obj.time_step;
         end
         
         %位置变化  这里的经纬度其实就是角度，最后如果需要显示出来再按照对应规则显示
@@ -91,56 +93,59 @@ classdef AIRCRAFT
        function obj=BroadCast(obj,count)
            
             %AP
-            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&...
-                    ((count-obj.last_AP)*obj.time_step>=0.5))
-                broadt=ceil(count+(rand(1)*2-1)*0.1/obj.time_step);%存在0.1s
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&&...
+                    ((count-obj.last_AP)*obj.time_step>=0.4))
+                broadt=ceil(count+(rand(1)*2)*0.1/obj.time_step);%存在0.1s
+                if broadt<0
+                    broadt = 0;
+                end
                 obj.last_broadtime=broadt;
                 obj.last_AP=broadt;
-                obj.broad_times(broadt)=1;
+                obj.broad_times(broadt+1)=1;
             end
             %AV
-            if(((count-obj.last_broadtime)*obj.time_step>=120e-6) &...
-                    ((count-obj.last_AV)*obj.time_step>=0.5))
-                broadt=ceil(count+(rand(1)*2-1)*0.1/obj.time_step);
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6) &&...
+                    ((count-obj.last_AV)*obj.time_step>=0.4))
+                broadt=ceil(count+(rand(1)*2)*0.1/obj.time_step);
                 obj.last_broadtime=broadt;
                 obj.last_AV=broadt;
-                obj.broad_times(broadt)=2;                    
+                obj.broad_times(broadt+1)=2;                    
             end
             %ID
-            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&...
-                    ((count-obj.last_ID)*obj.time_step>=5))
-                broadt=ceil(count+(rand(1)*2-1)*0.2/obj.time_step);
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&&...
+                    ((count-obj.last_ID)*obj.time_step>=4.8))
+                broadt=ceil(count+(rand(1)*2)*0.2/obj.time_step);
                 obj.last_broadtime=broadt;
                 obj.last_ID=broadt;
-                obj.broad_times(broadt)=3;                
+                obj.broad_times(broadt+1)=3;                
             end
          
        end
         function obj=BroadCast1(obj,count)
            
             %AP
-            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&...
-                    ((count-obj.last_AP)*obj.time_step>=1))
-                broadt=ceil(count+(rand(1)*2-1)*0.1/obj.time_step);%存在0.1s
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&&...
+                    ((count-obj.last_AP)*obj.time_step>=0.9))
+                broadt=ceil(count+(rand(1)*2)*0.1/obj.time_step);%存在0.1s
                 obj.last_broadtime=broadt;
                 obj.last_AP=broadt;
-                obj.broad_times(broadt)=1;
+                obj.broad_times(broadt+1)=1;
             end
             %AV
-            if(((count-obj.last_broadtime)*obj.time_step>=120e-6) &...
-                    ((count-obj.last_AV)*obj.time_step>=1))
-                broadt=ceil(count+(rand(1)*2-1)*0.1/obj.time_step);
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6) &&...
+                    ((count-obj.last_AV)*obj.time_step>=0.9))
+                broadt=ceil(count+(rand(1)*2)*0.1/obj.time_step);
                 obj.last_broadtime=broadt;
                 obj.last_AV=broadt;
-                obj.broad_times(broadt)=2;                    
+                obj.broad_times(broadt+1)=2;                    
             end
             %ID
-            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&...
-                    ((count-obj.last_ID)*obj.time_step>=5))
-                broadt=ceil(count+(rand(1)*2-1)*0.2/obj.time_step);
+            if(((count-obj.last_broadtime)*obj.time_step>=120e-6)&&...
+                    ((count-obj.last_ID)*obj.time_step>=4.8))
+                broadt=ceil(count+(rand(1)*2)*0.2/obj.time_step);
                 obj.last_broadtime=broadt;
                 obj.last_ID=broadt;
-                obj.broad_times(broadt)=3;                
+                obj.broad_times(broadt+1)=3;                
             end
         end
     end
