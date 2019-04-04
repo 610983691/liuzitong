@@ -1,4 +1,4 @@
-function [ mess_112_hex,time_asix,mess_rec_all,mess_rec_all1,mess_rec_all2,plane_lon,plane_lat,plane_high,planes_id] = satellite_simple_gui_main(plane_para,simu_time,lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width,planes_id)
+function [ mess_112_hex,time_asix,mess_rec_all,mess_rec_all1,mess_rec_all2,plane_lon,plane_lat,plane_high,planes_id] = satellite_simple_gui_main(plane_para,simu_time,lon_s,lat_s,high_s,velocity_s,path_s,ann_num,ann_power,ann_width,planes_id,min_rec_power)
 
 simu_step =1e-3;%s
 ratio = 6371;%KM
@@ -113,16 +113,17 @@ while(clock<(simu_time/simu_step))
     if ann_num==1
     [loss,gain,fd,dely_time] = parameter1(plane{i}.r,plane{i}.v,satellite.r,satellite.v,fc,c,measured_value,ann_width,ann_power);%c 参数计算函数;
     rec_power = plane_para(6,i)+gain-loss;%接收功率
-    plane{i}.power = [plane{i}.power,rec_power];%w
-    peakU = 10^6*sqrt(2* 10^(rec_power/10)/10^3);
-    rec_time = clock*simu_step+dely_time;
+    if rec_power>=min_rec_power
+      plane{i}.power = [plane{i}.power,rec_power];%w
+      peakU = 10^6*sqrt(2* 10^(rec_power/10)/10^3);
+      rec_time = clock*simu_step+dely_time;
     %信息放在同一个矩阵
-    plane{i}.LOSS = [plane{i}.LOSS,loss];
-    plane{i}.shift_f = [plane{i}.shift_f,fd];
-    plane{i}.ant_gain = [plane{i}.ant_gain,gain];
-    plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_para(6,i),loss,gain,rec_power,fd,mess(1,2:8)];
-    plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
-    plane{i}.rec_time = [plane{i}.rec_time,[rec_time;clock*simu_step*10^3;i;flag;rec_power;plane{i}.longitude;...
+     plane{i}.LOSS = [plane{i}.LOSS,loss];
+     plane{i}.shift_f = [plane{i}.shift_f,fd];
+     plane{i}.ant_gain = [plane{i}.ant_gain,gain];
+     plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_para(6,i),loss,gain,rec_power,fd,mess(1,2:8)];
+     plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
+     plane{i}.rec_time = [plane{i}.rec_time,[rec_time;clock*simu_step*10^3;i;flag;rec_power;plane{i}.longitude;...
                          plane{i}.latitude;plane{i}.hight;plane{i}.NS_v*3600/1.852;plane{i}.WE_v*3600/1.852;plane{i}.rate_v;plane{i}.broad_times(1,clock+1);cpr_flag]];
     %ppm调制
     ppm = ppmencode(mess112,rs,fs,fd,fc_mid);%z中频信号
@@ -130,24 +131,26 @@ while(clock<(simu_time/simu_step))
     plane{i}.ppmseq = [plane{i}.ppmseq;ppm];
     plane{i}.seq_mid = [plane{i}.seq_mid;ppm_value]; 
     end
+    end
     
     %双天线场景
     if ann_num==2
     [loss,gain1,gain2,fd,dely_time] = parameter2(plane{i}.r,plane{i}.v,satellite.r,satellite.v,fc,c,measured_value,ann_width,satellite.ann1,satellite.ann2,ann_power);%c 参数计算函数;   
     rec_power1 = plane_para(6,i)+gain1-loss;%接收功率
     rec_power2 = plane_para(6,i)+gain2-loss;%接收功率
-    plane{i}.power = [plane{i}.power,[rec_power1;rec_power2]];
-    peakU1 = 10^6*sqrt(2* 10^(rec_power1/10)/10^3);
-    peakU2 = 10^6*sqrt(2* 10^(rec_power2/10)/10^3);
-    rec_time = clock*simu_step+dely_time;
+    if (rec_power1>=min_rec_power)||(rec_power2>=min_rec_power)
+       plane{i}.power = [plane{i}.power,[rec_power1;rec_power2]];
+       peakU1 = 10^6*sqrt(2* 10^(rec_power1/10)/10^3);
+       peakU2 = 10^6*sqrt(2* 10^(rec_power2/10)/10^3);
+       rec_time = clock*simu_step+dely_time;
     
     
-    plane{i}.LOSS = [plane{i}.LOSS,loss];
-    plane{i}.shift_f = [plane{i}.shift_f,fd];    
-    plane{i}.ant_gain = [plane{i}.ant_gain,[gain1;gain2]];
-    plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_para(6,i),loss,gain1,gain2,rec_power1,rec_power2,fd,mess(1,2:8)];
-    plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
-    plane{i}.rec_time = [plane{i}.rec_time,[rec_time;clock*simu_step;i;flag;rec_power1;rec_power2;plane{i}.longitude;...
+       plane{i}.LOSS = [plane{i}.LOSS,loss];
+       plane{i}.shift_f = [plane{i}.shift_f,fd];    
+       plane{i}.ant_gain = [plane{i}.ant_gain,[gain1;gain2]];
+       plane{i}.mess_all = [plane{i}.mess_all;rec_time,plane_para(6,i),loss,gain1,gain2,rec_power1,rec_power2,fd,mess(1,2:8)];
+       plane{i}.mecode_all = [plane{i}.mecode_all;mecode]; 
+       plane{i}.rec_time = [plane{i}.rec_time,[rec_time;clock*simu_step;i;flag;rec_power1;rec_power2;plane{i}.longitude;...
                          plane{i}.latitude;plane{i}.hight;plane{i}.NS_v*3600/1.852;plane{i}.WE_v*3600/1.852;plane{i}.rate_v;plane{i}.broad_times(1,clock+1);cpr_flag]];
 
   
@@ -159,6 +162,7 @@ while(clock<(simu_time/simu_step))
     plane{i}.ppmseq = [plane{i}.ppmseq;ppm];
     plane{i}.seq_mid1 = [plane{i}.seq_mid1;ppm_value1]; 
     plane{i}.seq_mid2 = [plane{i}.seq_mid2;ppm_value2]; 
+    end
     end
     
     end
@@ -229,17 +233,19 @@ if ann_num==2
             time_asix(8,i) = 90-time_asix(8,i);
      end  
      for i = 1:size(time_rec_all,2)
+         if plane{time_asix(3,i)}.power(1,time_asix(4,i))>=min_rec_power
          A = [time_asix(:,i);plane{time_asix(3,i)}.power(1,time_asix(4,i));plane{time_asix(3,i)}.seq_mid1(time_asix(4,i),:)'];
           mess_rec_all1 = [mess_rec_all1,A];
+         end
      end  
 
      for i = 1:size(time_rec_all,2)
+         if plane{time_asix(3,i)}.power(2,time_asix(4,i))>=min_rec_power
           A = [time_asix(:,i);plane{time_asix(3,i)}.power(2,time_asix(4,i));plane{time_asix(3,i)}.seq_mid2(time_asix(4,i),:)'];
           mess_rec_all2 = [mess_rec_all2,A];
+         end
      end  
- end
-
-   
+end   
 end
 
 

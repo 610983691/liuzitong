@@ -12,8 +12,9 @@ for i = 1:50001
     power1(i) = power(50002-i);
 end
 % value2 = [measured_value,measured_value,measured_value,measured_value];
-polar(X,power);
+% polar(X,power);
 % hold on;
+
 
 % Y =pi/2:pi/100000:pi;
 % polar(Y,power1);
