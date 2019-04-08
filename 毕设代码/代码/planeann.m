@@ -11,9 +11,9 @@ end
 for i = 1:50001
     power1(i) = power(50002-i);
 end
-% value2 = [measured_value,measured_value,measured_value,measured_value];
-% polar(X,power);
-% hold on;
+value2 = [measured_value,measured_value,measured_value,measured_value];
+polar(X,power);
+hold on;
 
 
 % Y =pi/2:pi/100000:pi;
@@ -23,6 +23,6 @@ end
 % polar(T,power);
 % hold on;
 % 
-% H =3*pi/2:pi/100000:2*pi;
-% polar(H,power1);
+H =3*pi/2:pi/100000:2*pi;
+polar(H,power1);
 % hold on;
