@@ -273,6 +273,7 @@ classdef no_satellite_random_plane_gui_start < handle
             plane_lon_first_col = obj.plane_lon_path(:,1);
             plane_lat_first_col = obj.plane_lat_path(:,1);
             write_plane_param_2_file(obj.time_asix_mess,obj.planes_id_out,plane_lon_first_col,plane_lat_first_col);%写入pointINfo.TXT文件
+            planes_in_the_world_map(obj.plane_lon_path,obj.plane_lat_path);%无卫星的轨迹图，直接matlab展示
             set(obj.edt_echo, 'string', '结果写入完毕，程序结束！');
             return;
         end

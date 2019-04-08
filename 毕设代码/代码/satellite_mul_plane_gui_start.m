@@ -293,6 +293,7 @@ classdef satellite_mul_plane_gui_start < handle
                 'edit', 'BackgroundColor','white' ...
               ,'Fontsize',11,'position',[9+(5*txt_area_width_label+4*edit_area_width)  10 ...
               edit_area_width 40]);
+            set(obj.minimal_rec_power, 'string', '-115');
                  % 设置卫星参数button 
             obj.set_wx_param_btn = uicontrol('parent', obj.wx_panel_erea, 'style', ...
                 'pushbutton', 'BackgroundColor', [0.83 0.82 0.78], 'Fontsize', 12, ...
@@ -1010,6 +1011,7 @@ classdef satellite_mul_plane_gui_start < handle
             plane_lon_first_col = obj.plane_lon_path(:,1);
             plane_lat_first_col = obj.plane_lat_path(:,1);
             write_plane_param_2_file(obj.time_asix_mess,obj.planes_id_result,plane_lon_first_col,plane_lat_first_col);%写入pointinfo.txt
+            planes_in_the_world_map_with_satellite(obj.plane_lon_path,obj.plane_lat_path,temp_lon,90-wx_lat,wx_high);%有卫星的轨迹图，直接matlab展示
             set(obj.edt_echo, 'string', '写入结果文件完成.程序运行完毕！');
            
         end

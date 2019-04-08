@@ -1,7 +1,7 @@
 function write_plane_param_2_file(time_asix_mess,planes_id, planes_lon,planes_lat)%有卫星情况的飞机起始位置信息写入
 %封装数据矩阵
 time_asix_mess_cols =size(time_asix_mess,2);%每个报文数据在excel里边是一行
-data=cell(size(planes_lon,1),4);%我只需要4列，需要飞机的行数
+data=cell(size(planes_lon,1),7);%只需要7列数据，需要飞机的行数
 idx =0;
 has_process=zeros(1,size(planes_lon,1));
 time_asix_mess_rows= size(time_asix_mess,1);%飞机数据的行数
@@ -16,6 +16,9 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                     data{idx,2}=planes_lat(j,1);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(2,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(2,i)};%ID
+                    data{idx,5}=time_asix_mess(8,i);%南北速度
+                    data{idx,6}=time_asix_mess(9,i);%东西速度
+                    data{idx,7}=time_asix_mess(10,i);%垂直速度
                     break;
                 end
             end
@@ -30,6 +33,9 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                     data{idx,2}=planes_lat(j,1);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(3,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(3,i)};%ID
+                    data{idx,5}=time_asix_mess(9,i);%南北速度
+                    data{idx,6}=time_asix_mess(10,i);%东西速度
+                    data{idx,7}=time_asix_mess(11,i);%垂直速度
                     break;
                 end
             end
@@ -44,6 +50,9 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                     data{idx,2}=planes_lat(j,1);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(3,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(3,i)};%ID
+                    data{idx,5}=time_asix_mess(10,i);%南北速度
+                    data{idx,6}=time_asix_mess(11,i);%东西速度
+                    data{idx,7}=time_asix_mess(12,i);%垂直速度
                     break;
                 end
             end
@@ -69,6 +78,12 @@ for row = 1:rows
     fprintf(fid,'%s',data{row,3});
     fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
     fprintf(fid,'%s',data{row,4});
+    fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
+    fprintf(fid,'%3.12f',data{row,5});%南北速度
+    fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
+    fprintf(fid,'%3.12f',data{row,6});%东西速度
+    fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
+    fprintf(fid,'%3.12f',data{row,7});%垂直速度
     fprintf(fid,'%s',';');%每行数据数据以;分号分隔
     fprintf(fid,'\r\n');
 end
