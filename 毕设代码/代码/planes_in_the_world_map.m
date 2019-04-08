@@ -10,11 +10,10 @@ geoshow(rivers, 'Color', 'blue')
 
 rows = size(planes_lon,1);%飞机经度的行数代表飞机的架数，也代表航迹的条数
 for row=1:rows
-    lats=[planes_lat(row,1),planes_lat(row,size(planes_lat,2))]%只取起点和终点
-    lons=[planes_lon(row,1),planes_lon(row,size(planes_lon,2))]
+    lats=[planes_lat(row,1),planes_lat(row,size(planes_lat,2))];%只取起点和终点
+    lons=[planes_lon(row,1),planes_lon(row,size(planes_lon,2))];
     linem(lats,lons,'r-');%这里的参数是先纬度，后经度
-    geoshow(lats(1,1), lons(1,1), 'Marker','*','MarkerEdgeColor','red')%标记起点
-    geoshow(lats(1,2), lons(1,2), 'Marker','o','MarkerEdgeColor','yellow')%标记终点
+    geoshow(lats(1,1), lons(1,1), 'Marker','o','MarkerEdgeColor','red');%设置起点,飞机用o表示
 end
 
 
