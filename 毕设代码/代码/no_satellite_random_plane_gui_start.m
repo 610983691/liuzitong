@@ -98,6 +98,7 @@ classdef no_satellite_random_plane_gui_start < handle
         time_asix_mess;
         planes_id_out;
         mess_112_hex;
+        mess_test;
         
         % Callback function flag.
         cb_auto_config = 0;
@@ -251,7 +252,7 @@ classdef no_satellite_random_plane_gui_start < handle
             set(obj.edt_echo, 'string', '正在进行仿真...');
             pause(0.2);
             % 接下来调用紫童的方法传递参数，进行仿真
-            [obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,result_lon,result_lat,result_high,obj.planes_id_out]  =no_satellite_mul_plane_main(planes,ftime,planes_id);
+            [obj.mess_test,obj.mess_112_hex,obj.time_asix_mess,obj.mess_rec_all,result_lon,result_lat,result_high,obj.planes_id_out]  =no_satellite_mul_plane_main(planes,ftime,planes_id);
              obj.plane_lon_result=result_lon;
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
