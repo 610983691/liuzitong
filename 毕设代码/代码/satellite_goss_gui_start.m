@@ -913,12 +913,7 @@ classdef satellite_goss_gui_start < handle
              if isnan(minimal_rec_power_edt)
                 set(obj.edt_echo, 'string', '最小接收功率必须为数字，请重新设置！');
                 return;
-             elseif minimal_rec_power_edt<0
-                set(obj.edt_echo, 'string', '最小接收功率必须为正数，请重新设置！');
-                return;
              end
-             
-             
              
             s=1;
         end

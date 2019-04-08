@@ -1,4 +1,4 @@
-function [mess_112_hex,time_asix,mess_rec_all,plane_lon,plane_lat,plane_high,planes_id] =no_satellite_mul_plane_main(plane_para,simu_time,planes_id)
+function [mess_test,mess_112_hex,time_asix,mess_rec_all,plane_lon,plane_lat,plane_high,planes_id] =no_satellite_mul_plane_main(plane_para,simu_time,planes_id)
 
 plane_ann_num = 1;
 simu_step =1e-3;%s
@@ -147,5 +147,19 @@ end
   for i = 1:size(time_rec_all,2)
           A = [time_asix(:,i);plane_para(6,time_asix(2,i));plane{time_asix(2,i)}.seq_mid(time_asix(3,i),:)'];
           mess_rec_all = [mess_rec_all,A];
-     end
+  end
+  
+  max_time  = max(time_asix(1,:));
+  mess_test = [];
+  for i = 1:size(time_asix,2)
+      mess_test = [mess_test,mess_rec_all(14:size(mess_rec_all,1),i)'];
+      if i<=size(time_asix,2)-1
+         time = (time_asix(1,i+1)-time_asix(1,i))/10^7;
+         mess_test = [mess_test,zeros(1,ceil(time/(rs/fs)))];
+      end
+
+  end
+  t = 0:rs/fs:size(mess_test,2)*(rs/fs)-rs/fs;
+  plot(t,mess_test);
+  
 end
