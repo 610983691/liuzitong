@@ -1007,6 +1007,9 @@ classdef satellite_mul_plane_gui_start < handle
                 temp_lon =wx_lon;
             end
             write_satellite_location(temp_lon,90-wx_lat,wx_high);%写入卫星位置文件
+            plane_lon_first_col = obj.plane_lon_path(:,1);
+            plane_lat_first_col = obj.plane_lat_path(:,1);
+            write_plane_param_2_file(obj.time_asix_mess,obj.planes_id_result,plane_lon_first_col,plane_lat_first_col);%写入pointinfo.txt
             set(obj.edt_echo, 'string', '写入结果文件完成.程序运行完毕！');
            
         end

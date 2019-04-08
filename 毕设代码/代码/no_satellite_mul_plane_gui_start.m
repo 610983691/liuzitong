@@ -638,7 +638,10 @@ classdef no_satellite_mul_plane_gui_start < handle
             pause(0.2);
             write_lat_data_2_file(obj.plane_lat_path);
             write_lon_data_2_file(obj.plane_lon_path);
-            write_excel_file1(obj.time_asix_mess,obj.planes_id_out,obj.mess_112_hex);
+            write_excel_file1(obj.time_asix_mess,obj.planes_id_out,obj.mess_112_hex);%写入Eexcel文件
+            plane_lon_first_col = obj.plane_lon_path(:,1);
+            plane_lat_first_col = obj.plane_lat_path(:,1);
+            write_plane_param_2_file(obj.time_asix_mess,obj.planes_id_out,plane_lon_first_col,plane_lat_first_col);%写入pointINfo.TXT文件
             set(obj.edt_echo, 'string', '文件写入完成。程序运行完毕！');
             return;
         end
