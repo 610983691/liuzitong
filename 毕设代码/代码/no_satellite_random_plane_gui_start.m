@@ -110,7 +110,6 @@ classdef no_satellite_random_plane_gui_start < handle
         rpc = 0;
         plane_ICAO_double;
         plane_ID_double;
-        mess_test;
     end
     
     methods

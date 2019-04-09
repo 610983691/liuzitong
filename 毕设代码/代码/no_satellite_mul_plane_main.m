@@ -4,7 +4,7 @@ plane_ann_num = 1;
 simu_step =1e-3;%s
 ratio = 6371;%KM
 rs = 1*10^6;
-fs = 200*10^6;
+fs = 300*10^6;
 fc_mid = 40*10^6; %中频载波频率40MHz
 
 
@@ -14,6 +14,7 @@ plane_lon = zeros(N,simu_time/simu_step);
 plane_lat = zeros(N,simu_time/simu_step);
 plane_high = zeros(N,simu_time/simu_step);
 velocity = zeros(N,simu_time/simu_step);
+rec_position = zeros(N,2);
 for i = 1:N
 plane_lon(i,1) = plane_para(1,i);
 plane_lat(i,1) = plane_para(2,i);
@@ -57,6 +58,7 @@ end
 for i = 1:N
     clock = 0;
     flag = 0;%记录报文个数
+    flag_position = 0;
     type = randi(4);
     type_code(1,:) = bitget(type,5:-1:1); 
     even_old = cpr(i);   
@@ -83,6 +85,7 @@ while(clock<(simu_time/simu_step))
      flag = flag+1;%报文数量增加
      cpr_flag= 0;
     if plane{i}.broad_times(1,clock+1)==1%位置信息是奇编码还是偶编码，首先判断是否是位置信息
+        flag_position = flag_position+1;
        even_old =  mod(even_old+1,2);%不考虑上下天线时的cpr情况
 %        cpr_all= [cpr_all,[even_old;flag]];%不考虑上下天线时的这一架飞机的所有cpr情况，并且记录下这是飞机的第几个报文
        cpr_flag = even_old;%不考虑上下天线时最后的输入列表中表示奇偶编码的变量
@@ -94,6 +97,19 @@ while(clock<(simu_time/simu_step))
     [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,even_old,...
     plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID_double(i,:),i,plane_para(7,i));%最后一个是飞机的垂直速度
     mess112 = crcencode(code_heading(i,:),mecode);
+    if flag_position==1%第一个报文信息
+       lat1 = mess112(1,55:71);
+       lon1 = mess112(1,71:88);
+       cpr1 = mess112(1,54);
+    end
+   if flag_position==2%第二个报文信息
+       lat2 = mess112(1,55:71);
+       lon2= mess112(1,71:88);
+       cpr2 = mess112(1,54);
+       %CPR解码
+       
+       
+    end
     mess_112_all = [mess_112_all;mess112];
     
     %加上损耗增益等
@@ -148,7 +164,7 @@ end
           A = [time_asix(:,i);plane_para(6,time_asix(2,i));plane{time_asix(2,i)}.seq_mid(time_asix(3,i),:)'];
           mess_rec_all = [mess_rec_all,A];
   end
-  
+
   max_time  = max(time_asix(1,:));
   mess_test = [];
   for i = 1:size(time_asix,2)
@@ -159,7 +175,9 @@ end
       end
 
   end
-  t = 0:rs/fs:size(mess_test,2)*(rs/fs)-rs/fs;
-  plot(t,mess_test);
+  
+  
+%   t = 0:rs/fs:size(mess_test,2)*(rs/fs)-rs/fs;
+%   plot(t,mess_test);
   
 end

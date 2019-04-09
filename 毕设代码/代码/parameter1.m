@@ -9,8 +9,12 @@ fd = fc*norm(r_v)*costheta/c;
 loss = 32.44 + 20*log10(fc+fd) + 20*log10(norm(r_r));
 %机载天线增益
 theta1 = acos(r'*r_r/(norm(r_r)*norm(r')));
-a = round(theta1*10000/pi+1);
-plane_gain = Y(1,a);
+if 0<=theta1<=pi/2
+   a = round(theta1*10000/pi+1);
+   plane_gain = Y(1,a);
+else
+    plane_gain = 0;
+end
 %星载天线增益
 %首先选择卫星天线
 f = 3e10;

@@ -4,7 +4,7 @@ simu_step =1e-3;%s
 ratio = 6371;%KM
 c = 3e+5;%km/s
 rs = 1*10^6;
-fs = 200*10^6;
+fs = 300*10^6;
 fc_mid = 40*10^6; %中频载波频率40MHz
 fc = 1090;%发射频率1090MHz  
 
@@ -223,6 +223,14 @@ if ann_num==1
           A = [time_asix(:,i);plane{time_asix(3,i)}.power(time_asix(4,i));plane{time_asix(3,i)}.seq_mid(time_asix(4,i),:)'];
           mess_rec_all = [mess_rec_all,A];
      end
+    for i = 1:size(time_rec_all,2)-1
+      if time_asix(1,i+1)-time_asix(1,i)<120*10^-6
+          time_diff =ceil((time_asix(1,i+1)-time_asix(1,i))*10^6*fs/rs);
+          asix_mess = zeros(1,120*fs/rs+time_diff);
+          asix_mess =asix_mess+[plane{time_asix(3,i)}.seq_mid(time_asix(4,i),:),zeros(1,time_diff)];
+          asix_mess =asix_mess +[zeros(1,time_diff),plane{time_asix(3,i+1)}.seq_mid(time_asix(4,i+1),:)];
+      end
+  end
 end
 if ann_num==2
 %将角度变成经纬度 7、8行
