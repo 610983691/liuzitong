@@ -1,7 +1,7 @@
 function write_plane_param_2_file(time_asix_mess,planes_id, planes_lon,planes_lat)%有卫星情况的飞机起始位置信息写入
 %封装数据矩阵
 time_asix_mess_cols =size(time_asix_mess,2);%每个报文数据在excel里边是一行
-data=cell(size(planes_lon,1),7);%只需要7列数据，需要飞机的行数
+data=cell(size(planes_lon,1),9);%只需要9列数据，需要飞机的行数
 idx =0;
 has_process=zeros(1,size(planes_lon,1));
 time_asix_mess_rows= size(time_asix_mess,1);%飞机数据的行数
@@ -12,8 +12,8 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                 if ~ismember(j,has_process)%判断J是否已存在，已存在说明已经获取到了。只有不存在才处理
                     idx=idx+1;
                     has_process(1,idx)=j;
-                    data{idx,1}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度
-                    data{idx,2}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度
+                    data{idx,1}=planes_lon(j,1);%经度
+                    data{idx,2}=planes_lat(j,1);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(2,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(2,i)};%ID
                     if (time_asix_mess(8,i)>1022)||(time_asix_mess(9,i)>1022)%超音速
@@ -24,6 +24,8 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                     data{idx,6}=round(time_asix_mess(9,i));%东西速度   
                     end
                     data{idx,7}=round(time_asix_mess(10,i)/64)*64;%垂直速度
+                    data{idx,8}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度
+                    data{idx,9}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度
                     break;
                 end
             end
@@ -34,8 +36,8 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                 if ~ismember(j,has_process)%判断J是否已存在，已存在说明已经获取到了。只有不存在才处理
                     idx=idx+1;
                     has_process(1,idx)=j;
-                    data{idx,1}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度
-                    data{idx,2}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度
+                    data{idx,1}=planes_lon(j,1);%经度
+                    data{idx,2}=planes_lat(j,1);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(3,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(3,i)};%ID
                     if (time_asix_mess(9,i)>1022)||(time_asix_mess(10,i)>1022)%超音速
@@ -46,6 +48,8 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                     data{idx,6}=round(time_asix_mess(10,i));%东西速度   
                     end
                     data{idx,7}=round(time_asix_mess(11,i)/64)*64;%垂直速度
+                    data{idx,8}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度,只用于显示
+                    data{idx,9}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度,只用于显示
                     break;
                 end
             end
@@ -56,8 +60,8 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                 if ~ismember(j,has_process)%判断J是否已存在，已存在说明已经获取到了。只有不存在才处理
                     idx=idx+1;
                     has_process(1,idx)=j;
-                    data{idx,1}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度
-                    data{idx,2}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度
+                    data{idx,1}=planes_lon(j,1);%经度
+                    data{idx,2}=planes_lat(j,1);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(3,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(3,i)};%ID
                      if (time_asix_mess(10,i)>1022)||(time_asix_mess(11,i)>1022)%超音速
@@ -68,6 +72,8 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                     data{idx,6}=round(time_asix_mess(11,i));%东西速度   
                     end
                     data{idx,7}=round(time_asix_mess(12,i)/64)*64;%垂直速度
+                    data{idx,8}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度,只用于显示
+                    data{idx,9}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度,只用于显示
                     break;
                 end
             end
@@ -99,6 +105,10 @@ for row = 1:rows
     fprintf(fid,'%3.12f',data{row,6});%东西速度
     fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
     fprintf(fid,'%3.12f',data{row,7});%垂直速度
+    fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
+    fprintf(fid,'%3.12f',data{row,8});%显示的经度
+    fprintf(fid,'%s',',');%每个数据以逗号分隔,最后一个数据不分割
+    fprintf(fid,'%3.12f',data{row,9});%显示的纬度
     fprintf(fid,'%s',';');%每行数据数据以;分号分隔
     fprintf(fid,'\r\n');
 end
