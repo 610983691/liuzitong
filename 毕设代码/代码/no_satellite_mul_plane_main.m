@@ -1,7 +1,7 @@
 function [mess_test,mess_112_hex,time_asix,mess_rec_all,plane_lon,plane_lat,plane_high,planes_id] =no_satellite_mul_plane_main(plane_para,simu_time,planes_id)
 
 plane_ann_num = 1;
-simu_step =1e-3;%s
+simu_step =1e-5;%10us
 ratio = 6371;%KM
 rs = 1*10^6;
 fs = 300*10^6;
@@ -10,11 +10,12 @@ fc_mid = 40*10^6; %中频载波频率40MHz
 
 
 N= size(plane_para,2);
-plane_lon = zeros(N,simu_time/simu_step);
-plane_lat = zeros(N,simu_time/simu_step);
-plane_high = zeros(N,simu_time/simu_step);
-velocity = zeros(N,simu_time/simu_step);
-rec_position = zeros(N,2);
+plane_lon = zeros(N,round(simu_time/simu_step/100));
+plane_lat = zeros(N,round(simu_time/simu_step/100));
+plane_high = zeros(N,round(simu_time/simu_step/100));
+velocity = zeros(N,round(simu_time/simu_step));
+% rec_position_lon = zeros(N,2);
+% rec_position_lat = zeros(N,2);
 for i = 1:N
 plane_lon(i,1) = plane_para(1,i);
 plane_lat(i,1) = plane_para(2,i);
@@ -58,7 +59,7 @@ end
 for i = 1:N
     clock = 0;
     flag = 0;%记录报文个数
-    flag_position = 0;
+%     flag_position = 0;
     type = randi(4);
     type_code(1,:) = bitget(type,5:-1:1); 
     even_old = cpr(i);   
@@ -71,12 +72,11 @@ while(clock<(simu_time/simu_step))
         case 2
         plane{i} = BroadCast1(plane{i},clock); 
     end
-            
-
-    
-    plane_lon(i,clock+1) = plane{i}.longitude;
-    plane_lat(i,clock+1) = plane{i}.latitude;
-    plane_high(i,clock+1) = plane{i}.hight;
+    if mod(clock,100)==0
+       plane_lon(i,round(clock/100)+1) = plane{i}.longitude;
+       plane_lat(i,round(clock/100)+1) = plane{i}.latitude;
+       plane_high(i,round(clock/100)+1) = plane{i}.hight;
+    end
     
 
     %编码过程
@@ -85,7 +85,7 @@ while(clock<(simu_time/simu_step))
      flag = flag+1;%报文数量增加
      cpr_flag= 0;
     if plane{i}.broad_times(1,clock+1)==1%位置信息是奇编码还是偶编码，首先判断是否是位置信息
-        flag_position = flag_position+1;
+%         flag_position = flag_position+1;
        even_old =  mod(even_old+1,2);%不考虑上下天线时的cpr情况
 %        cpr_all= [cpr_all,[even_old;flag]];%不考虑上下天线时的这一架飞机的所有cpr情况，并且记录下这是飞机的第几个报文
        cpr_flag = even_old;%不考虑上下天线时最后的输入列表中表示奇偶编码的变量
@@ -97,19 +97,18 @@ while(clock<(simu_time/simu_step))
     [mecode,mess] = messcode(clock,plane{i}.broad_times,plane{i}.longitude,plane{i}.latitude,plane{i}.hight,even_old,...
     plane{i}.velocity,plane{i}.path_angle,type_code,plane_ID_double(i,:),i,plane_para(7,i));%最后一个是飞机的垂直速度
     mess112 = crcencode(code_heading(i,:),mecode);
-    if flag_position==1%第一个报文信息
-       lat1 = mess112(1,55:71);
-       lon1 = mess112(1,71:88);
-       cpr1 = mess112(1,54);
-    end
-   if flag_position==2%第二个报文信息
-       lat2 = mess112(1,55:71);
-       lon2= mess112(1,71:88);
-       cpr2 = mess112(1,54);
-       %CPR解码
-       
-       
-    end
+%     if flag_position==1%第一个报文信息
+%        lat1 = mess112(1,55:71);
+%        lon1 = mess112(1,71:88);
+%        cpr1 = mess112(1,54);
+%     end
+%    if flag_position==2%第二个报文信息
+%        lat2 = mess112(1,55:71);
+%        lon2= mess112(1,71:88);
+%        cpr2 = mess112(1,54);
+%        %CPR解码
+%        [rec_position_lon(i,1),rec_position_lat(i,1)] = cprdecode(lat1,lon1,cpr1,lat2,lon2);      
+%     end
     mess_112_all = [mess_112_all;mess112];
     
     %加上损耗增益等
@@ -129,6 +128,12 @@ while(clock<(simu_time/simu_step))
     end
      clock = clock + 1;
 end
+% if plane{i}.rec_time(5,flag)>180
+%     rec_position_lon(i,2)  = plane{i}.rec_time(5,flag)-360;
+% else
+%     rec_position_lon(i,2)  = plane{i}.rec_time(5,flag);
+% end
+%     rec_position_lat(i,2)  = 90-plane{i}.rec_time(6,flag);
    time_rec_all = [time_rec_all , plane{i}.rec_time];
 end
 time_asix = zeros(size(time_rec_all,1),size(time_rec_all,2));%没有接收时间

@@ -43,7 +43,7 @@ classdef AIRCRAFT
             obj.hight = high;
             obj.velocity = vel;
             obj.path_angle = p_a;
-            obj.broad_times = zeros(1, simu_t/step_t);          
+            obj.broad_times = zeros(1, round(simu_t/step_t));          
             obj.mess_all = [];
             obj.mecode_all = [];
             obj.time_rec = [];

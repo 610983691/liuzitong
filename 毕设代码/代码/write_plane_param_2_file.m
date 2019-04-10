@@ -12,13 +12,18 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                 if ~ismember(j,has_process)%判断J是否已存在，已存在说明已经获取到了。只有不存在才处理
                     idx=idx+1;
                     has_process(1,idx)=j;
-                    data{idx,1}=planes_lon(j,1);%经度
-                    data{idx,2}=planes_lat(j,1);%维度
+                    data{idx,1}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度
+                    data{idx,2}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(2,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(2,i)};%ID
-                    data{idx,5}=time_asix_mess(8,i);%南北速度
-                    data{idx,6}=time_asix_mess(9,i);%东西速度
-                    data{idx,7}=time_asix_mess(10,i);%垂直速度
+                    if (time_asix_mess(8,i)>1022)||(time_asix_mess(9,i)>1022)%超音速
+                    data{idx,5}=round(time_asix_mess(8,i)/4)*4;%南北速度
+                    data{idx,6}=round(time_asix_mess(9,i)/4)*4;%东西速度
+                    else
+                    data{idx,5}=round(time_asix_mess(8,i));%南北速度
+                    data{idx,6}=round(time_asix_mess(9,i));%东西速度   
+                    end
+                    data{idx,7}=round(time_asix_mess(10,i)/64)*64;%垂直速度
                     break;
                 end
             end
@@ -29,13 +34,18 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                 if ~ismember(j,has_process)%判断J是否已存在，已存在说明已经获取到了。只有不存在才处理
                     idx=idx+1;
                     has_process(1,idx)=j;
-                    data{idx,1}=planes_lon(j,1);%经度
-                    data{idx,2}=planes_lat(j,1);%维度
+                    data{idx,1}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度
+                    data{idx,2}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(3,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(3,i)};%ID
-                    data{idx,5}=time_asix_mess(9,i);%南北速度
-                    data{idx,6}=time_asix_mess(10,i);%东西速度
-                    data{idx,7}=time_asix_mess(11,i);%垂直速度
+                    if (time_asix_mess(9,i)>1022)||(time_asix_mess(10,i)>1022)%超音速
+                    data{idx,5}=round(time_asix_mess(9,i)/4)*4;%南北速度
+                    data{idx,6}=round(time_asix_mess(10,i)/4)*4;%东西速度
+                    else
+                    data{idx,5}=round(time_asix_mess(9,i));%南北速度
+                    data{idx,6}=round(time_asix_mess(10,i));%东西速度   
+                    end
+                    data{idx,7}=round(time_asix_mess(11,i)/64)*64;%垂直速度
                     break;
                 end
             end
@@ -46,13 +56,18 @@ for i = 1:time_asix_mess_cols%遍历所有的飞机
                 if ~ismember(j,has_process)%判断J是否已存在，已存在说明已经获取到了。只有不存在才处理
                     idx=idx+1;
                     has_process(1,idx)=j;
-                    data{idx,1}=planes_lon(j,1);%经度
-                    data{idx,2}=planes_lat(j,1);%维度
+                    data{idx,1}=roundn(planes_lon(j,1)+rand()*2-1,-4);%经度
+                    data{idx,2}=roundn(planes_lat(j,1)+rand()*2-1,-4);%维度
                     data{idx,3}=planes_id{1,time_asix_mess(3,i)};%ICAO
                     data{idx,4}=planes_id{2,time_asix_mess(3,i)};%ID
-                    data{idx,5}=time_asix_mess(10,i);%南北速度
-                    data{idx,6}=time_asix_mess(11,i);%东西速度
-                    data{idx,7}=time_asix_mess(12,i);%垂直速度
+                     if (time_asix_mess(10,i)>1022)||(time_asix_mess(11,i)>1022)%超音速
+                    data{idx,5}=round(time_asix_mess(10,i)/4)*4;%南北速度
+                    data{idx,6}=round(time_asix_mess(11,i)/4)*4;%东西速度
+                    else
+                    data{idx,5}=round(time_asix_mess(10,i));%南北速度
+                    data{idx,6}=round(time_asix_mess(11,i));%东西速度   
+                    end
+                    data{idx,7}=round(time_asix_mess(12,i)/64)*64;%垂直速度
                     break;
                 end
             end

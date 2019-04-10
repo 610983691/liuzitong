@@ -627,6 +627,7 @@ classdef no_satellite_mul_plane_gui_start < handle
              obj.plane_lat_result=result_lat;
              obj.plane_high_result=result_high;
              obj.plane_lat_path = 90-obj.plane_lat_result;
+             obj.plane_lon_path = obj.plane_lon_result;
             for i = 1:size(obj.plane_lon_result,1)
                if obj.plane_lon_result(i,1)>180
                   obj.plane_lon_path(i,:) = obj.plane_lon_result(i,:)-360;
