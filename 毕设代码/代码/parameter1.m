@@ -11,6 +11,11 @@ loss = 32.44 + 20*log10(fc+fd) + 20*log10(norm(r_r));
 theta1 = acos(r'*r_r/(norm(r_r)*norm(r')));
 if 0<=theta1<=pi/2
    a = round(theta1*10000/pi+1);
+   if a>5001
+       a=5001;
+   elseif a<0
+       a=0;
+   end
    plane_gain = Y(1,a);
 else
     plane_gain = 0;

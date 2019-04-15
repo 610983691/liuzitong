@@ -115,7 +115,7 @@ while(clock<(simu_time/simu_step))
     rec_power = plane_para(6,i)+gain-loss;%接收功率
     if rec_power>=min_rec_power
       plane{i}.power = [plane{i}.power,rec_power];%w
-      peakU = 10^6*sqrt(2* 10^(rec_power/10)/10^3);
+      peakU = sqrt(2* 10^(rec_power/10)/10^3);
       rec_time = clock*simu_step+dely_time;
     %信息放在同一个矩阵
      plane{i}.LOSS = [plane{i}.LOSS,loss];
@@ -127,7 +127,8 @@ while(clock<(simu_time/simu_step))
                          plane{i}.latitude;plane{i}.hight;plane{i}.NS_v*3600/1.852;plane{i}.WE_v*3600/1.852;plane{i}.rate_v;plane{i}.broad_times(1,clock+1);cpr_flag]];
     %ppm调制
     ppm = ppmencode(mess112,rs,fs,fd,fc_mid);%z中频信号
-    ppm_value = ppm*peakU;
+    ppm_value1 = ppm*peakU;
+    ppm_value=ppm_value1*10^4;
     plane{i}.ppmseq = [plane{i}.ppmseq;ppm];
     plane{i}.seq_mid = [plane{i}.seq_mid;ppm_value]; 
     end
@@ -230,7 +231,7 @@ if ann_num==1
           asix_mess =asix_mess+[plane{time_asix(3,i)}.seq_mid(time_asix(4,i),:),zeros(1,time_diff)];
           asix_mess =asix_mess +[zeros(1,time_diff),plane{time_asix(3,i+1)}.seq_mid(time_asix(4,i+1),:)];
       end
-  end
+   end
 end
 if ann_num==2
 %将角度变成经纬度 7、8行

@@ -879,7 +879,7 @@ classdef satellite_goss_gui_start < handle
              if isnan(high1)
                 set(obj.edt_echo, 'string',  '卫星高度必须为数字，请重新设置！');
                 return;
-             elseif high1<10||high1>100000
+             elseif high1<0||high1>100000
                 set(obj.edt_echo, 'string',  '卫星高度超出范围，应为[10, 100000]，请重新设置！');
                 return;
              end

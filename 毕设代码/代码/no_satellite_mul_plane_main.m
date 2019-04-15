@@ -1,7 +1,7 @@
 function [mess_test,mess_112_hex,time_asix,mess_rec_all,plane_lon,plane_lat,plane_high,planes_id] =no_satellite_mul_plane_main(plane_para,simu_time,planes_id)
 
 plane_ann_num = 1;
-simu_step =1e-5;%10us
+simu_step =1e-3;%10us
 ratio = 6371;%KM
 rs = 1*10^6;
 fs = 300*10^6;
@@ -112,7 +112,6 @@ while(clock<(simu_time/simu_step))
     mess_112_all = [mess_112_all;mess112];
     
     %加上损耗增益等
-    
     peakU = 10^6*sqrt(2* 10^(plane_para(6,i)/10)/10^3);
     %信息放在同一个矩阵
     plane{i}.mess_all = [plane{i}.mess_all;plane_para(6,i),mess(1,2:8)];
@@ -180,9 +179,10 @@ end
       end
 
   end
-  
-  
-%   t = 0:rs/fs:size(mess_test,2)*(rs/fs)-rs/fs;
-%   plot(t,mess_test);
+  mess_all=[];
+% for i = 1:size(time_asix,2)-1
+%     if (time_asix(1,i+1)-time_asix(1,i)<120*10^-6)
+%         mess=
+        
   
 end
