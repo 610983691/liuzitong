@@ -59,6 +59,8 @@
 % % legend('n = 2','n=4','n = 8','n = 10','n=20');
 clear all;
 clc;
+h = polar([0 2*pi],[0 1]);%限制显示范围为0-1的图像
+hold on;
 f = 3e10;
 lamda = (3e8)/f;
 beta = 2*pi/lamda;
